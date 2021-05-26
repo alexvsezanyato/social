@@ -1,0 +1,116 @@
+.sets .group-item {
+    overflow: hidden;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background: #fff;
+}
+
+.sets .group-item > * {
+    padding: 10px;
+}
+
+.sets .title {
+    margin-top: 20px;
+}
+
+.sets .group-item .description {
+    border-bottom: 1px solid #ddd;
+}
+
+.sets .group-item .notice {
+    border-top: 1px solid #ddd;
+    color: #555;
+}
+
+.sets .group-item .input {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+}
+
+.sets .group-item .input > a {
+    display: block; 
+    padding: 10px;
+}
+
+.sets .group-item .input > label,
+.sets .group-item .input > a {
+    border: none;
+    transition: background .08s ease;
+}
+
+.sets .group-item .input label {
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    cursor: text;
+}
+
+.sets .group-item .input label > * {
+    padding: 10px;
+}
+
+.sets .group-item .input > label:hover,
+.sets .group-item .input > a:hover {
+    background: #f0f0f0;
+}
+
+.sets .group-item .input input {
+    font-size: 16px;
+    font-family: 'Times New Roman', Arial, 'Courier New';
+    background: rgba(0, 0, 0, .0);
+    border: none;
+    flex-grow: 1;
+    outline: none;
+    cursor: text;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: auto;
+}
+
+.sets .group-item .input .label-description {
+    color: #555;
+    padding-right: 0;
+}
+
+.sets .group-item .input > a {
+    color: #EA2027;
+    text-decoration: none;
+}
+
+.sets .group-item .input > a:hover {
+    background: rgba(231, 76, 60, .1);
+}
+
+.sets .apply {
+    padding: 8px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #009432;
+    color: #f7fffa;
+    box-shadow: 0 2px 0 0 #006321;
+    border: none;
+    border-bottom: 1px solid #006321;
+    margin-bottom: 40px;
+
+    transition: 
+        box-shadow .1s ease,
+        background .1s ease,
+        transform .1s ease;
+}
+
+.sets .apply:hover {
+    background: #009e35;
+    border-bottom: 1px solid #017d2a;
+    box-shadow: 0 2px 0 0 #017d2a;
+}
+
+.sets .apply:active {
+    transform: translate(0, 3px);
+    box-shadow: none;
+}
