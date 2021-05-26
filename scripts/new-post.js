@@ -59,6 +59,10 @@ inputclose.addEventListener('click', (e) => {
                     alert('Too much files');
                     break;
 
+                case '6':
+                    alert('Some files have too long names. Max is 64');
+                    break;
+
                 default: 
                     alert('Something went wrong');
                     console.log(request.responseText);
@@ -124,7 +128,7 @@ textarea.addEventListener('keydown', function (e) {
             e.id = i;
             html += `
             <li class="file-block">
-                <div>
+                <div class="file-name">
                 <i class="fas fa-file"></i>${this.files[i].name}
                 </div>
 

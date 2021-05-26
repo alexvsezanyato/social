@@ -81,6 +81,7 @@ require_once __DIR__ . "/app/posts.php";
                             <div class="datetime"> 
                                 <div class="date"><?= $post['date'] ?></div>
                                 <div class="time"><?= $post['time'] ?></div>
+                                <ul class="file-list"></ul>
                             </div>
                         </div>
                         <div class="data"><?=$post['text']?></div>

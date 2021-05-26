@@ -171,6 +171,18 @@
     justify-content: space-between;
     align-items: center;
     cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.np-block .file-list .unpin-file {
+    flex-shrink: 0;
+}
+
+.np-block .file-list .file-name {
+    flex-shrink: 1;
+    flex-grow: 0;
+    overflow: hidden;
 }
 
 .np-block .file-list > * > * {
