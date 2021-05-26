@@ -50,15 +50,21 @@ function main() {
             return;
         }
     }
-    setcookie(
-        'pid', 
-        $cookie, 
-        time() + 60*60*24*365, 
-        '/', // path
-        '', // domain 
-        true, // httponly
-        true // secure
-    );
+    setcookie('pid', $cookie, [
+       'expires' => time() + 60*60*24*365, 
+       'path' => '/',
+       'domain' => '',
+       'secure' => false,
+       'httponly' => true,
+       'samesite' => 'Lax'
+    ]);
+    /*
+    time() + 60*60*24*365, 
+    '/', // path
+    '', // domain 
+    true, // httponly
+    true // secure
+    */
     echo '0';
     return;
 }

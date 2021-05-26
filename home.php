@@ -101,14 +101,19 @@ require_once __DIR__ . "/app/posts.php";
                     <div>New post</div>
                     <button id="np-close"><i class="fas fa-times"></i></button>
                 </div>
+                <div class="options">
+                    <input type="file" class="input-file" multiple>
+                    <div class="files"><i class="fas fa-file-upload"></i></div>
+                    <div class="files"><i class="fas fa-file-image"></i></div>
+                </div>
                 <textarea id="np-textarea"></textarea>
-                <input typ
-                <input type="file">
+                <ul class="file-list"></ul>
                 <input id="np-post" class="post-do" type="button" value="Post">
             </div>
         </div>
     </div>
     <script src="/scripts/new-post.js"></script>
+    <script>document.getElementById('np-btn').click();</script>
     <?php endif; ?>
 
 </body>

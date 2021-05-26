@@ -1,5 +1,5 @@
-@import url("fonts.css");
-@import url("sets.css");
+@import url("/css/fonts.css");
+@import url("/css/sets.css");
 
 body {
     overflow-y: scroll;

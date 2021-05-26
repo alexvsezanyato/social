@@ -1,44 +1,98 @@
-<?php
-$login = $_POST['login'] ?? null;
-$password = $_POST['password'] ?? null;
-$prepeat = $_POST['prepeat'] ?? null;
-$age = $_POST['age'] ?? null;
-check();
+<?php require_once __DIR__ . '/auth/redirect.php'; ?>
+<html>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="css/auth.css">
+</head>
+<body>
+    <div id="register-form"> 
+        <div class="title">Register</div> 
+        <div class="fieldset">
+            <div class="row"><input id="rf-login" required autocomplete="off" type="text" placeholder="Login"></div>
+            <div class="row"><input id="rf-password" required autocomplete="off" type="password" placeholder="Password"></div>
+            <div class="row"><input id="rf-prepeat" required autocomplete="off" type="password" placeholder="Repeat password"></div>
+            <div class="row"><input id="rf-age" required autocomplete="off" type="text" placeholder="Age"></div>
+            <div class="row"><input id="rf-submit" autocomplete="off" type="submit" value="Go!"></div>
+            <script>
+                let submit = document.getElementById("rf-submit");
+                let age = document.getElementById("rf-age");
+                let login = document.getElementById("rf-login");
 
-function check() {
-    global $login;
-    global $password;
-    global $prepeat;
-    global $age;
+                age.addEventListener('input', (e) => {
+                    switch (age.value.slice(-1)) {
+                    case '1': case '2': case '3': 
+                    case '4': case '5': case '6': 
+                    case '7': case '8': case '9': 
+                    case '0': 
+                        if (parseInt(age.value) <= 99) break;
+                    default: 
+                        age.value = age.value.slice(0, age.value.length - 1);
+                    }
+                });
+                login.addEventListener('input', (e) => {
+                    switch (login.value.slice(-1)) {
+                    case ' ': case '+': case '=': 
+                    case '\\': case '|': case '*':
+                    case '&': case '^': case '%':
+                    case '$': case '!': case '@':
+                    case '#': case ';': case ':':
+                    case '<': case '>': case '?': 
+                    case '[': case ']': case '{':
+                    case '}': case '\'': case '"':
+                    case '~': case '`': case '/':
+                    case '.': case ',': 
+                        login.value = login.value.slice(0, age.value.length - 1);
+                    }
+                });
+                submit.addEventListener('click', (e) => {
+                    let password = document.getElementById("rf-password");
+                    let rpassword = document.getElementById("rf-prepeat");
+                    let request = new XMLHttpRequest();
 
-    if (strlen($login) < 3) {
-        echo '1';
-        return;
-    }
-    if ($password != $prepeat) {
-        echo '2';
-        return;
-    }
-    if (strlen($password) < 6) { 
-        echo '3';
-        return;
-    }
-    if (!is_numeric($age) || (int) $age < 14) {
-        echo '4';
-        return;
-    }
-    main();
-    return;
-}
-function main() {
-    global $login;
-    global $password;
-    global $age;
-    // data is valid, do main
-    // ..
-
-    
-    echo '0';
-    return;
-}
-
+                    request.addEventListener('readystatechange', (e) => {
+                        switch (request.readyState) {
+                        case 4:
+                            if (request.status == 200) {
+                                switch (request.responseText) {
+                                case '1':
+                                    alert('The login length must be 3 at least'); 
+                                    break;
+                                case '2': 
+                                    alert('Password mismatch');
+                                    break;
+                                case '3': 
+                                    alert('The password length must be 6 at least');
+                                    break;
+                                case '4': 
+                                    alert('Unacceptable age. Must be 14 at least');
+                                    break;
+                                case '0': 
+                                    alert('Registered. Log in now');
+                                    break;
+                                case '5': 
+                                    alert('Login or password already in use');
+                                    break;
+                                case '9': 
+                                    alert('Not registered. Try again');
+                                    break;
+                                }
+                            } else {
+                                alert('Oops, something went wrong. Status: ' + request.status);
+                            }
+                            break;
+                        }
+                    }); 
+                    request.open('post', 'register.php', true);
+                    let data = 'login=' + login.value;
+                    data += '&password=' + password.value;
+                    data += '&prepeat=' + rpassword.value;
+                    data += '&age=' + age.value;
+                    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    request.send(data);
+                });
+            </script>
+        </div>
+    </div>
+    <div class="log-in"><a class="link" href="/index.php">News</a> or <a class="link" href="/login.php">log in</a></div>
+</body>
+</html>
