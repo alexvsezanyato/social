@@ -11,10 +11,15 @@ body {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    overflow-x: hidden;
 }
 
 body > .wrapper {
     padding-top: 45px;
+}
+
+*[data-hidden] {
+    visibility: hidden;
 }
 
 header {
@@ -23,6 +28,7 @@ header {
     width: 100%;
     background: #fff;
     box-shadow: 0 2px 10px 0 rgba(0,0,0,.08);
+    z-index: 2;
 }
 
 header .wrapper {
@@ -141,6 +147,8 @@ main > * {
     overflow: hidden;
     margin-bottom: 15px;
     background: #fff;
+    font-family: Roboto, Arial, Tahoma;
+    font-size: 14px;
 }
 
 .post .title {
@@ -150,8 +158,19 @@ main > * {
     justify-content: space-between;
 }
 
+.post .title > * {
+    display: flex;
+}
+
 .post .title .user > a {
     color: blue;
+}
+
+.post .title .datetime {
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+    margin-right: 10px;
 }
 
 .post .title .datetime > * {
@@ -162,18 +181,37 @@ main > * {
     color: #444;
 }
 
+.post .title .menu {
+    width: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20%;
+    cursor: pointer;
+    position: relative;
+    user-select: none
+}
+
+.post .title .menu:hover {
+    background: #ddd;
+}
+
+.post .title .right {
+    position: relative;
+}
+
 .post .data {
     padding: 10px;
-    line-height: 22px;
+    line-height: 21px;
     word-spacing: 1.5px;
     text-align: justify;
+    font-family: Roboto, Arial, Tahoma;
 }
 
 .post .data pre {
     margin: 0;
     padding: 0;
     white-space: pre-wrap;
-    font-family: 'Times New Roman', Arial, 'Courier New';
     font-size: 16px;
     font-weight: normal;
     font-style: normal;
@@ -181,3 +219,101 @@ main > * {
 }
 
 
+.post .file-list {
+    list-style-type: none;   
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    font-family: Roboto, Arial, Tahoma;
+    font-weight: bold;
+}
+
+.post .file-list > * {
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.post .file-list .file-name {
+    flex-shrink: 1;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.post .file-list .file-name > a {
+    color: #000;
+    text-decoration: none;
+}
+
+.post .file-list .file-name > a:hover {
+    text-decoration: underline;
+}
+
+.post .file-list > li > * {
+    padding: 10px;
+}
+
+.post .file-list > li > *:first-of-type > i {
+    padding-right: 10px;
+}
+
+.post .post-options {
+    transition: 
+        transform .15s,
+        opacity .15s,
+        box-shadow .15s;
+
+    box-shadow: 0 0 40px 0 #ccc;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 120px;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    color: #222;
+    font-weight: 600;
+    font-size: 13px;
+    user-select: none;
+}
+
+.post .post-options > * {
+    padding: 7px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.post .post-options > *:last-of-type {
+    border-bottom: none;
+}
+
+.post .post-options > *:hover {
+    background: #eee;
+}
+
+.post-options .back {
+    color: #444;
+}
+
+.post-options .back i {
+    font-size: 16px;
+}
+
+.post-options i {
+    padding-right: 12px;
+    width: 12px;
+    text-align: center;
+}
+
+.scaled {
+    transform: scale(0.95);
+    opacity: 0;
+    box-shadow: none;
+}

@@ -9,10 +9,10 @@
         <div class="title">Register</div> 
         <div class="fieldset">
             <div class="row"><input id="rf-login" required autocomplete="off" type="text" placeholder="Login"></div>
-            <div class="row"><input id="rf-password" required autocomplete="off" type="password" placeholder="Password"></div>
-            <div class="row"><input id="rf-prepeat" required autocomplete="off" type="password" placeholder="Repeat password"></div>
-            <div class="row"><input id="rf-age" required autocomplete="off" type="text" placeholder="Age"></div>
-            <div class="row"><input id="rf-submit" autocomplete="off" type="submit" value="Go!"></div>
+            <div class="row"><input id="rf-password" required autocomplete="new-password" type="password" placeholder="Password"></div>
+            <div class="row"><input id="rf-prepeat" required autocomplete="new-password" type="password" placeholder="Repeat password"></div>
+            <div class="row"><input id="rf-age" required type="text" placeholder="Age"></div>
+            <div class="row"><input id="rf-submit" type="submit" value="Go!"></div>
             <script>
                 let submit = document.getElementById("rf-submit");
                 let age = document.getElementById("rf-age");

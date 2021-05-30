@@ -1,7 +1,12 @@
 <?php 
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo '6';
+    exit;
+}
+
 require_once __DIR__ . "/../auth/connect.php";
-require_once __DIR__ . "/user.php";
-// $text = file_get_contents('php://input');
+require_once __DIR__ . "/users.php";
 
 $post = $_POST;
 $files = $_FILES;
@@ -9,7 +14,7 @@ $text = $post['text'];
 $error = false;
 $errorcode = 0;
 
-if (!User::in()) {
+if (!Users::in()) {
     echo '1';
     exit;
 }
@@ -30,7 +35,7 @@ if (preg_match('/(\r\n|\r|\n){3,}/', $text)) {
 }
 
 $text = htmlspecialchars($text);
-$id = User::get()['id'];
+$id = Users::get()['id'];
 $pdo = connect();
 $pdo->beginTransaction();
 
@@ -40,6 +45,7 @@ $statement = $pdo->prepare('
 ');
 
 if (!$statement->execute([$id, $text])) {
+    $pdo->rollBack();
     echo '5';
     exit;
 } 
@@ -51,6 +57,7 @@ $statement = $pdo->prepare('
 ');
 
 if (!$statement->execute()) {
+    $pdo->rollBack();
     echo '5';
     exit;
 }
@@ -60,6 +67,7 @@ $pid = $result['id'] ?? '';
 $uploadfiles = false;
 
 if (!$pid) {
+    $pdo->rollBack();
     echo '5';
     exit;
 }
@@ -69,27 +77,27 @@ $statement = $pdo->prepare('
     values (:pid, :source, :mime, :name)
 ');
 
+$i = 0;
+
 foreach ($files as $file) {
     if ($file['error']) continue;
-    $user = User::get();
-    $uid = User::id();
+    $user = Users::get();
+    $uid = Users::id();
     $dir = __DIR__ . "/../uploads";
     $fname = "";
     $helper = false;
-    $i = 5;
+    $fname = $pid . $i; // uniqid($pid . $i, true);
 
-    while (--$i) {
-        $fname = $uid . '-' . uniqid();
-        if (!file_exists($dir . '/' . $fname)) break;
+    if (file_exists($dir . '/' . $fname)) {
+        $pdo->rollBack();
+        echo '7';
+        exit;
     }
 
-    if (!$i) continue;
     $uploadfiles = true;
     $docname = basename($file['name']);
 
     if (strlen($docname) > 64) { 
-        // $error = true;
-        // $errorcode = 6;
         echo '6';
         $pdo->rollBack();
         exit;
@@ -97,7 +105,13 @@ foreach ($files as $file) {
 
     $tpath = $file['tmp_name'];
     $newpath = $dir . '/' . $fname;
-    move_uploaded_file($tpath, $newpath);
+    $status = move_uploaded_file($tpath, $newpath);
+    
+    if (!$status) {
+        $pdo->rollBack();
+        echo '9';
+        exit;
+    }
 
     $result = $statement->execute([
         ':pid' => $pid,
@@ -105,8 +119,15 @@ foreach ($files as $file) {
         ':mime' => $file['type'], 
         ':name' => $docname,
     ]);
+
+    if (!$result) {
+        $pdo->rollBack();
+        echo '9';
+        exit;
+    }
+
+    $i++;
 }
 
 $pdo->commit();
-if ($statement) echo '0';
-else echo '1';
+echo '0';

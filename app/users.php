@@ -1,6 +1,6 @@
 <?php
 
-class User {
+class Users {
     static function get() {
         if (self::$user !== null) return self::$user;
         require_once __DIR__ . '/../auth/connect.php';

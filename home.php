@@ -1,15 +1,17 @@
-<?php 
-require_once __DIR__ . "/app/user.php";
+<?php
 require_once __DIR__ . "/auth/connect.php";
+require_once __DIR__ . "/app/users.php";
 require_once __DIR__ . "/app/posts.php";
+require_once __DIR__ . "/app/documents.php"; 
 ?>
 <!doctype html>
 <html>
 <head>
     <title>Home page</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" type="text/css" href="css/new-post.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/new-post.css">
     <link rel="stylesheet" href="font-awesome/css/all.css">
+    <link rel="stylesheet" href="css/notifications.css">
 </head>
 
 <body>
@@ -21,8 +23,8 @@ require_once __DIR__ . "/app/posts.php";
                 </div>
                 <div>
                     <ul>
-                        <?php if (User::in()): ?>
-                        <li><?php echo User::get()['login']; ?></li>
+                        <?php if (Users::in()): ?>
+                        <li><?= Users::get()['login'] ?></li>
                         <li><a href="/home.php">Home page</a></li>
                         <li><a href="/settings.php">Settings</a></li>
                         <?php else: ?>
@@ -33,17 +35,27 @@ require_once __DIR__ . "/app/posts.php";
             </div>
         </header>
         <main>
-            <?php if (!!!User::get()['public']): ?>
+
+            <!-- Notifications -->
+            <?php require __DIR__ . '/blocks/notifications.php'; ?>
+
+            <?php if (!Users::get()['public']): ?>
             <h3>Profile</h3>
             <ul class="profile-header">
-                <li><div class="title">Login: </div><div class="value"><?php echo User::get()['login']; ?></div></li>
-                <li><div class="title">Age: </div><div class="value"><?php echo User::get()['age']; ?></div></li>
+                <li class="ph-row">
+                    <div class="title">Login: </div>
+                    <div class="value"><?php echo Users::get()['login']; ?></div>
+                </li>
+                <li class="ph-row">
+                    <div class="title">Age: </div>
+                    <div class="value"><?php echo Users::get()['age']; ?></div>
+                </li>
             </ul>
             <ul class="settings unmarked">
                 <h3 class="category">Profile settings</h3>
                 <li>
                     <div class="description">Public name</div>
-                    <div class="input"><label><div class="label-description">Type here: </div><input id="pn-input" placeholder="..." value="<?php echo User::get()['public']; ?>"></label></div>
+                    <div class="input"><label><div class="label-description">Type here: </div><input id="pn-input" placeholder="..." value="<?php echo Users::get()['public']; ?>"></label></div>
                     <div class="notice">You must have public name to post or to comment.</div>
                     <script defer src="scripts/settings-logout.js"></script>
                 </li>
@@ -54,68 +66,55 @@ require_once __DIR__ . "/app/posts.php";
             <?php else: ?>
             <h3 style="padding-top: 2px;">Profile</h3>
             <ul class="profile-header">
-                <li><div class="title">Name: </div><div class="value"><?php echo User::get()['public']; ?></div></li>
-                <li><div class="title">Login: </div><div class="value"><?php echo User::get()['login']; ?></div></li>
-                <li><div class="title">Age: </div><div class="value"><?php echo User::get()['age']; ?></div></li>
+                <li class="ph-row">
+                    <div class="title">Name: </div>
+                    <div class="value"><?php echo Users::get()['public']; ?></div>
+                </li>
+                <li class="ph-row">
+                    <div class="title">Login: </div>
+                    <div class="value"><?php echo Users::get()['login']; ?></div>
+                </li>
+                <li class="ph-row">
+                    <div class="title">Age: </div>
+                    <div class="value"><?php echo Users::get()['age']; ?></div>
+                </li>
             </ul>
             <?php endif; ?>
+
             <div class="posts">
                 <div class="posts-header">
                     <h3>Posts</h3>
-                    <?php if (User::get()['public']): ?>
+                    <?php if (Users::get()['public']): ?>
                     <div class="new-post"><input id="np-btn" type="button" value="New"></div>
                     <?php endif; ?>
                 </div>
-                <?php if (!User::get()['public']): ?>
+                <?php if (!Users::get()['public']): ?>
                 <hr>
                 <div class="notice">You must have public name to post</div>
-                <?php elseif (!Posts::exists(User::get()['id'])): ?>
+                <?php elseif (!Posts::exists(Users::get()['id'])): ?>
                 <hr>
                 <div class="notice">You have no post</div>
                 <?php else: ?>
-                <div class="posts">
-                    <?php while ($post = Posts::fetch(User::get()['id'])): ?> 
-                    <div class="post">
-                        <div class="title">
-                            <div class="user"><a href="#"><?= User::get()['public'] ?></a></div>
-                            <div class="datetime"> 
-                                <div class="date"><?= $post['date'] ?></div>
-                                <div class="time"><?= $post['time'] ?></div>
-                                <ul class="file-list"></ul>
-                            </div>
-                        </div>
-                        <div class="data"><?=$post['text']?></div>
-                    </div>
+                <div id="post-list" class="posts">
+
+                    <!-- Posts -->
+                    <?php while ($post = Posts::fetch(Users::get()['id'])): ?> 
+                    <?php require __DIR__ . '/blocks/post.php'; ?>
                     <?php endwhile; ?>
+                    
                 </div>
                 <?php endif; ?>
             </div>
         </main>
     </div>
 
-    <?php if (User::get()['public']): ?>
-    <!--new-post-block-->
-    <div id="np-blockjs" class="np-block" style="visibility: hidden">
-        <div class="wrapper">
-            <div id="np-window" class="window">
-                <div class="header">
-                    <div>New post</div>
-                    <button id="np-close"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="options">
-                    <input type="file" class="input-file" multiple>
-                    <div class="files"><i class="fas fa-file-upload"></i></div>
-                    <div class="files"><i class="fas fa-file-image"></i></div>
-                </div>
-                <textarea id="np-textarea"></textarea>
-                <ul class="file-list"></ul>
-                <input id="np-post" class="post-do" type="button" value="Post">
-            </div>
-        </div>
-    </div>
-    <script src="/scripts/new-post.js"></script>
-    <script>document.getElementById('np-btn').click();</script>
+    <!-- New post -->
+    <?php if (Users::get()['public']): ?>
+    <?php require __DIR__ . '/blocks/new-post.php'; ?>
     <?php endif; ?>
+
+    <!-- Scripts -->
+    <script src="/scripts/posts.js"></script>
 
 </body>
 </html>

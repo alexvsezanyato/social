@@ -1,0 +1,56 @@
+#global-notifications {
+    position: fixed;
+    display: flex;
+    z-index: 3;
+}
+
+#global-notifications .notification > * {
+    padding: 10px;
+}
+
+#global-notifications .notification {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+}
+
+#global-notifications .list {
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+    font-family: Roboto, Arial, Tahoma; 
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 0.3em;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+} 
+
+
+#global-notifications .notification {
+    border-bottom: 1px solid #333;
+}
+
+#global-notifications .notification:last-of-type {
+    border-bottom: none;
+}
+
+#global-notifications .wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#global-notifications .close {
+    width: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+#global-notifications .close:hover {
+    background: #333;
+}
