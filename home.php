@@ -91,18 +91,10 @@ require_once __DIR__ . "/app/documents.php";
                 <?php if (!Users::get()['public']): ?>
                 <hr>
                 <div class="notice">You must have public name to post</div>
-                <?php elseif (!Posts::exists(Users::get()['id'])): ?>
-                <hr>
-                <div class="notice">You have no post</div>
+                <?php // elseif (!Posts::exists(Users::get()['id'])): ?>
                 <?php else: ?>
-                <div id="post-list" class="posts">
-
-                    <!-- Posts -->
-                    <?php while ($post = Posts::fetch(Users::get()['id'])): ?> 
-                    <?php require __DIR__ . '/blocks/post.php'; ?>
-                    <?php endwhile; ?>
-                    
-                </div>
+                <div id="post-list" class="posts"></div>
+                <script src="/scripts/posts.js"></script>
                 <?php endif; ?>
             </div>
         </main>
@@ -114,7 +106,6 @@ require_once __DIR__ . "/app/documents.php";
     <?php endif; ?>
 
     <!-- Scripts -->
-    <script src="/scripts/posts.js"></script>
 
 </body>
 </html>
