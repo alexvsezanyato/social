@@ -9,6 +9,7 @@ let textarea = document.getElementById('np-textarea')
 let iwindow = document.getElementById('np-window')
 let wrapper = document.querySelector('body > .wrapper')
 let files = []
+let sizeError = false
 
 input.addEventListener('click', (e) => {
     inputblock.style.visibility = 'visible'
@@ -24,7 +25,16 @@ inputclose.addEventListener('click', (e) => {
     inputblock.style.visibility = 'hidden'
 })
 
-/* send data */ post.addEventListener('click', (e) => {
+post.addEventListener('click', (e) => {
+    // send post
+
+    if (sizeError) { 
+        new notification(
+            'Not posted: some data is too large'
+        )
+        return
+    }
+
     let value = textarea.value
     let request = new XMLHttpRequest()
     let data = new FormData()
@@ -95,12 +105,13 @@ inputclose.addEventListener('click', (e) => {
 
 textarea.addEventListener('keydown', function (e) {
     if (e.key === 'Tab') {
-        e.preventDefault()
-        let start = this.selectionStart
-        let end = this.selectionEnd
-        this.value = this.value.substring(0, start) + "    " + this.value.substring(end)
-        this.selectionStart = start + 4
-        this.selectionEnd = this.selectionStart
+        // check writing
+        // e.preventDefault()
+        // let start = this.selectionStart
+        // let end = this.selectionEnd
+        // this.value = this.value.substring(0, start) + "    " + this.value.substring(end)
+        // this.selectionStart = start + 4
+        // this.selectionEnd = this.selectionStart
     }
 })
 
@@ -112,7 +123,6 @@ textarea.addEventListener('keydown', function (e) {
     let count = null
     let maxcount = 5
     let free = []
-    let sizeError = false
 
     filebutton.addEventListener('click', e => {
         fileinput.click()
@@ -152,7 +162,8 @@ textarea.addEventListener('keydown', function (e) {
                 <div class="unpin-file" data-fbid="${i}">
                 <i data-unpin="true" class="fas fa-times"></i>
                 </div>
-            </li>`
+            </li>
+            `
         })
 
 
@@ -162,7 +173,7 @@ textarea.addEventListener('keydown', function (e) {
     })
 
     filelist.addEventListener('click', e => {
-        // to remove file item 
+        // to remove file item
         let set = e.target.dataset
         if (!set.unpin && !set.fbid) return
 
@@ -190,6 +201,12 @@ textarea.addEventListener('keydown', function (e) {
             count = null
             return
         }
+
+        files.forEach((e, i) => {
+            sizeError = false
+            if (e.size > 2 * 1024 * 1024) sizeError = true // > 2MB
+            return
+        })
     })
 })(files)
 

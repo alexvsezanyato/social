@@ -1,62 +1,123 @@
 ;(() => {
 // begin scope
 
-fetch('/posts.php', {
-    method: 'POST',
+let list = document.querySelector('#post-list')
+let more
+let limit = 10
 
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        from: 0,
-        limit: 10
+let fetchPosts = (from, limit) => {
+    fetch('/posts.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+
+        body: JSON.stringify({
+            'from': from,
+            'limit': limit
+        })
     })
-}).then(r => r.json()).then(r => {
-    if (!r.data) {
+    .then(r => r.json())
+    .then(r => printPosts(r))
+}
+
+let printPosts = r => {
+    if (!r.posts || !r.user) {
         new notification(
             'Cannot parse the recieved data.'
         )
-
-        console.log(r)
-        return
     }
 
-    for (let row of r.data) {
-        let postList = document.querySelector('#post-list')
-        let post = document.createElement('div')
-        post.innerHTML = `
-        <div class="post" data-id="${row.id}">
-            <div class="title">
-                <div class="user"><a href="#">Username</a></div>
-                <div class="right">
-                    <div class="datetime"> 
-                        <div class="date">${row.date} at</div>
-                        <div class="time">${row.time}</div>
-                    </div>
-                    <div class="menu" data-menu><i class="fas fa-caret-down" data-menu></i></div>
+    console.log(r)
+    let minId = r.posts[0]?.id
+
+    for (let post of r.posts) {
+        let postBlock = document.createElement('div')
+        postBlock.className = 'post'
+        postBlock.dataset.id = post.id
+        let docsHtml = ''
+        if (minId > post.id) minId = Number(post.id)
+
+        for (let doc of post.docs) {
+            docsHtml += ` 
+            <li class="file-block">
+                <div class="file-name">
+                    <i class="fas fa-file"></i>
+                    <a 
+                    href="download.php?id=${doc.source}&name=${doc.name}&type=${doc.mime}" 
+                    download
+                    >${doc.name}</a>
+                </div>
+            </li>
+            `
+        }
+
+        if (post.docs.length) docsHtml = `
+        <ul class="file-list">
+            <li class="file-block">
+                <div class="file-name">${post.docs.length} documents</div>
+            </li>
+            ${docsHtml}
+        </ul>
+        `
+
+        postBlock.innerHTML = `
+        <div class="title">
+            <div class="user">
+                <a href="#">${r.user.public}</a>
+            </div>
+
+            <div class="right">
+                <div class="datetime"> 
+                    <div class="date">${post.date} at</div>
+                    <div class="time">${post.time}</div>
+                </div>
+
+                <div class="menu" data-menu>
+                    <i class="fas fa-caret-down" data-menu></i>
                 </div>
             </div>
-            <div class="data">${row.text}</div>
-
-            <ul class="file-list">
-                <li class="file-block">
-                    <div class="file-name"> documents</div>
-                </li>
-
-                <li class="file-block">
-                    <div class="file-name">
-                        <i class="fas fa-file"></i>
-                        <a href="download.php?id=&name=&type=" download></a>
-                    </div>
-                </li>
-            </ul>
         </div>
-        `
-        postList.append(post)
-    }
-})
 
-let list = document.querySelector('#post-list');
+        <div class="data">${post.text}</div>
+        ${docsHtml}
+        `
+        
+        postBlock.innerHTML = `<div class="wrapper">${postBlock.innerHTML}</div>`
+        list.append(postBlock)
+        console.log(post.id)
+    }
+
+    if (r.posts.length < limit) {
+        let end = document.createElement('div')
+        end.className = 'notice posts-end'
+        end.innerHTML = 'The end'
+
+        if (r.posts.length) {
+            more.remove()
+            more = false
+        }
+
+        if (more) list.replaceChild(end, more)
+        else list.append(end)
+
+        more = false
+    }
+    else {
+        if (more) more.remove()
+
+        else {
+            more = document.createElement('div')
+            more.className = 'more-posts'
+            more.innerHTML = '<div class="wrapper">Show more</div>'
+        }
+
+        let moreButton = more.querySelector('.wrapper')
+        console.log('min id ' + minId)
+        moreButton.onclick = e => fetchPosts(minId - 1, limit)
+        list.append(more)
+    }
+}
+
+fetchPosts(0, limit)
 let menu
 
 let hideMenu = (e) => {
@@ -85,8 +146,8 @@ list.addEventListener('click', (e) => {
         menu.dataset.options = 'options'
 
         menu.innerHTML = `
-        <li class="back"><i class="fas fa-caret-left"></i>Back</li>
-        <li class="delete"><i class="far fa-trash-alt"></i>Delete</li>
+        <li class="option back"><i class="fas fa-caret-left"></i>Back</li>
+        <li class="option delete"><i class="far fa-trash-alt"></i>Delete</li>
         `
 
         menu.querySelector('.back').onclick = (e) => {
@@ -95,7 +156,7 @@ list.addEventListener('click', (e) => {
             return
         }
         
-        button.after(menu)
+        button.append(menu)
         let remove = menu.querySelector('.delete')
 
         remove.addEventListener('click', (e) => {
@@ -109,12 +170,36 @@ list.addEventListener('click', (e) => {
                 switch (text) {
                 case '0':
                     new notification(
+                        // remove post
                         'The post has been removed'
                     )
+
                     menu.remove()
                     menu = false
                     document.onclick = null
                     post.remove()
+
+                    let postCount = 0;
+                    let more = false
+                    postCount += list.childNodes.length
+                    if (list.querySelector('.more-posts')) more = true
+                    if (more) postCount--
+
+                    if (!postCount) {
+                        if (more) {
+                            list.innerHTML = `
+                                <hr style="margin-bottom: 12px">
+                                ${list.innerHTML}
+                            `
+                        }
+                        else {
+                            list.innerHTML = `
+                                <hr>
+                                <div class="notice">You have no post</div>
+                            `
+                        }
+                    }
+
                     break
 
                 default: 
@@ -130,7 +215,7 @@ list.addEventListener('click', (e) => {
 
         e.stopPropagation()
         document.onclick = hideMenu
-        setTimeout(() => menu.classList.remove('scaled'), 0)
+        setTimeout(() => menu.classList.remove('scaled'))
         return
     }
 })

@@ -11,8 +11,8 @@ if (!isset($json->from) || !isset($json->limit)) {
     exit;
 }
 
-$from = $json->from;
-$limit = $json->limit;
+$from = $json->from ?? 0;
+$limit = $json->limit ?? 1;
 
 if (!is_numeric($from)) {
     echo json_encode(['code' => 2]);
@@ -22,30 +22,57 @@ if (!is_numeric($from)) {
 if (!is_numeric($limit)) $limit = 10;
 if ($limit > 10) $limit = 10;
 require_once __DIR__ . '/auth/connect.php';
+require_once __DIR__ . '/app/users.php';
 $pdo = connect();
 
-$statement = $pdo->prepare("
+$sql = "
     select id, text, authorid, 
     cast(createdat as date) as date, 
     cast(createdat as time) as time 
-    from posts where id >= ? 
-    order by id desc 
-    limit $limit
+    from posts  
+";
 
-");
+if ($from > 0) $sql = $sql . "where id <= :id" . " ";
+$sql = $sql . "order by id desc limit $limit";
+$postsql = $pdo->prepare($sql);
 
-$result = $statement->execute([$from]);
+$docsql = $pdo->prepare('
+    select name, source, mime
+    from documents 
+    where pid = ? 
+    limit 20
+');
 
-if (!$result) {
-    echo json_encode(['code' => 3, 'cause' => $statement->errorInfo()]);
+// result of executing posts
+$postr = $postsql->execute([":id" => $from]);
+$posts = [];
+$user = Users::get();    
+
+if (!$postr) {
+    echo json_encode([
+        'code' => 3, 
+        'cause' => $postsql->errorInfo(),
+    ]);
     exit;
 }
 
-$data = [];
-while ($data[] = $statement->fetch());
-array_pop($data);
-    
+while ($post = $postsql->fetch()) {
+    $docr = $docsql->execute([$post['id']]);
+    // if result(docs) fails
+    if (!$docr) continue;
+
+    $docs = [];
+    while ($doc = $docsql->fetch()) $docs[] = $doc;
+    $post['docs'] = $docs;
+    $posts[] = $post;
+}
+
 echo json_encode([
     code => 0,
-    data => $data
+    posts => $posts,
+
+    user => [
+        'id' => $user['id'],
+        'public' => $user['public'],
+    ]
 ]);
