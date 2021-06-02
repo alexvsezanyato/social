@@ -1,3 +1,11 @@
-I don't want to recover anymore! 
-This fin rm does remove efficient.
-So efficient that I can't even restore!
+- Register
+- Create posts
+- Post text and files 
+
+In the future:
+- Post pictures
+- Comment posts
+- Subscribe to users 
+- See news (recomendations) 
+- See subscribtions 
+
