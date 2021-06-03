@@ -1,5 +1,6 @@
 <?php
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') exit;
 $fid = $_GET['id'];
 if (!preg_match("/[a-zA-Z0-9\-]+\/[a-zA-Z0-9\-]+/", $fid)) exit;
 $fid = basename($fid);

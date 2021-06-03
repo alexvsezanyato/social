@@ -3,7 +3,7 @@
 
 let list = document.querySelector('#post-list')
 let more
-let limit = 10
+let limit = 3
 
 let fetchPosts = (from, limit) => {
     fetch('/posts.php', {
@@ -26,7 +26,6 @@ let printPosts = r => {
         )
     }
 
-    console.log(r)
     let minId = r.posts[0]?.id
 
     for (let post of r.posts) {
@@ -62,7 +61,7 @@ let printPosts = r => {
         postBlock.innerHTML = `
         <div class="title">
             <div class="user">
-                <a href="#">${r.user.public}</a>
+                <a href="/home.php">${r.user.public}</a>
             </div>
 
             <div class="right">
@@ -83,7 +82,6 @@ let printPosts = r => {
         
         postBlock.innerHTML = `<div class="wrapper">${postBlock.innerHTML}</div>`
         list.append(postBlock)
-        console.log(post.id)
     }
 
     if (r.posts.length < limit) {
@@ -92,13 +90,19 @@ let printPosts = r => {
         end.innerHTML = 'The end'
 
         if (r.posts.length) {
-            more.remove()
+            if (more) more.remove()
             more = false
+        }
+
+        if (!list.querySelector('.post')) {
+            list.innerHTML = `
+                <hr class="hr">
+                ${list.innerHTML}
+            `
         }
 
         if (more) list.replaceChild(end, more)
         else list.append(end)
-
         more = false
     }
     else {
@@ -111,7 +115,6 @@ let printPosts = r => {
         }
 
         let moreButton = more.querySelector('.wrapper')
-        console.log('min id ' + minId)
         moreButton.onclick = e => fetchPosts(minId - 1, limit)
         list.append(more)
     }
@@ -179,27 +182,12 @@ list.addEventListener('click', (e) => {
                     document.onclick = null
                     post.remove()
 
-                    let postCount = 0;
-                    let more = false
-                    postCount += list.childNodes.length
-                    if (list.querySelector('.more-posts')) more = true
-                    if (more) postCount--
-
-                    if (!postCount) {
-                        if (more) {
-                            list.innerHTML = `
-                                <hr style="margin-bottom: 12px">
-                                ${list.innerHTML}
-                            `
-                        }
-                        else {
-                            list.innerHTML = `
-                                <hr>
-                                <div class="notice">You have no post</div>
-                            `
-                        }
+                    if (!list.querySelector('.post')) {
+                        list.innerHTML = `
+                            <hr class="hr">
+                            ${list.innerHTML}
+                        `
                     }
-
                     break
 
                 default: 
