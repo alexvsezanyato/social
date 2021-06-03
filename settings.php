@@ -1,3 +1,4 @@
+
 <?php require_once __DIR__ . "/auth/connect.php"; ?>
 <?php require_once __DIR__ . "/app/users.php"; ?>
 <?php require_once __DIR__ . "/app/posts.php"; ?>
@@ -23,24 +24,7 @@
     <!-- Notifications -->
     <?php require __DIR__ . '/blocks/notifications.php'; ?>
 
-    <?php if (Users::get()['public']): ?>
     <h3 style="padding-top: 2px;">Profile</h3>
-    <ul class="profile-header">
-        <li class="ph-row">
-            <div class="title">Name: </div>
-            <div class="value"><?php echo Users::get()['public']; ?></div>
-        </li>
-        <li class="ph-row">
-            <div class="title">Login: </div>
-            <div class="value"><?php echo Users::get()['login']; ?></div>
-        </li>
-        <li class="ph-row">
-            <div class="title">Age: </div>
-            <div class="value"><?php echo Users::get()['age']; ?></div>
-        </li>
-    </ul>
-    <?php else: ?>
-    <h3>Profile</h3>
     <ul class="profile-header">
         <li class="ph-row">
             <div class="title">Login: </div>
@@ -58,7 +42,6 @@
                 <label class="input">
                     <div class="set-name">Public name: </div>
                     <input 
-                        id="public-input" 
                         placeholder="..." 
                         value="<?= Users::get()['public'] ?>"
                     >
@@ -68,34 +51,9 @@
         </div>
         <button class="apply" data-reload>Apply</button>
     </div>
-    <?php endif; ?>
-
-    <div class="posts">
-        <div class="posts-header">
-            <h3>Posts</h3>
-            <?php if (Users::get()['public']): ?>
-            <div class="new-post"><input id="np-btn" type="button" value="New"></div>
-            <?php endif; ?>
-        </div>
-
-        <div id="post-list" class="posts">
-            <?php if (!Users::get()['public']): ?>
-            <hr class="hr"><div class="notice posts-end">You must have public name to post</div>
-            <?php else: ?>
-            <script src="/scripts/posts.js"></script>
-            <?php endif; ?>
-        </div>
-    </div>
-
     </main>
 </div>
 
-<!-- New post -->
-<?php
-if (Users::get()['public']):
-require __DIR__ . '/blocks/new-post.php';
-endif;
-?>
-
+<script src="/scripts/profile-settings.js"></script>
 </body>
 </html>

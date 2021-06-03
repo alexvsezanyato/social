@@ -1,9 +1,24 @@
-.sets .group-item {
+.sets .group {
     overflow: hidden;
     border: 1px solid #ddd;
     border-radius: 8px;
     margin-bottom: 20px;
     background: #fff;
+}
+
+.sets .group-item {
+    border-top: 1px solid #ddd;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.sets .group-item:first-of-type {
+    border-top: none;
+    padding-top: 0;
+}
+
+.sets .group-item:last-of-type {
+    padding-bottom: 0;
 }
 
 .sets .group-item > * {
@@ -14,51 +29,37 @@
     margin-top: 20px;
 }
 
-.sets .group-item .description {
-    border-bottom: 1px solid #ddd;
-}
-
-.sets .group-item .notice {
-    border-top: 1px solid #ddd;
+.sets .set-desc {
+    padding: 10px 0;
+    margin: 0px 10px;
+    border-top: 1px dashed #ddd;
     color: #555;
 }
 
-.sets .group-item .input {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+.sets .input {
     padding: 0;
-}
-
-.sets .group-item .input > a {
-    display: block; 
-    padding: 10px;
-}
-
-.sets .group-item .input > label,
-.sets .group-item .input > a {
-    border: none;
-    transition: background .08s ease;
-}
-
-.sets .group-item .input label {
     user-select: none;
     display: flex;
     flex-direction: row;
     justify-content: center;
     cursor: text;
+    transition: background .08s ease;
 }
 
-.sets .group-item .input label > * {
+.sets .input a {
+    display: block; 
     padding: 10px;
 }
 
-.sets .group-item .input > label:hover,
-.sets .group-item .input > a:hover {
+.sets .input > * {
+    padding: 10px;
+}
+
+.sets .input:hover {
     background: #f0f0f0;
 }
 
-.sets .group-item .input input {
+.sets .input input {
     font-size: 16px;
     font-family: 'Times New Roman', Arial, 'Courier New';
     background: rgba(0, 0, 0, .0);
@@ -71,17 +72,17 @@
     margin: auto;
 }
 
-.sets .group-item .input .label-description {
-    color: #555;
+.sets .input .set-name {
+    color: #000;
     padding-right: 0;
 }
 
-.sets .group-item .input > a {
+.sets .input a {
     color: #EA2027;
     text-decoration: none;
 }
 
-.sets .group-item .input > a:hover {
+.sets .input a:hover {
     background: rgba(231, 76, 60, .1);
 }
 
