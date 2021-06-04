@@ -2,17 +2,17 @@
 require_once __DIR__ . "/../auth/connect.php";
 
 class Documents {
-    function user($user) {
+    function user(array $user): self {
         $this->user = $user;
         return $this;
     }
 
-    function pid($postid) {
+    function pid(int $postid): self {
         $this->postid = $postid;
         return $this;
     }
 
-    function get() {
+    function get(): ?PDOStatement {
         if (!$this->db) $this->db = connect();
         $pdo = $this->db;
 
@@ -23,6 +23,12 @@ class Documents {
             limit 10
         ');
 
+        if (!$statement) { 
+            // sql request is failed
+            // handle that
+            return null;
+        }
+
         $statement->execute([
             ':id' => $this->from,
             ':pid' => $this->postid,
@@ -31,9 +37,9 @@ class Documents {
         return $statement;
     }
 
-    private $user = [];
-    private $postid = [];
-    private $from = 0;
-    private $limit = 10;
-    private $db;
+    private array $user = [];
+    private array $postid = [];
+    private int $from = 0;
+    private int $limit = 10;
+    private ?PDO $db;
 }
