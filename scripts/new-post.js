@@ -9,8 +9,10 @@ let closebtn = modal.querySelector('.close')
 let send = modal.querySelector('.submit')
 let input = modal.querySelector('.input')
 let iwindow = modal.querySelector('.window')
+let options = modal.querySelector('.options')
 
 let files = []
+let pics = []
 let sizeError = false
 modal.onscroll = (e) => e.preventDefault();
 
@@ -117,7 +119,81 @@ send.onclick = (e) => {
 }
 
 ;(() => {
-    let options = modal.querySelector('.options')
+    let picBtn = options.querySelector('.pics')    
+    let picInput = options.querySelector('.input-pic')
+    let picList = modal.querySelector('.pic-list')
+    let count = 0
+    let maxCount = 9
+
+    picBtn.onclick = e => {
+        picInput.click()
+        return
+    }
+
+    picInput.onchange = e => {
+        pics = Array.from(e.target.files)
+        let length = pics.length
+
+        function printPics() {
+            // let html = ''
+            // let reader = new FileReader()
+
+            /* reader.onload = (e) => {
+                let image = new Image(50, 50)
+                image.src = e.target.result
+                picList.append(image)
+            }
+            picList.innerHTML = `
+            <li> 
+                
+            </li>
+            `
+            */
+            maxHeight = 100
+
+            pics.forEach((e, i) => {
+                let image = document.createElement('li')
+                image.className = 'image'
+                style = image.style
+
+                style.height = (
+                    e.height < maxHeight? e.height : maxHeight
+                ) + 'px'
+
+                image.style.background = `
+                    url("${URL.createObjectURL(e)}")
+                    center / cover
+                    no-repeat
+                `
+
+                image.innerHTML = `
+                    <div class="close"><i class="fas fa-times"></i></div>
+                `
+
+                picList.append(image)
+            })
+        }
+
+        if (length > maxCount || !length) { 
+            // if nothing is selected 
+            // then file list 
+            // shouldn't be visible
+
+            if (length) {
+                new notification(
+                    `${maxCount} files maximum`
+                )
+            }
+
+            return
+        }
+
+        printPics()
+        return
+    }
+})()
+
+;(() => {
     let filebutton = options.querySelector('.files')    
     let fileinput = options.querySelector('.input-file')
     let filelist = modal.querySelector('.file-list')
@@ -134,7 +210,7 @@ send.onclick = (e) => {
         return
     }
 
-    function printFiles(files) {
+    function printFiles() {
         let length = files.length
         let sizeError = false
         let html = ""

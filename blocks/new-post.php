@@ -11,10 +11,11 @@
         <input type="file" class="input-file" multiple>
         <input type="file" class="input-pic"  multiple>
         <div class="files"><i class="fas fa-file-upload"></i></div>
-        <div class="files"><i class="fas fa-file-image"></i></div>
+        <div class="pics"><i class="fas fa-file-image"></i></div>
     </div>
 
     <textarea class="input"></textarea>
+    <ul class="pic-list"></ul>
     <ul class="file-list"></ul>
     <input class="submit" type="button" value="Post">
 </div>
