@@ -1,8 +1,8 @@
 <?php
 
 class App {
-    static function redirect($whereto) { 
+    static function redirect(string $whereto): bool { 
         header("Location: $whereto");
-        return;
+        return true;
     }
 }
