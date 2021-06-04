@@ -12,26 +12,16 @@ class Users {
     }
 
     static function id(): ?int {
+        // in() sets id,
+        // this one returns only 
+        // if something went wrong (in() & not id)
+        // then return null
+
         if (self::$id !== null) return self::$id;
-        session_start();
-        $id = $_SESSION['id'] ?? null;
-        session_commit();
+        if (!self::in()) return null;
 
-        if ($id !== null) {
-            self::$id = $id;
-            return self::$id;
-        }
-
-        if (!isset($_COOKIE['pid'])) {
-            self::$id = null;
-            return null;
-        }
-
-        $cookie = $_COOKIE['pid'];
-        $data = explode('-', $cookie);
-        if (!preg_match('^[0-9]+$', $data[0])) return null; 
-        self::$id = $data[0];
-        return self::$id;
+        if (self::$id === null) return null;
+        else return self::$id;
     }
 
     static function in(): bool {
@@ -41,6 +31,10 @@ class Users {
         $hash = $_SESSION['hash'] ?? null;
         session_commit();
 
+        // for session, check user agent for security
+        // using hash for security, 
+        // so there is no user agent data 
+        // in the server
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
         $hashHit = ($hash === hash('md5', $userAgent ?? 'agent'));
         if ($id !== null && $hashHit) return self::$in = true; 
@@ -50,10 +44,14 @@ class Users {
         $cookie = $_COOKIE['pid'];
         $data = explode('-', $cookie);
         $id = $data[0] ?? null;
+        self::$id = $id;
         $hash = $data[1];
         $random = self::get()['random'];
         $hashHit = ($hash === hash('sha256', $id . $random));
-        if ($id !== null && $hashHit) return self::$id = true;
+        if ($id !== null && $hashHit) return self::$in = true;
+
+        self::$id = null;
+        return self::$in = false;
     }
 
     static private ?PDOStatement $user = null;
