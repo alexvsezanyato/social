@@ -123,29 +123,34 @@ send.onclick = (e) => {
     let filelist = modal.querySelector('.file-list')
     let count = null
     let maxcount = 5
-    let free = []
+    // let free = []
 
-    filebutton.addEventListener('click', e => {
-        fileinput.click()
+    function unselectFiles() {
+        filelist.style.display = "none"
+        files = []
+        fileinput.value = null
+        filelist.innerHTML = ""
+        count = null
         return
-    })
+    }
 
-    fileinput.addEventListener('change', function (e) {
-        files = Array.from(this.files)
+    function printFiles(files) {
         let length = files.length
-
-        if (length > maxcount || !length) { 
-            filelist.style.display = "none"
-            if (length) new notification(`${maxcount} files maximum`)
-            files = []
-            fileinput.value = null
-            filelist.innerHTML = ""
-            count = null
-            return
-        }
-
+        let sizeError = false
         let html = ""
-        html += `<li><div class="count">${length} documents to upload</div></li>`
+
+        html += `
+        <li class="item">
+            <div class="count left">
+                ${length} documents to upload
+            </div>
+            
+            <div class="right btn-list">
+                <i class="remove fas fa-trash-alt"></i>
+                <i class="add fas fa-plus-square"></i>
+            </div>
+        </li>
+        `
 
         files.forEach((e, i) => {
             let toolarge = false
@@ -154,25 +159,68 @@ send.onclick = (e) => {
             e.id = i
 
             html += `
-            <li class="file-block">
-                <div class="file-name">
-                <i class="fas fa-file"></i>${toolarge? '[Too large] ' : ''} ${this.files[i].name}
+            <li class="item file-block">
+                <div class="left file-name">
+                <i class="fas fa-file"></i>${toolarge? '[Too large] ' : ''} ${e.name}
                 </div>
 
-                <div class="unpin-file" data-fbid="${i}">
+                <div class="right unpin-file" data-fbid="${i}">
                 <i data-unpin="true" class="fas fa-times"></i>
                 </div>
             </li>
             `
         })
 
-
-        if (sizeError) new notification('Some files are too large (> 2MB)')
         filelist.innerHTML = html
         filelist.style.display = 'block'
-    })
+        let moreBtn = filelist.querySelector('.add')
+        let removeBtn = filelist.querySelector('.remove')
 
-    filelist.addEventListener('click', e => {
+        moreBtn.onclick = () => {
+            fileinput.click() 
+            return
+        }
+
+        removeBtn.onclick = () => {
+            unselectFiles()
+        }
+
+        if (sizeError) { 
+            new notification(
+                'Some files are too large (> 2MB)'
+            )
+        }
+    }
+
+    filebutton.onclick = e => {
+        files = []
+        fileinput.click()
+        return
+    }
+
+    fileinput.onchange = e => {
+        files = Array.from(e.target.files).concat(files)
+        let length = files.length
+
+        if (length > maxcount || !length) { 
+            // if nothing is selected 
+            // then file list 
+            // shouldn't be visible
+
+            if (length) {
+                new notification(
+                    `${maxcount} files maximum`
+                )
+            }
+
+            return
+        }
+
+        printFiles(files)
+        return
+    }
+
+    filelist.onclick = e => {
         // to remove file item
         let set = e.target.dataset
         if (!set.unpin && !set.fbid) return
@@ -184,7 +232,7 @@ send.onclick = (e) => {
         // filter if doesn't match
         let {fbid: id} = button.dataset
         files = files.filter(f => f.id != id)
-        free.push(id)
+        // free.push(id)
 
         let block = button.closest('.file-block')
         block.remove()
@@ -206,7 +254,7 @@ send.onclick = (e) => {
             if (e.size > 2 * 1024 * 1024) sizeError = true // > 2MB
             return
         })
-    })
+    }
 })(files)
 
 // end scope

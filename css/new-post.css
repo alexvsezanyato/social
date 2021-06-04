@@ -157,7 +157,6 @@
     list-style-type: none;   
     margin: 0;
     padding: 0;
-    /* border-top: 1px solid #ddd; */
 }
 
 .np-block .file-list > * {
@@ -170,7 +169,8 @@
     overflow: hidden;
 }
 
-.np-block .file-list .unpin-file {
+.np-block .unpin-file,
+.np-block .add {
     flex-shrink: 0;
 }
 
@@ -180,20 +180,16 @@
     overflow: hidden;
 }
 
-.np-block .file-list > * > * {
+.np-block .file-list .item > * {
     padding: 10px;
+    display: flex;
 }
 
-.np-block .file-list > * > *:first-of-type > i {
-    padding-right: 10px;
+.np-block .file-list .btn-list {
+    padding: 0;
 }
 
-.np-block .file-list > *:hover .unpin-file {
-   visibility: visible; 
-}
-
-.np-block .file-list .unpin-file {
-    visibility: hidden;
+.np-block .btn-list i {
     width: 25px;
     height: 25px;
     padding: 0;
@@ -206,6 +202,39 @@
     font-size: 12px;
 }
 
-.np-block .file-list .unpin-file:hover {
+.np-block .btn-list i:hover {
     background: #ddd;
 }
+
+.np-block .file-list .left i {
+    padding-right: 7px;
+    width: 24px;
+    text-align: center;
+    display: inline-block;
+}
+
+.np-block .file-list *:hover .unpin-file {
+   visibility: visible;
+}
+
+.np-block .unpin-file {
+    visibility: hidden;
+}
+
+.np-block .unpin-file {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    margin: 4px;
+    border-radius: 20%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.np-block .unpin-file:hover {
+    background: #ddd;
+}
+
