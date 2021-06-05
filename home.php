@@ -39,7 +39,7 @@
             <div class="value"><?php echo Users::get()['age']; ?></div>
         </li>
     </ul>
-    <?php else: ?>
+    <?php elseif (Users::get()): ?>
     <h3>Profile</h3>
     <ul class="profile-header">
         <li class="ph-row">
@@ -86,7 +86,6 @@
             <?php endif; ?>
         </div>
     </div>
-
     </main>
 </div>
 

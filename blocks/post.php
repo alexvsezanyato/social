@@ -1,8 +1,16 @@
 <?php 
+require_once __DIR__ . '/../app/documents.php';
 $docs = new Documents();
-$docs->user(Users::get());
+$user = Users::get();
+$docs->user($user);
 $docs->pid($post['id']);
 $docs = $docs->get();
+
+require_once __DIR__ . '/../app/pictures.php';
+$pics = new Pictures();
+$pics->user($user);
+$pics->pid($post['id']);
+$pics = $pics->get();
 ?>
 
 <div class="post" data-id="<?= $post['id'] ?>">
@@ -17,6 +25,24 @@ $docs = $docs->get();
         </div>
     </div>
     <div class="data"><?=$post['text']?></div>
+
+    <?php if ($pics->rowCount()): ?>
+    <ul class="file-list">
+        <li class="file-block">
+            <div class="file-name"><?= $pics->rowCount() ?> pictures</div>
+        </li>
+
+        <?php while ($file = $pics->fetch()): ?>
+        <li class="file-block">
+            <div class="file-name">
+                <i class="fas fa-file"></i>
+                <a href="download.php?id=<?= $file['source'] ?>&name=<?= $file['name'] ?>&type=<?= $file['mime'] ?>" download><?= $file['name'] ?></a>
+            </div>
+        </li>
+        <?php endwhile; ?>
+    </ul>
+    <?php else: ?> <div>PIDOR</div>
+    <?php endif; ?>
 
     <?php if ($docs->rowCount()): ?>
     <ul class="file-list">

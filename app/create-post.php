@@ -10,6 +10,8 @@ require_once __DIR__ . "/users.php";
 
 $post = $_POST;
 $files = $_FILES;
+$docs = [];
+$pics = [];
 $text = $post['text'];
 $error = false;
 $errorcode = 0;
@@ -24,7 +26,7 @@ if (strlen($text) < 5) {
     exit;
 }
 
-if (count($files) > 5) {
+if (count($files) > 20) {
     echo '4';
     exit;
 }
@@ -32,6 +34,24 @@ if (count($files) > 5) {
 if (preg_match('/(\r\n|\r|\n){3,}/', $text)) {
     echo '2';
     exit;
+}
+
+$picCount = 0;
+$docCount = 0;
+
+foreach ($files as $k => &$v) {
+    if ($k[0] == 'd') $docCount++;
+    else if ($k[0] == 'p') $picCount++;
+}
+
+if ($picCount > 9 || $docCount > 5) {
+    echo '5';
+    exit;
+}
+
+foreach ($files as $k => &$v) {
+    if ($k[0] == 'd') array_push($docs, $v);
+    else if ($k[0] == 'p') array_push($pics, $v);
 }
 
 $text = htmlspecialchars($text);
@@ -79,11 +99,11 @@ $statement = $pdo->prepare('
 
 $i = 0;
 
-foreach ($files as $file) {
+foreach ($docs as $file) {
     if ($file['error']) continue;
     $user = Users::get();
     $uid = Users::id();
-    $dir = __DIR__ . "/../uploads";
+    $dir = __DIR__ . "/../uploads/docs";
     $fname = "";
     $helper = false;
     $fname = $pid . $i; // uniqid($pid . $i, true);
@@ -115,7 +135,64 @@ foreach ($files as $file) {
 
     $result = $statement->execute([
         ':pid' => $pid,
-        ':source' => "uploads/$fname",
+        ':source' => "docs/$fname",
+        ':mime' => $file['type'], 
+        ':name' => $docname,
+    ]);
+
+    if (!$result) {
+        $pdo->rollBack();
+        echo '9';
+        exit;
+    }
+
+    $i++;
+}
+
+$statement = $pdo->prepare('
+    insert into pictures (pid, source, mime, name) 
+    values (:pid, :source, :mime, :name)
+');
+
+$i = 0;
+
+foreach ($pics as $file) {
+    if ($file['error']) continue;
+    $user = Users::get();
+    $uid = Users::id();
+    $dir = __DIR__ . "/../uploads/pics";
+    $fname = "";
+    $helper = false;
+    $fname = $pid . $i; // uniqid($pid . $i, true);
+
+    if (file_exists($dir . '/' . $fname)) {
+        $pdo->rollBack();
+        echo '7';
+        exit;
+    }
+
+    $uploadfiles = true;
+    $docname = basename($file['name']);
+
+    if (strlen($docname) > 64) { 
+        echo '6';
+        $pdo->rollBack();
+        exit;
+    }
+
+    $tpath = $file['tmp_name'];
+    $newpath = $dir . '/' . $fname;
+    $status = move_uploaded_file($tpath, $newpath);
+    
+    if (!$status) {
+        $pdo->rollBack();
+        echo '9';
+        exit;
+    }
+
+    $result = $statement->execute([
+        ':pid' => $pid,
+        ':source' => "pics/$fname",
         ':mime' => $file['type'], 
         ':name' => $docname,
     ]);

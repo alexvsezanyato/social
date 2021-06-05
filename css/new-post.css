@@ -249,6 +249,7 @@
     padding: 5px;
     margin: 0;
     border-top: 1px solid #ddd;
+    display: none;
 }
 
 .np-block .pic-list .image {
@@ -269,6 +270,7 @@
     justify-content: flex-end;
     align-items: flex-start;
     padding: 5px;
+    border: 1px solid #ddd;
 }
 
 .np-block .pic-list .close {
