@@ -43,6 +43,13 @@ $docsql = $pdo->prepare('
     limit 20
 ');
 
+$picsql = $pdo->prepare('
+    select name, source, mime
+    from pictures 
+    where pid = ? 
+    limit 20
+');
+
 // result of executing posts
 $postr = $postsql->execute([":id" => $from]);
 $posts = [];
@@ -63,15 +70,23 @@ while ($post = $postsql->fetch()) {
 
     $docs = [];
     while ($doc = $docsql->fetch()) $docs[] = $doc;
+
+    $picr = $picsql->execute([$post['id']]);
+    if (!$picr) continue;
+
+    $pics = [];
+    while ($pic = $picsql->fetch()) $pics[] = $pic;
+
     $post['docs'] = $docs;
+    $post['pics'] = $pics;
     $posts[] = $post;
 }
 
 echo json_encode([
-    code => 0,
-    posts => $posts,
+    'code' => 0,
+    'posts' => $posts,
 
-    user => [
+    'user' => [
         'id' => $user['id'],
         'public' => $user['public'],
     ]

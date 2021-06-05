@@ -36,8 +36,12 @@ class Users {
         // so there is no user agent data 
         // in the server
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
-        $hashHit = ($hash === hash('md5', $userAgent ?? 'agent'));
-        if ($id !== null && $hashHit) return self::$in = true; 
+        $hashHit = $hash === hash('md5', $userAgent ?? 'agent');
+
+        if ($id !== null && $hashHit) { 
+            self::$id = $id;
+            return self::$in = true; 
+        }
 
         // session doesn't exist or itn't valid 
         if (!isset($_COOKIE['pid'])) return self::$in = false;

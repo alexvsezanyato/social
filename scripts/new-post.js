@@ -106,8 +106,10 @@ send.onclick = (e) => {
     let value = input.value
     let request = new XMLHttpRequest()
     let data = new FormData()
+
     data.append('text', value)
-    files.forEach((e, i) => data.append('f' + i, e))
+    files.forEach((e, i) => data.append('d' + i, e))
+    pics.forEach((e, i) => data.append('p' + i, e))
 
     request.onreadystatechange = handleRequest
     request.open('post', '/app/create-post.php', true)
@@ -122,6 +124,7 @@ send.onclick = (e) => {
     let picBtn = options.querySelector('.pics')    
     let picInput = options.querySelector('.input-pic')
     let picList = modal.querySelector('.pic-list')
+
     let count = 0
     let maxCount = 9
 
@@ -130,49 +133,55 @@ send.onclick = (e) => {
         return
     }
 
+    picList.onclick = e => {
+        let t = e.target
+        let c = t.closest('.close')
+        let name
+        if (!c) return
+        let img  = c.closest('.image')
+
+        pics = pics.filter(p => p != img.$)
+        img.remove()
+
+        if (!pics.length) picList.style.display = 'none'
+        else console.log(pics.length)
+    }
+
+    function printPics() {
+        maxHeight = 100
+        picList.style.display = pics.length? 'flex' : 'none'
+        let length = pics.lenght
+        picList.innerHTML = ``
+
+        pics.forEach((e, i) => {
+            let image = document.createElement('li')
+            image.className = 'image'
+            style = image.style
+
+            style.height = (
+                e.height < maxHeight? e.height : maxHeight
+            ) + 'px'
+
+            style.background = `
+                url("${URL.createObjectURL(e)}")
+                center / cover
+                no-repeat
+            `
+
+            image.$ = e
+
+            image.innerHTML = `
+                <div class="close"><i class="fas fa-times"></i></div>
+            `
+
+            picList.append(image)
+        })
+    }
+
     picInput.onchange = e => {
         pics = Array.from(e.target.files)
         let length = pics.length
 
-        function printPics() {
-            // let html = ''
-            // let reader = new FileReader()
-
-            /* reader.onload = (e) => {
-                let image = new Image(50, 50)
-                image.src = e.target.result
-                picList.append(image)
-            }
-            picList.innerHTML = `
-            <li> 
-                
-            </li>
-            `
-            */
-            maxHeight = 100
-
-            pics.forEach((e, i) => {
-                let image = document.createElement('li')
-                image.className = 'image'
-                style = image.style
-
-                style.height = (
-                    e.height < maxHeight? e.height : maxHeight
-                ) + 'px'
-
-                image.style.background = `
-                    url("${URL.createObjectURL(e)}")
-                    center / cover
-                    no-repeat
-                `
-
-                image.innerHTML = `
-                    <div class="close"><i class="fas fa-times"></i></div>
-                `
-
-                picList.append(image)
-            })
-        }
 
         if (length > maxCount || !length) { 
             // if nothing is selected 

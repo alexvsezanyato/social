@@ -337,7 +337,7 @@ main > * {
 
     box-shadow: 
         0 6px 15px 0 #ccc,
-        0 2px 0 0 #aaa;
+        0 1px 0 0 #aaa;
 
     transition: all .1s ease;
     user-select: none;
@@ -356,4 +356,40 @@ main > * {
     font-family: Roboto, Arial, Tahoma;
     font-size: 13px;
     font-weight: bold;
+}
+
+.post .pic-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: stretch;
+    align-items: stretch;
+    justify-items: stretch;
+    align-content: stretch;
+    list-style-type: none;   
+    padding: 5px;
+    margin: 0;
+    border-top: 1px solid #ddd;
+}
+
+.post .pic-list .image {
+    margin: 5px;
+    flex-grow: 1;
+    max-height: 100px;
+    min-height: 30px;
+    min-width: 20%;
+    display: flex;
+    flex-direction: column;
+    background-size: contain;
+    border-radius: 3%;
+    min-height: 70px;
+    cursor: pointer;
+}
+
+.post .pic-list .image {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 5px;
+    border: 1px solid #ddd;
 }

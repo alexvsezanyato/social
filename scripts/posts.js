@@ -32,8 +32,30 @@ let printPosts = r => {
         let postBlock = document.createElement('div')
         postBlock.className = 'post'
         postBlock.dataset.id = post.id
-        let docsHtml = ''
+        let docsHtml = ``
+        let picsHtml = ``
         if (minId > post.id) minId = Number(post.id)
+
+
+        for (let pic of post.pics) {
+            let background = 
+                `url('http://${document.domain}/uploads/${pic.source}')` + ` ` +
+                `center / cover no-repeat`
+
+            picsHtml += ` 
+            <li class="image" style="
+                background: ${background};
+            ">
+
+            </li>
+            `
+        }
+
+        if (post.pics.length) picsHtml = `
+        <ul class="pic-list">
+            ${picsHtml}
+        </ul>
+        `
 
         for (let doc of post.docs) {
             docsHtml += ` 
@@ -77,6 +99,7 @@ let printPosts = r => {
         </div>
 
         <div class="data">${post.text}</div>
+        ${picsHtml}
         ${docsHtml}
         `
         
