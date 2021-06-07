@@ -1,5 +1,4 @@
 uploads/*
 *.sw*
-font-awesome
-saod/*
-private/*
+public/uploads
+public/fonts

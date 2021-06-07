@@ -1,4 +1,22 @@
+php_flag log_errors on
 php_flag display_errors on
 php_flag display_startup_errors on
 php_flag error_reporting E_ALL
+
 XSendFile On
+
+RewriteEngine on
+RewriteBase /
+Options -Indexes
+
+RewriteCond public/%{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+RewriteRule ^documents/([-\w]+)$ public/uploads/docs/$1 [END]
+RewriteRule ^pictures/([-\w]+)$ uploads/pics/$1 [END]
+
+RewriteCond %{DOCUMENT_ROOT}/public/%{REQUEST_URI} -f
+RewriteRule (^.*$) public/$1 [L,END]
+
+RewriteRule .* public/index.php [QSA,END]
