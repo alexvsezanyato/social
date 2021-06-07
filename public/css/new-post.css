@@ -1,0 +1,311 @@
+.np-block textarea {
+    line-height: 20px;
+    resize: none;
+    border: none;
+    font-family: Roboto, Arial, Tahoma;
+    font-size: 14px;
+    word-wrap: break-word;
+    line-height: 21px;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 10px;
+    min-height: 150px;
+    max-height: 500px;
+}
+
+.np-block input[type=file] {
+    display: none;
+}
+
+.np-block input[type=button] {
+    background: none;
+    border: none;
+    border-top: 1px solid #ddd;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Roboto, Arial;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+
+    transition: 
+        .1s background,
+        .1s color;
+}
+
+.np-block input[type=button]:hover {
+    background: #ddd;
+    background: rgba(137, 196, 244, .3);
+    color: rgba(34, 167, 240, 1);
+}
+
+.np-block {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    transition: none;
+    overflow-y: scroll;
+}
+
+.np-block .wrapper {
+    background: rgba(0, 0, 0, .6);
+    opacity: 0;
+    transition: all .2s ease;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: stretch;
+    flex-flow: row nowrap;
+    width: 100%;
+    height: 100%;
+}
+
+.np-block .window {
+    flex: 1 1 100%;
+    transform: scale(0.94);
+    background: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    max-width: 500px;
+    margin: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    align-content: stretch;
+    transition: all .2s ease;
+    font-family: Roboto, Arial;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.np-block .header {
+    font-family: Roboto, Arial;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 11px;
+    user-select: none;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.np-block .header button {
+    padding: 6px 8px;
+    margin: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 18%;
+    font-size: 12px;
+
+    transition: 
+        background .1s,
+        color .1s;
+}
+
+.np-block .header button:hover {
+    background: rgba(137, 196, 244, .3);
+    color: rgba(34, 167, 240, 1);
+}
+
+.np-block .options {
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    overflow: hidden;
+}
+
+.np-block .options > *:hover {
+    background: rgba(137, 196, 244, .3);
+    color: rgba(34, 167, 240, 1);
+}
+
+.np-block .options > * {
+    width: 33px;
+    height: 33px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    font-size: 13px;
+    cursor: pointer;
+
+    transition: 
+        background .1s, 
+        color .1s;
+}
+
+.np-block .options > *:first-of-type {
+    margin-left: 0;
+}
+
+.np-block .file-list {
+    list-style-type: none;   
+    margin: 0;
+    padding: 0;
+}
+
+.np-block .file-list > * {
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.np-block .unpin-file,
+.np-block .add {
+    flex-shrink: 0;
+}
+
+.np-block .file-list .file-name {
+    flex-shrink: 1;
+    flex-grow: 0;
+    overflow: hidden;
+}
+
+.np-block .file-list .item > * {
+    padding: 10px;
+    display: flex;
+}
+
+.np-block .file-list .btn-list {
+    padding: 0;
+}
+
+.np-block .btn-list i {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    margin: 4px;
+    border-radius: 20%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.np-block .btn-list i:hover {
+    background: #ddd;
+}
+
+.np-block .file-list .left i {
+    padding-right: 7px;
+    width: 24px;
+    text-align: center;
+    display: inline-block;
+}
+
+.np-block .file-list *:hover .unpin-file {
+   visibility: visible;
+}
+
+.np-block .unpin-file {
+    visibility: hidden;
+}
+
+.np-block .unpin-file {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    margin: 4px;
+    border-radius: 20%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.np-block .unpin-file:hover {
+    background: #ddd;
+}
+
+.np-block .pic-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: stretch;
+    align-items: stretch;
+    justify-items: stretch;
+    align-content: stretch;
+    list-style-type: none;   
+    padding: 5px;
+    margin: 0;
+    border-top: 1px solid #ddd;
+    display: none;
+}
+
+.np-block .pic-list .image {
+    margin: 5px;
+    flex-grow: 1;
+    max-height: 100px;
+    min-height: 30px;
+    min-width: 20%;
+    display: flex;
+    flex-direction: column;
+    background-size: contain;
+    border-radius: 3%;
+}
+
+.np-block .pic-list .image {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+.np-block .pic-list .close {
+    padding: 5px;
+    background: rgba(0, 0, 0, .6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    color: #fff;
+    transform: scale(.85);
+    opacity: 0;
+    cursor: pointer;
+
+    transition: 
+        transform .1s,
+        opacity .1s,
+        background .1s; 
+}
+
+
+.np-block .pic-list .close i {
+    width: 14px;
+    height: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.np-block .pic-list .image:hover .close {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.np-block .pic-list .close:hover {
+    background: rgba(0, 0, 0, .9);
+}

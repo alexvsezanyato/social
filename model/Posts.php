@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../auth/connect.php";
+use Connect;
 
 class Posts {
     static function exists($id) {

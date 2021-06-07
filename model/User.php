@@ -1,9 +1,10 @@
 <?php
+namespace model;
 
-class Users {
+class User {
     static function get(): iterable {
         if (self::$user !== null) return self::$user;
-        require_once __DIR__ . '/../auth/connect.php';
+        require_once root() . '/model/connect.php';
         $pdo = connect();
         $statement = $pdo->prepare("select * from users where id=?");
         $result = $statement->execute([self::id()]);
