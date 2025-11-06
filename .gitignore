@@ -3,3 +3,5 @@ uploads/*
 font-awesome
 saod/*
 private/*
+
+/vendor/
