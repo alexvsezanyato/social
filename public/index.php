@@ -12,6 +12,8 @@ define('BASE_DIR', dirname(__DIR__));
 define('RESOURCE_DIR', BASE_DIR.'/resources');
 define('VIEW_DIR', RESOURCE_DIR.'/views');
 define('CONFIG_DIR', BASE_DIR.'/config');
+define('STORAGE_DIR', BASE_DIR.'/storage');
+define('CACHE_DIR', STORAGE_DIR.'/cache');
 
 require_once BASE_DIR.'/vendor/autoload.php';
 

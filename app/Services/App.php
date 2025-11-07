@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Services\Location;
+
 class App {
     public static ?self $instance;
 

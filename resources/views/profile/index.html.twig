@@ -1,0 +1,72 @@
+{% extends '/layouts/base.html.twig' %}
+
+{% block main %}
+{% if user('public') %}
+<h3 style="padding-top: 2px;">Profile</h3>
+<ul class="profile-header">
+    <li class="ph-row">
+        <div class="title">Name: </div>
+        <div class="value">{{ user('public') }}</div>
+    </li>
+    <li class="ph-row">
+        <div class="title">Login: </div>
+        <div class="value">{{ user('login') }}</div>
+    </li>
+    <li class="ph-row">
+        <div class="title">Age: </div>
+        <div class="value">{{ user('age') }}</div>
+    </li>
+</ul>
+{% elseif user() %}
+<h3>Profile</h3>
+<ul class="profile-header">
+    <li class="ph-row">
+        <div class="title">Login: </div>
+        <div class="value">{{ user('login') }}</div>
+    </li>
+    <li class="ph-row">
+        <div class="title">Age: </div>
+        <div class="value">{{ user('age') }}</div>
+    </li>
+</ul>
+<div class="sets">
+    <h3 class="title">Profile settings</h3>
+    <div class="group">
+        <div class="group-item">
+            <label class="input">
+                <div class="set-name">Public name: </div>
+                <input 
+                    id="public-input" 
+                    placeholder="..." 
+                    value="{{ user('public') }}"
+                >
+            </label>
+            <div class="set-desc">You must have public name to post or to comment.</div>
+        </div>
+    </div>
+    <button class="apply" data-reload>Apply</button>
+</div>
+{% endif %}
+
+<div class="posts">
+    <div class="posts-header">
+        <h3>Posts</h3>
+
+        {% if user('public') %}
+        <div class="new-post"><input id="np-btn" type="button" value="New"></div>
+        {% endif %}
+    </div>
+
+    <div id="post-list" class="posts">
+        {% if not user('public') %}
+        <hr class="hr"><div class="notice posts-end">You must have public name to post</div>
+        {% else %}
+        <script src="/scripts/posts.js"></script>
+        {% endif %}
+    </div>
+</div>
+
+{% if user('public') %}
+{{ include('/components/new-post.html.twig') }}
+{% endif %}
+{% endblock %}

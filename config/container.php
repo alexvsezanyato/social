@@ -16,4 +16,13 @@ return [
     Pictures::class  => DI\autowire(Pictures::class),
     Posts::class     => DI\autowire(Posts::class),
     Auth::class      => DI\autowire(Auth::class),
+
+    \Twig\Environment::class => function() {
+        $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader(VIEW_DIR), [
+            # 'cache' => CACHE_DIR.'/twig',
+        ]);
+
+        $twig->addExtension(new \App\Twig\Extensions\AppExtension());
+        return $twig;
+    },
 ];
