@@ -98,6 +98,10 @@ $routes->add('posts', new Route('/posts', [
     '_controller' => [ApiIndexController::class, 'posts'],
 ], methods: ['POST']));
 
+$routes->add('remove-post', new Route('/remove-post', [
+    '_controller' => [ApiIndexController::class, 'removePost'],
+], methods: ['POST']));
+
 $uri = parse_url($_SERVER['REQUEST_URI']);
 $request = Request::createFromGlobals();
 $context = new RequestContext();
