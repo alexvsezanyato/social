@@ -189,7 +189,7 @@ list.addEventListener('click', (e) => {
             let post = menu.closest('.post') 
             let id = post.dataset.id 
 
-            fetch('/remove-post', {
+            fetch('/api/post/remove', {
                 method: 'POST', 
                 body: id
             }).then(r => r.text()).then(text => {

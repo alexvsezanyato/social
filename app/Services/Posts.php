@@ -5,9 +5,12 @@ namespace App\Services;
 class Posts {
     public $posts = null;
 
+    public function __construct(
+        private Database $database,
+    ) {}
+
     public function exists($id) {
-        $pdo = connect();
-        $statement = $pdo->prepare('SELECT 1 FROM "posts" WHERE "authorid"=? LIMIT 1');
+        $statement = $this->database->connection->prepare('SELECT 1 FROM "posts" WHERE "authorid"=? LIMIT 1');
         $statement->execute([$id]);
 
         if (!$statement) {
@@ -22,10 +25,8 @@ class Posts {
     }
 
     public function fetch($id) {
-        $pdo = connect();
-        
         if ($this->posts === null) {
-            $statement = $pdo->prepare(
+            $statement = $this->database->connection->prepare(
                 <<<SQL
                 SELECT
                     *, 

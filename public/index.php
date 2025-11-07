@@ -1,50 +1,26 @@
 <?php
 
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\AuthController as ApiAuthController;
-use App\Http\Controllers\IndexController;
-use App\Http\Controllers\Api\IndexController as ApiIndexController;
-
 use App\Services\App;
-use App\Services\User;
-use App\Services\Users;
-use App\Services\Documents;
-use App\Services\Pictures;
-use App\Services\Posts;
 
 define('BASE_DIR', dirname(__DIR__));
+define('RESOURCE_DIR', BASE_DIR.'/resources');
+define('VIEW_DIR', RESOURCE_DIR.'/views');
+define('CONFIG_DIR', BASE_DIR.'/config');
 
 require_once BASE_DIR.'/vendor/autoload.php';
 
 App::$instance = new App(
-    container: new \DI\Container([
-        User::class => DI\factory(function() {
-            return new User();
-        }),
-        Users::class => DI\factory(function() {
-            return new Users();
-        }),
-        Documents::class => DI\factory(function() {
-            return new Documents();
-        }),
-        Pictures::class => DI\factory(function() {
-            return new Pictures();
-        }),
-        Posts::class => DI\factory(function() {
-            return new Posts();
-        }),
-    ]),
+    container: new DI\Container(require CONFIG_DIR.'/container.php'),
 );
 
-App::$instance->container->set(App::class, App::$instance);
 $container = App::$instance->container;
+$container->set(App::class, App::$instance);
 
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator(BASE_DIR.'/helpers/'),
@@ -57,50 +33,7 @@ foreach ($iterator as $file) {
 }
 
 $routes = new RouteCollection();
-
-$routes->add('index', new Route('/', [
-    '_controller' => [IndexController::class, 'index'],
-], methods: ['GET']));
-
-$routes->add('home', new Route('/home', [
-    '_controller' => [IndexController::class, 'home'],
-], methods: ['GET']));
-
-$routes->add('login', new Route('/login', [
-    '_controller' => [AuthController::class, 'login'],
-], methods: ['GET']));
-
-$routes->add('api-login', new Route('/login', [
-    '_controller' => [ApiAuthController::class, 'login'],
-], methods: ['POST']));
-
-$routes->add('register', new Route('/register', [
-    '_controller' => [AuthController::class, 'register'],
-], methods: ['GET']));
-
-$routes->add('api-register', new Route('/register', [
-    '_controller' => [ApiAuthController::class, 'register'],
-], methods: ['POST']));
-
-$routes->add('settings', new Route('/settings', [
-    '_controller' => [IndexController::class, 'settings'],
-], methods: ['GET']));
-
-$routes->add('api-apply-profile', new Route('/apply-profile', [
-    '_controller' => [ApiIndexController::class, 'applyProfile'],
-], methods: ['POST']));
-
-$routes->add('create-post', new Route('/create-post', [
-    '_controller' => [ApiIndexController::class, 'createPost'],
-], methods: ['POST']));
-
-$routes->add('posts', new Route('/posts', [
-    '_controller' => [ApiIndexController::class, 'posts'],
-], methods: ['POST']));
-
-$routes->add('remove-post', new Route('/remove-post', [
-    '_controller' => [ApiIndexController::class, 'removePost'],
-], methods: ['POST']));
+require BASE_DIR.'/routes/web.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI']);
 $request = Request::createFromGlobals();

@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\Auth;
+use App\Services\Database;
+
 class AuthController
 {
-    public function login()
+    public function login(Database $database)
     {
         $login = $_POST['login'] ?? null;
         $password = $_POST['password'] ?? null;
 
-        $pdo = connect();
+        $statement = $database->connection->prepare(
+            <<<SQL
+            SELECT * FROM "user" WHERE "login"=?
+            SQL
+        );
 
-        $statement = $pdo->prepare('SELECT * FROM "user" WHERE "login"=?');
         $statement->execute([$login]);
         $user = $statement->fetch();
 
@@ -36,7 +42,12 @@ class AuthController
         $cookie = $id . '-' . hash('sha256', $id . $random); 
 
         if (!isset($user['random'])) {
-            $statement = $pdo->prepare('UPDATE "user" SET "random"=? WHERE "id"=?');
+            $statement = $database->connection->prepare(
+                <<<SQL
+                UPDATE "user" SET "random"=? WHERE "id"=?
+                SQL
+            );
+
             $r = $statement->execute([$random, $id]);
 
             if (!$r) {
@@ -59,16 +70,12 @@ class AuthController
         echo '0';
     }
 
-    public function logout()
+    public function logout(Auth $auth)
     {
-        session_start();
-        session_unset();
-        setcookie('pid', '', time() - 1, '/');
-        header('Location: /login.php');
-        session_commit();
+        $auth->logout();
     }
 
-    public function register()
+    public function register(Database $database)
     {
         $login = trim($_POST['login']) ?? null;
         $password = trim($_POST['password']) ?? null;
@@ -79,14 +86,17 @@ class AuthController
             echo '1';
             return;
         }
+
         if ($password != $prepeat) {
             echo '2';
             return;
         }
+
         if (strlen($password) < 6) { 
             echo '3';
             return;
         }
+
         if (!is_numeric($age) || (int) $age < 14) {
             echo '4';
             return;
@@ -94,8 +104,13 @@ class AuthController
 
         $salt = base64_encode(random_bytes(32*0.66));
         $hash = hash('sha512', $password . $salt);
-        $pdo = connect();
-        $statement = $pdo->prepare('SELECT COUNT(*) AS "count" FROM "user" WHERE "login"=?');
+
+        $statement = $database->connection->prepare(
+            <<<SQL
+            SELECT COUNT(*) AS "count" FROM "user" WHERE "login"=?
+            SQL
+        );
+
         $statement->execute([$login]);
         $count = $statement->fetch()['count'];
 
@@ -104,8 +119,20 @@ class AuthController
             return;
         }
 
-        $query = 'INSERT INTO "user"("login", "age", "hash", "salt") VALUES (?, ?, ?, ?)';
-        $pdo->prepare($query)->execute([$login, $age, $hash, $salt]);
+        $database->connection
+            ->prepare(
+                <<<SQL
+                INSERT INTO "user"("login", "age", "hash", "salt")
+                VALUES (?, ?, ?, ?)
+                SQL
+            )
+            ->execute([
+                $login,
+                $age,
+                $hash,
+                $salt,
+            ]);
+
         echo '0';
     }
 }

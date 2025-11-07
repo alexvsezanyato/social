@@ -4,13 +4,17 @@ namespace App\Services;
 
 use PDO;
 use PDOStatement;
+use App\Services\Database;
 
 class Documents {
     private array $user = [];
     private int $postId = -1;
     private int $from = 0;
     private int $limit = 10;
-    private ?PDO $db;
+
+    public function __construct(
+        private Database $database,
+    ) {}
 
     public function user(array $user): self {
         $this->user = $user;
@@ -23,11 +27,8 @@ class Documents {
     }
 
     public function get(): ?PDOStatement {
-        if (!$this->db) {
-            $this->db = connect();
-        }
 
-        $pdo = $this->db;
+        $pdo = $this->database->connection;
 
         $statement = $pdo->prepare(
             <<<SQL

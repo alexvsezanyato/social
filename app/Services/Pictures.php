@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use PDO;
 use PDOStatement;
 
 class Pictures {
@@ -10,7 +9,10 @@ class Pictures {
     private int $postId = -1;
     private int $from = 0;
     private int $limit = 10;
-    private ?PDO $db;
+
+    public function __construct(
+        private Database $database,
+    ) {}
 
     public function user(array $user): self {
         $this->user = $user;
@@ -23,15 +25,14 @@ class Pictures {
     }
 
     public function get(): ?PDOStatement {
-        if (!$this->db) $this->db = connect();
-        $pdo = $this->db;
-
-        $statement = $pdo->prepare('
-            select * from pictures
-            where id >= :id
-            and pid = :pid
-            limit 10
-        ');
+        $statement = $this->database->connection->prepare(
+            <<<SQL
+            SELECT *
+            FROM "pictures"
+            WHERE "id" >= :id AND "pid" = :pid
+            LIMIT 10
+            SQL
+        );
 
         if (!$statement) { 
             return null;
