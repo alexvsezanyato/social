@@ -10,8 +10,8 @@
 </head>
 
 <body>
-    <?php require __DIR__ . '/blocks/header.php'; ?>
-    <?php require __DIR__ . '/blocks/notifications.php'; ?>
+    <?php require VIEW_DIR.'/layout/header.php'; ?>
+    <?php require VIEW_DIR.'/layout/notifications.php'; ?>
 
     <div class="wrapper">
         <main>

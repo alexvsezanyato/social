@@ -7,9 +7,12 @@ class User {
     private $in = null;
     private $id = null;
 
+    public function __construct(
+        private Database $database,
+    ) {}
+
     public function get() {
-        $pdo = connect();
-        $statement = $pdo->prepare('SELECT * FROM "user" WHERE "id"=?');
+        $statement = $this->database->connection->prepare('SELECT * FROM "user" WHERE "id"=?');
         $result = $statement->execute([$this->id()]);
 
         if ($result) {

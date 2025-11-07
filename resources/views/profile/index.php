@@ -12,17 +12,17 @@ use App\Services\Users;
 <html>
 <head>
     <title>Home page</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/new-post.css">
-    <link rel="stylesheet" href="font-awesome/css/all.css">
-    <link rel="stylesheet" href="css/notifications.css">
-    <link rel="stylesheet" href="css/sets.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/new-post.css">
+    <link rel="stylesheet" href="/font-awesome/css/all.css">
+    <link rel="stylesheet" href="/css/notifications.css">
+    <link rel="stylesheet" href="/css/sets.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
 
 <body>
-    <?php require __DIR__ . '/blocks/header.php'; ?>
-    <?php require __DIR__ . '/blocks/notifications.php'; ?>
+    <?php require VIEW_DIR.'/layout/header.php'; ?>
+    <?php require VIEW_DIR.'/layout/notifications.php'; ?>
 
     <div class="wrapper">
         <main>
@@ -92,11 +92,6 @@ use App\Services\Users;
         </main>
     </div>
 
-    <!-- New post -->
-    <?php
-    if ($users->get()['public']):
-    require __DIR__ . '/blocks/new-post.php';
-    endif;
-    ?>
+    <?php if ($users->get()['public']): ?><?php require VIEW_DIR.'/components/new-post.php' ?><?php endif ?>
 </body>
 </html>

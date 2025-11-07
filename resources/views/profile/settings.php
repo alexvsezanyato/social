@@ -12,21 +12,21 @@ use App\Services\Users;
 <html>
 <head>
     <title>Home page</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/new-post.css">
-    <link rel="stylesheet" href="font-awesome/css/all.css">
-    <link rel="stylesheet" href="css/notifications.css">
-    <link rel="stylesheet" href="css/sets.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/new-post.css">
+    <link rel="stylesheet" href="/font-awesome/css/all.css">
+    <link rel="stylesheet" href="/css/notifications.css">
+    <link rel="stylesheet" href="/css/sets.css">
 </head>
 
 <body>
 <div class="wrapper">
 
     <!-- Header --> 
-    <?php require __DIR__ . '/blocks/header.php'; ?>
+    <?php require VIEW_DIR.'/layout/header.php'; ?>
     <main>
     <!-- Notifications -->
-    <?php require __DIR__ . '/blocks/notifications.php'; ?>
+    <?php require VIEW_DIR.'/layout/notifications.php'; ?>
 
     <h3 style="padding-top: 2px;">Profile</h3>
     <ul class="profile-header">

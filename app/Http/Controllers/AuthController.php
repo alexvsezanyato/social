@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Auth;
 use App\Services\User;
 
 class AuthController
@@ -15,11 +16,17 @@ class AuthController
 
     public function login(User $user): string
     {
-        return view('login');
+        return view('auth/login');
     }
 
     public function register(User $user): string
     {
-        return view('register');
+        return view('auth/register');
+    }
+
+    public function logout(Auth $auth)
+    {
+        $auth->logout();
+        header('Location: /auth/login');
     }
 }

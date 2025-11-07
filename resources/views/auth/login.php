@@ -1,8 +1,8 @@
 <html>
 <head>
     <title>Log in</title>
-    <link rel="stylesheet" href="css/auth.css">
-    <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/notifications.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
 <body>
@@ -56,7 +56,7 @@
                             return
                         } 
                     }) 
-                    request.open('post', '/login', true)
+                    request.open('post', '/api/auth/login', true)
                     let data = 'login=' + login.value
                     data += '&password=' + password.value
                     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -64,9 +64,9 @@
                 })
             </script>
 
-            <?php require __DIR__ . '/blocks/notifications.php'; ?>
+            <?php require VIEW_DIR.'/layout/notifications.php'; ?>
         </div>
     </div>
-    <div class="log-in"><a class="link" href="/">News</a> or <a class="link" href="/register">register</a></div>
+    <div class="log-in"><a class="link" href="/">News</a> or <a class="link" href="/auth/register">register</a></div>
 </body>
 </html>

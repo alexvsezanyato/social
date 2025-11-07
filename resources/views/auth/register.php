@@ -1,7 +1,7 @@
 <html>
 <head>
     <title>Register</title>
-    <link rel="stylesheet" type="text/css" href="css/auth.css">
+    <link rel="stylesheet" type="text/css" href="/css/auth.css">
 </head>
 <body>
     <div id="register-form"> 
@@ -92,6 +92,6 @@
             </script>
         </div>
     </div>
-    <div class="log-in"><a class="link" href="/">News</a> or <a class="link" href="/login">log in</a></div>
+    <div class="log-in"><a class="link" href="/">News</a> or <a class="link" href="/auth/login">log in</a></div>
 </body>
 </html>
