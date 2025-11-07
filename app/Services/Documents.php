@@ -2,45 +2,52 @@
 
 namespace App\Services;
 
+use PDO;
+use PDOStatement;
+
 class Documents {
-    function user(array $user): self {
+    private array $user = [];
+    private int $postId = -1;
+    private int $from = 0;
+    private int $limit = 10;
+    private ?PDO $db;
+
+    public function user(array $user): self {
         $this->user = $user;
         return $this;
     }
 
-    function pid(int $postid): self {
-        $this->postid = $postid;
+    public function pid(int $postId): self {
+        $this->postId = $postId;
         return $this;
     }
 
-    function get(): ?PDOStatement {
-        if (!$this->db) $this->db = connect();
+    public function get(): ?PDOStatement {
+        if (!$this->db) {
+            $this->db = connect();
+        }
+
         $pdo = $this->db;
 
-        $statement = $pdo->prepare('
-            select * from documents 
-            where id >= :id
-            and pid = :pid
-            limit 10
-        ');
+        $statement = $pdo->prepare(
+            <<<SQL
+            SELECT *
+            FROM "documents" 
+            WHERE "id" >= :id
+            AND "pid" = :pid
+            LIMIT 10
+            SQL
+        );
 
         if (!$statement) { 
-            // sql request is failed
-            // handle that
             return null;
         }
 
         $statement->execute([
             ':id' => $this->from,
-            ':pid' => $this->postid,
+            ':pid' => $this->postId,
         ]);
 
         return $statement;
     }
-
-    private array $user = [];
-    private array $postid = [];
-    private int $from = 0;
-    private int $limit = 10;
-    private ?PDO $db;
 }

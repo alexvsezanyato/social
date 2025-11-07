@@ -3,48 +3,59 @@
 namespace App\Services;
 
 class Posts {
-    static function exists($id) {
+    public $posts = null;
+
+    public function exists($id) {
         $pdo = connect();
-        $statement = $pdo->prepare('select 1 from posts where authorid=? limit 1');
+        $statement = $pdo->prepare('SELECT 1 FROM "posts" WHERE "authorid"=? LIMIT 1');
         $statement->execute([$id]);
-        if (!$statement) return false;
-        if ($statement->fetch()) return true;
-        else return false;
+
+        if (!$statement) {
+            return false;
+        }
+
+        if ($statement->fetch()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    static function fetch($id) {
+    public function fetch($id) {
         $pdo = connect();
         
-        if (self::$posts === null) {
-            $statement = $pdo->prepare('
-                select *, 
-                cast(createdat as date) as date, 
-                cast(createdat as time) as time 
-                from posts 
-                where authorid=? 
-                order by id desc
-            ');
+        if ($this->posts === null) {
+            $statement = $pdo->prepare(
+                <<<SQL
+                SELECT
+                    *, 
+                    CAST(createdat AS date) AS date, 
+                    CAST(createdat AS time) AS time 
+                FROM posts 
+                WHERE "authorid"=? 
+                ORDER BY "id" DESC 
+                SQL
+            );
 
-            // limit 10
             $statement->execute([$id]);
-            if (!$statement) return null;
+
+            if (!$statement) {
+                return null;
+            }
 
             if ($row = $statement->fetch()) {
-                self::$posts = $statement;
+                $this->posts = $statement;
                 return $row;
             }
-        } 
-        else {
-            $row = self::$posts->fetch();
+        } else {
+            $row = $this->posts->fetch();
 
             if (!$row) {
-                self::$posts = null;
+                $this->posts = null;
                 return null;
             }
 
             return $row;
         }
     }
-
-    public static $posts = null;
 }

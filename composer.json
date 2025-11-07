@@ -10,7 +10,8 @@
         "symfony/routing": "^7.3",
         "symfony/http-foundation": "^7.3",
         "symfony/http-kernel": "^7.3",
-        "doctrine/migrations": "^3.9"
+        "doctrine/migrations": "^3.9",
+        "php-di/php-di": "^7.1"
     },
     "scripts": {
         "migrate": "./vendor/bin/doctrine-migrations"

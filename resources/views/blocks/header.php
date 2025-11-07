@@ -1,6 +1,9 @@
 <?php
 
 use App\Services\Users;
+use App\Services\App;
+
+$users = App::$instance->container->get(Users::class);
 
 ?>
 
@@ -10,8 +13,8 @@ use App\Services\Users;
     </div>
     <div>
         <ul>
-        <?php if (Users::in()): ?>
-            <li><?= Users::get()['login'] ?></li>
+        <?php if ($users->in()): ?>
+            <li><?= $users->get()['login'] ?></li>
             <li><a href="/home">Home page</a></li>
             <li><a href="/settings">Settings</a></li>
         <?php else: ?>

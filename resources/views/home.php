@@ -2,6 +2,10 @@
 
 use App\Services\Users;
 
+/**
+ * @var Users $users
+ */
+
 ?>
 
 <!doctype html>
@@ -22,32 +26,32 @@ use App\Services\Users;
 
     <div class="wrapper">
         <main>
-            <?php if (Users::get()['public']): ?>
+            <?php if ($users->get()['public']): ?>
             <h3 style="padding-top: 2px;">Profile</h3>
             <ul class="profile-header">
                 <li class="ph-row">
                     <div class="title">Name: </div>
-                    <div class="value"><?php echo Users::get()['public']; ?></div>
+                    <div class="value"><?php echo $users->get()['public']; ?></div>
                 </li>
                 <li class="ph-row">
                     <div class="title">Login: </div>
-                    <div class="value"><?php echo Users::get()['login']; ?></div>
+                    <div class="value"><?php echo $users->get()['login']; ?></div>
                 </li>
                 <li class="ph-row">
                     <div class="title">Age: </div>
-                    <div class="value"><?php echo Users::get()['age']; ?></div>
+                    <div class="value"><?php echo $users->get()['age']; ?></div>
                 </li>
             </ul>
-            <?php elseif (Users::get()): ?>
+            <?php elseif ($users->get()): ?>
             <h3>Profile</h3>
             <ul class="profile-header">
                 <li class="ph-row">
                     <div class="title">Login: </div>
-                    <div class="value"><?php echo Users::get()['login']; ?></div>
+                    <div class="value"><?php echo $users->get()['login']; ?></div>
                 </li>
                 <li class="ph-row">
                     <div class="title">Age: </div>
-                    <div class="value"><?php echo Users::get()['age']; ?></div>
+                    <div class="value"><?php echo $users->get()['age']; ?></div>
                 </li>
             </ul>
             <div class="sets">
@@ -59,7 +63,7 @@ use App\Services\Users;
                             <input 
                                 id="public-input" 
                                 placeholder="..." 
-                                value="<?= Users::get()['public'] ?>"
+                                value="<?= $users->get()['public'] ?>"
                             >
                         </label>
                         <div class="set-desc">You must have public name to post or to comment.</div>
@@ -72,13 +76,13 @@ use App\Services\Users;
             <div class="posts">
                 <div class="posts-header">
                     <h3>Posts</h3>
-                    <?php if (Users::get()['public']): ?>
+                    <?php if ($users->get()['public']): ?>
                     <div class="new-post"><input id="np-btn" type="button" value="New"></div>
                     <?php endif; ?>
                 </div>
 
                 <div id="post-list" class="posts">
-                    <?php if (!Users::get()['public']): ?>
+                    <?php if (!$users->get()['public']): ?>
                     <hr class="hr"><div class="notice posts-end">You must have public name to post</div>
                     <?php else: ?>
                     <script src="/scripts/posts.js"></script>
@@ -90,7 +94,7 @@ use App\Services\Users;
 
     <!-- New post -->
     <?php
-    if (Users::get()['public']):
+    if ($users->get()['public']):
     require __DIR__ . '/blocks/new-post.php';
     endif;
     ?>

@@ -2,18 +2,27 @@
 
 namespace App\Services;
 
+use PDO;
+use PDOStatement;
+
 class Pictures {
-    function user(array $user): self {
+    private array $user = [];
+    private int $postId = -1;
+    private int $from = 0;
+    private int $limit = 10;
+    private ?PDO $db;
+
+    public function user(array $user): self {
         $this->user = $user;
         return $this;
     }
 
-    function pid(int $postid): self {
-        $this->postid = $postid;
+    public function pid(int $postId): self {
+        $this->postId = $postId;
         return $this;
     }
 
-    function get(): ?PDOStatement {
+    public function get(): ?PDOStatement {
         if (!$this->db) $this->db = connect();
         $pdo = $this->db;
 
@@ -25,22 +34,14 @@ class Pictures {
         ');
 
         if (!$statement) { 
-            // sql request is failed
-            // handle that
             return null;
         }
 
         $statement->execute([
             ':id' => $this->from,
-            ':pid' => $this->postid,
+            ':pid' => $this->postId,
         ]);
 
         return $statement;
     }
-
-    private array $user = [];
-    private array $postid = [];
-    private int $from = 0;
-    private int $limit = 10;
-    private ?PDO $db;
 }
