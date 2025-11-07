@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Users;
+
 class IndexController
 {
     public function index()
@@ -9,13 +11,17 @@ class IndexController
         return view('index');
     }
 
-    public function home()
+    public function home(Users $users)
     {
-        return view('home');
+        return view('home', [
+            'users' => $users,
+        ]);
     }
 
-    public function settings()
+    public function settings(Users $users)
     {
-        return view('settings');
+        return view('settings', [
+            'users' => $users,
+        ]);
     }
 }

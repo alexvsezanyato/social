@@ -1,15 +1,3 @@
-<?php 
-
-use App\Services\User;
-use App\Services\App;
-
-if (User::in()) { 
-    App::redirect("/");
-    die;
-}
-
-?>
-
 <html>
 <head>
     <title>Log in</title>

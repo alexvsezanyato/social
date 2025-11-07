@@ -12,9 +12,39 @@ use App\Http\Controllers\Api\AuthController as ApiAuthController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Api\IndexController as ApiIndexController;
 
+use App\Services\App;
+use App\Services\User;
+use App\Services\Users;
+use App\Services\Documents;
+use App\Services\Pictures;
+use App\Services\Posts;
+
 define('BASE_DIR', dirname(__DIR__));
 
 require_once BASE_DIR.'/vendor/autoload.php';
+
+App::$instance = new App(
+    container: new \DI\Container([
+        User::class => DI\factory(function() {
+            return new User();
+        }),
+        Users::class => DI\factory(function() {
+            return new Users();
+        }),
+        Documents::class => DI\factory(function() {
+            return new Documents();
+        }),
+        Pictures::class => DI\factory(function() {
+            return new Pictures();
+        }),
+        Posts::class => DI\factory(function() {
+            return new Posts();
+        }),
+    ]),
+);
+
+App::$instance->container->set(App::class, App::$instance);
+$container = App::$instance->container;
 
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator(BASE_DIR.'/helpers/'),
@@ -82,7 +112,5 @@ try {
     exit;
 }
 
-$controller = new $parameters['_controller'][0];
-$action = $parameters['_controller'][1];
-
-echo $controller->$action();
+[$controller, $action] = $parameters['_controller'];
+echo $container->call([$container->make($controller), $action]);

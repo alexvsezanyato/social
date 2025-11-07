@@ -109,11 +109,11 @@ class AuthController
         echo '0';
     }
 
-    public function redirect()
+    public function redirect(User $user)
     {
-        if (User::in()) { 
-            App::redirect("/index.php");
-            die;
+        if ($user->in()) { 
+            header('Loction: /');
+            exit;
         }
     }
 

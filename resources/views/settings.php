@@ -1,7 +1,10 @@
-
 <?php
 
 use App\Services\Users;
+
+/**
+ * @var Users $users
+ */
 
 ?>
 
@@ -29,11 +32,11 @@ use App\Services\Users;
     <ul class="profile-header">
         <li class="ph-row">
             <div class="title">Login: </div>
-            <div class="value"><?php echo Users::get()['login']; ?></div>
+            <div class="value"><?php echo $users->get()['login']; ?></div>
         </li>
         <li class="ph-row">
             <div class="title">Age: </div>
-            <div class="value"><?php echo Users::get()['age']; ?></div>
+            <div class="value"><?php echo $users->get()['age']; ?></div>
         </li>
     </ul>
     <div class="sets">
@@ -44,7 +47,7 @@ use App\Services\Users;
                     <div class="set-name">Public name: </div>
                     <input 
                         placeholder="..." 
-                        value="<?= Users::get()['public'] ?>"
+                        value="<?= $users->get()['public'] ?>"
                     >
                 </label>
                 <div class="set-desc">You must have public name to post or to comment.</div>

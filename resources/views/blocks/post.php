@@ -4,21 +4,27 @@ use App\Services\Documents;
 use App\Services\Pictures;
 use App\Services\Users;
 
-$docs = new Documents();
-$user = Users::get();
-$docs->user($user);
-$docs->pid($post['id']);
-$docs = $docs->get();
+/**
+ * @var Users $users
+ * @var Pictures $pictures
+ * @var Documents $documents
+ */
 
-$pics = new Pictures();
-$pics->user($user);
-$pics->pid($post['id']);
-$pics = $pics->get();
+$user = $users->get();
+
+$docs = $documents->user($user)
+    ->pid($post['id'])
+    ->get();
+
+$pics = $pictures->user($user)
+    ->pid($post['id'])
+    ->get();
+
 ?>
 
 <div class="post" data-id="<?= $post['id'] ?>">
     <div class="title">
-        <div class="user"><a href="#"><?= Users::get()['public'] ?></a></div>
+        <div class="user"><a href="#"><?= $users->get()['public'] ?></a></div>
         <div class="right">
             <div class="datetime"> 
                 <div class="date"><?= $post['date'] ?> at</div>

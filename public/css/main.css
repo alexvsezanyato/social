@@ -358,16 +358,12 @@ main > * {
 }
 
 .post .pic-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: stretch;
-    align-items: stretch;
-    justify-items: stretch;
-    align-content: stretch;
     list-style-type: none;   
     padding: 5px;
     margin: 0;
     border-top: 1px solid #ddd;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .post .pic-list .image {
@@ -379,7 +375,7 @@ main > * {
     display: flex;
     flex-direction: column;
     background-size: contain;
-    border-radius: 3%;
+    border-radius: 5px;
     min-height: 70px;
     cursor: pointer;
 }

@@ -28,7 +28,7 @@ class IndexController
         header('Content-length: ' . $size);
     }
 
-    public function createPost()
+    public function createPost(Users $users)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
@@ -40,7 +40,7 @@ class IndexController
         $pics = [];
         $text = $_POST['text'];
 
-        if (!Users::in()) {
+        if (!$users->in()) {
             echo '1';
             exit;
         }
@@ -82,7 +82,7 @@ class IndexController
         }
 
         $text = htmlspecialchars($text);
-        $id = Users::get()['id'];
+        $id = $users->get()['id'];
         $pdo = connect();
         $pdo->beginTransaction();
 
@@ -226,9 +226,9 @@ class IndexController
         echo '0';
     }
 
-    public function applyProfile()
+    public function applyProfile(User $user)
     {
-        if (!User::in()) {
+        if (!$user->in()) {
             echo '1';
             exit;
         }
@@ -240,7 +240,7 @@ class IndexController
             exit;
         }
 
-        $user = User::get();
+        $user = $user->get();
         $id = $user['id'];
         $pdo = connect();
         $statement = $pdo->prepare('update "user" set "public"=? where "id"=?');
@@ -256,7 +256,7 @@ class IndexController
         }
     }
 
-    public function removePost()
+    public function removePost(Users $users)
     {
         $content = file_get_contents('php://input');
 
@@ -265,14 +265,14 @@ class IndexController
             exit; 
         }
 
-        if (!Users::in()) { 
+        if (!$users->in()) { 
             echo '2';
             exit;
         }
 
         $pdo = connect();
         $statement = $pdo->prepare('select 1 from "post" where "id"=? and "author_id"=? limit 1');
-        $result = $statement->execute([$content, Users::id()]);
+        $result = $statement->execute([$content, $users->id()]);
 
         if (!$result) { 
             echo '2';
@@ -304,7 +304,7 @@ class IndexController
         exit;
     }
 
-    public function posts()
+    public function posts(Users $users)
     {
         $json = json_decode(file_get_contents('php://input'));
 
@@ -363,7 +363,7 @@ class IndexController
 
         $postr = $postsql->execute($params);
         $posts = [];
-        $user = Users::get();    
+        $user = $users->get();    
 
         if (!$postr) {
             echo json_encode([
