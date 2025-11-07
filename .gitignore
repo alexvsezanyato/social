@@ -1,7 +1,2 @@
-uploads/*
-*.sw*
-font-awesome
-saod/*
-private/*
-
+/storage/
 /vendor/
