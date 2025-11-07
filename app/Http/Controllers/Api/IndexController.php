@@ -4,19 +4,29 @@ namespace App\Http\Controllers\Api;
 
 use App\Services\User;
 use App\Services\Users;
-use PDO;
 
 class IndexController
 {
     public function download()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') exit;
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            exit;
+        }
+
         $fid = $_GET['id'];
-        if (!preg_match("/[a-zA-Z0-9\-]+\/[a-zA-Z0-9\-]+/", $fid)) exit;
+
+        if (!preg_match("/[a-zA-Z0-9\-]+\/[a-zA-Z0-9\-]+/", $fid)) {
+            exit;
+        }
+
         $fid = basename($fid);
 
         $filepath = __DIR__ . '/uploads/' . $fid;
-        if (!file_exists($filepath)) exit;
+
+        if (!file_exists($filepath)) {
+            exit;
+        }
+
         $name = $_GET['name'] ?? $fid;
         $name = basename($name);
         $type = $_GET['type'] ?? 'application/octet-stream';
@@ -31,7 +41,6 @@ class IndexController
     public function createPost(Users $users)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-
             echo '6';
             exit;
         }
@@ -64,8 +73,11 @@ class IndexController
         $docCount = 0;
 
         foreach ($_FILES as $k => &$v) {
-            if ($k[0] == 'd') $docCount++;
-            else if ($k[0] == 'p') $picCount++;
+            if ($k[0] == 'd') {
+                $docCount++;
+            } else if ($k[0] == 'p') {
+                $picCount++;
+            }
         }
 
         if ($picCount > 9 || $docCount > 5) {
@@ -86,7 +98,7 @@ class IndexController
         $pdo = connect();
         $pdo->beginTransaction();
 
-        $statement = $pdo->prepare('insert into "post" ("author_id", "text") values (?, ?)');
+        $statement = $pdo->prepare('INSERT INTO "post"("author_id", "text") VALUES (?, ?)');
 
         if (!$statement->execute([$id, $text])) {
             $pdo->rollBack();
@@ -94,11 +106,7 @@ class IndexController
             exit;
         } 
 
-        $statement = $pdo->prepare('
-            select "id" from "post"
-            order by "id" desc 
-            limit 1
-        ');
+        $statement = $pdo->prepare('SELECT "id" FROM "post" ORDER BY "id" DESC LIMIT 1');
 
         if (!$statement->execute()) {
             $pdo->rollBack();
@@ -116,10 +124,12 @@ class IndexController
             exit;
         }
 
-        $statement = $pdo->prepare('
-            insert into "document" ("pid", "source", "mime", "name") 
-            values (:pid, :source, :mime, :name)
-        ');
+        $statement = $pdo->prepare(
+            <<<SQL
+            INSERT INTO "document"("pid", "source", "mime", "name") 
+            VALUES (:pid, :source, :mime, :name)
+            SQL
+        );
 
         $i = 0;
 
@@ -168,10 +178,12 @@ class IndexController
             $i++;
         }
 
-        $statement = $pdo->prepare('
-            insert into "picture" ("pid", "source", "mime", "name") 
-            values (:pid, :source, :mime, :name)
-        ');
+        $statement = $pdo->prepare(
+            <<<SQL
+            INSERT INTO "picture"("pid", "source", "mime", "name")
+            VALUES (:pid, :source, :mime, :name)
+            SQL
+        );
 
         $i = 0;
 
@@ -243,7 +255,7 @@ class IndexController
         $user = $user->get();
         $id = $user['id'];
         $pdo = connect();
-        $statement = $pdo->prepare('update "user" set "public"=? where "id"=?');
+        $statement = $pdo->prepare('UPDATE "user" SET "public"=? WHERE "id"=?');
         $result = $statement->execute([$public, $id]);
 
         if (!$result) {
@@ -271,7 +283,7 @@ class IndexController
         }
 
         $pdo = connect();
-        $statement = $pdo->prepare('select 1 from "post" where "id"=? and "author_id"=? limit 1');
+        $statement = $pdo->prepare('SELECT 1 FROM "post" WHERE "id"=? AND "author_id"=? LIMIT 1');
         $result = $statement->execute([$content, $users->id()]);
 
         if (!$result) { 
@@ -284,7 +296,7 @@ class IndexController
             exit;
         }
 
-        $statement = $pdo->prepare('delete from "post" where "id"=?');
+        $statement = $pdo->prepare('DELETE FROM "post" WHERE "id"=?');
         $result = $statement->execute([$content]);
 
         if (!$result) { 
@@ -292,7 +304,7 @@ class IndexController
             exit;
         }
 
-        $statment = $pdo->prepare('delete from "document" where "pid"=?');
+        $statment = $pdo->prepare('DELETE FROM "document" WHERE "pid"=?');
         $result = $statment->execute([$content]);
 
         if (!$result) {
@@ -332,34 +344,41 @@ class IndexController
 
         $params = [];
 
-        $sql = '
-            select "id", "text", "author_id", 
-            cast("created_at" as date) as date, 
-            cast("created_at" as time) as time 
-            from "post"
-        ';
+        $sql = <<<SQL
+            SELECT
+                "id",
+                "text",
+                "author_id", 
+                CAST("created_at" AS date) AS date, 
+                CAST("created_at" AS time) AS time 
+            FROM "post"
+            SQL;
 
         if ($from > 0) {
-            $sql = $sql . 'where "id" <= :id' . ' ';
+            $sql = $sql . 'WHERE "id" <= :id' . ' ';
             $params[':id'] = $from;
         }
 
-        $sql = $sql . "order by \"id\" desc limit $limit";
+        $sql = $sql . "ORDER BY \"id\" DESC LIMIT $limit";
         $postsql = $pdo->prepare($sql);
 
-        $docsql = $pdo->prepare('
-            select "name", "source", "mime"
-            from "document"
-            where "pid" = ?
-            limit 20
-        ');
+        $docsql = $pdo->prepare(
+            <<<SQL
+            SELECT "name", "source", "mime"
+            FROM "document"
+            WHERE "pid" = ?
+            LIMIT 20
+            SQL
+        );
 
-        $picsql = $pdo->prepare('
-            select "name", "source", "mime"
-            from "picture"
-            where "pid" = ?
-            limit 20
-        ');
+        $picsql = $pdo->prepare(
+            <<<SQL
+            SELECT "name", "source", "mime"
+            FROM "picture"
+            WHERE "pid" = ?
+            LIMIT 20
+            SQL
+        );
 
         $postr = $postsql->execute($params);
         $posts = [];
@@ -375,17 +394,28 @@ class IndexController
 
         while ($post = $postsql->fetch()) {
             $docr = $docsql->execute([$post['id']]);
-            // if result(docs) fails
-            if (!$docr) continue;
+
+            if (!$docr) {
+                continue;
+            }
 
             $docs = [];
-            while ($doc = $docsql->fetch()) $docs[] = $doc;
+
+            while ($doc = $docsql->fetch()) {
+                $docs[] = $doc;
+            }
 
             $picr = $picsql->execute([$post['id']]);
-            if (!$picr) continue;
+
+            if (!$picr) {
+                continue;
+            }
 
             $pics = [];
-            while ($pic = $picsql->fetch()) $pics[] = $pic;
+
+            while ($pic = $picsql->fetch()) {
+                $pics[] = $pic;
+            }
 
             $post['docs'] = $docs;
             $post['pics'] = $pics;
