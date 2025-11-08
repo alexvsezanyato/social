@@ -17,13 +17,4 @@ class AuthController
     {
         return new Response(view('auth/register'));
     }
-
-    public function logout(Auth $auth)
-    {
-        $auth->logout();
-
-        return new Response('', Response::HTTP_TEMPORARY_REDIRECT, [
-            'location' => '/auth/login',
-        ]);
-    }
 }

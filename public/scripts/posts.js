@@ -6,7 +6,7 @@ let more
 let limit = 3
 
 let fetchPosts = (from, limit) => {
-    fetch('/posts', {
+    fetch('/api/posts', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
 
