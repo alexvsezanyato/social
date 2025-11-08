@@ -8,4 +8,5 @@ return [
         'host' => 'localhost',
         'driver' => 'pgsql',
     ],
+    'driver' => 'pdo_pgsql',
 ];

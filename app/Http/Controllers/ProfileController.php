@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 use App\Services\User;
-use App\Services\Auth;
 
-class ProfileController 
+class ProfileController
 {
     public function index(User $user)
     {
@@ -23,12 +23,18 @@ class ProfileController
         ]));
     }
 
-    public function logout(Auth $auth)
+    public function logout(SessionInterface $session)
     {
-        $auth->logout();
+        $session->start();
+        $session->invalidate();
+        $session->save();
 
-        return new Response('', Response::HTTP_TEMPORARY_REDIRECT, [
+        $response = new Response(status: Response::HTTP_TEMPORARY_REDIRECT, headers: [
             'location' => '/auth/login',
         ]);
+
+        $response->headers->clearCookie('pid');
+
+        return $response;
     }
 }
