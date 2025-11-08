@@ -4,7 +4,6 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\Api\IndexController as ApiIndexController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\AuthController as ApiAuthController;
 use App\Http\Controllers\ProfileController;
@@ -56,7 +55,7 @@ $routes->add('api.profile.apply', new Route('/api/profile/apply', [
 ], methods: ['POST']));
 
 $routes->add('api.post.create', new Route('/api/post/create', [
-    '_controller' => [ApiIndexController::class, 'create'],
+    '_controller' => [ApiPostController::class, 'create'],
 ], methods: ['POST']));
 
 $routes->add('api.posts', new Route('/posts', [

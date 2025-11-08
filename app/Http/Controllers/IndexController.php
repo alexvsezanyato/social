@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Users;
+use App\Services\User;
+use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
 {
     public function __construct(
-        private Users $users,
+        private User $user,
     ) {
-        if (!$users->in()) {
+        if (!$user->in()) {
             header('Location: /auth/login');
             exit;
         }
@@ -17,6 +18,6 @@ class IndexController
 
     public function index()
     {
-        return view('index');
+        return new Response(view('index'));
     }
 }

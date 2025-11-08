@@ -3,20 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Services\Database;
-use App\Services\Users;
+use App\Services\User;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController
 {
     public function download()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            exit;
-        }
-
         $fid = $_GET['id'];
 
         if (!preg_match("/[a-zA-Z0-9\-]+\/[a-zA-Z0-9\-]+/", $fid)) {
-            exit;
+            return new Response(1);
         }
 
         $fid = basename($fid);
@@ -24,7 +21,7 @@ class PostController
         $filepath = __DIR__ . '/uploads/' . $fid;
 
         if (!file_exists($filepath)) {
-            exit;
+            return new Response(2);
         }
 
         $name = $_GET['name'] ?? $fid;
@@ -36,37 +33,30 @@ class PostController
         header("Content-Type: $type");
         header('Content-Disposition: attachment; filename=' . $name);
         header('Content-length: ' . $size);
+
+        return new Response(0);
     }
 
-    public function create(Users $users, Database $database)
+    public function create(User $user, Database $database)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo '6';
-            exit;
-        }
-
         $docs = [];
         $pics = [];
         $text = $_POST['text'];
 
-        if (!$users->in()) {
-            echo '1';
-            exit;
+        if (!$user->in()) {
+            return new Response(1);
         }
 
         if (strlen($text) < 5) {
-            echo '3';
-            exit;
+            return new Response(3);
         }
 
         if (count($_FILES) > 20) {
-            echo '4';
-            exit;
+            return new Response(4);
         }
 
         if (preg_match('/(\r\n|\r|\n){3,}/', $text)) {
-            echo '2';
-            exit;
+            return new Response(2);
         }
 
         $picCount = 0;
@@ -81,8 +71,7 @@ class PostController
         }
 
         if ($picCount > 9 || $docCount > 5) {
-            echo '5';
-            exit;
+            return new Response(5);
         }
 
         foreach ($_FILES as $k => &$v) {
@@ -94,7 +83,7 @@ class PostController
         }
 
         $text = htmlspecialchars($text);
-        $id = $users->get()['id'];
+        $id = $user->get()['id'];
         $database->connection->beginTransaction();
 
         $statement = $database->connection->prepare(
@@ -105,8 +94,7 @@ class PostController
 
         if (!$statement->execute([$id, $text])) {
             $database->connection->rollBack();
-            echo '5';
-            exit;
+            return new Response(5);
         } 
 
         $statement = $database->connection->prepare(
@@ -117,8 +105,7 @@ class PostController
 
         if (!$statement->execute()) {
             $database->connection->rollBack();
-            echo '5';
-            exit;
+            return new Response(5);
         }
 
         $result = $statement->fetch();
@@ -127,8 +114,7 @@ class PostController
 
         if (!$pid) {
             $database->connection->rollBack();
-            echo '5';
-            exit;
+            return new Response(5);
         }
 
         $statement = $database->connection->prepare(
@@ -150,23 +136,20 @@ class PostController
 
             if (file_exists($dir . '/' . $fname)) {
                 $database->connection->rollBack();
-                echo '7';
-                exit;
+                return new Response(7);
             }
 
             $uploadfiles = true;
             $docname = basename($file['name']);
 
             if (strlen($docname) > 64) { 
-                echo '6';
                 $database->connection->rollBack();
-                exit;
+                return new Response(6);
             }
 
             if (!move_uploaded_file(from: $file['tmp_name'], to: "$dir/$fname")) {
                 $database->connection->rollBack();
-                echo '9';
-                exit;
+                return new Response(9);
             }
 
             $result = $statement->execute([
@@ -178,8 +161,7 @@ class PostController
 
             if (!$result) {
                 $database->connection->rollBack();
-                echo '9';
-                exit;
+                return new Response(9);
             }
 
             $i++;
@@ -204,25 +186,22 @@ class PostController
 
             if (file_exists($dir . '/' . $fname)) {
                 $database->connection->rollBack();
-                echo '7';
-                exit;
+                return new Response(7);
             }
 
             $uploadfiles = true;
             $docname = basename($file['name']);
 
             if (strlen($docname) > 64) { 
-                echo '6';
                 $database->connection->rollBack();
-                exit;
+                return new Response(6);
             }
 
             $status = move_uploaded_file(from: $file['tmp_name'], to: "$dir/$fname");
             
             if (!$status) {
                 $database->connection->rollBack();
-                echo '9';
-                exit;
+                return new Response(9);
             }
 
             $result = $statement->execute([
@@ -234,29 +213,26 @@ class PostController
 
             if (!$result) {
                 $database->connection->rollBack();
-                echo '9';
-                exit;
+                return new Response(9);
             }
 
             $i++;
         }
 
         $database->connection->commit();
-        echo '0';
+        return new Response(0);
     }
 
-    public function remove(Users $users, Database $database)
+    public function remove(User $user, Database $database)
     {
         $content = file_get_contents('php://input');
 
         if (!preg_match('/^[0-9]+$/', $content)) {
-            echo '1';
-            exit; 
+            return new Response(1);
         }
 
-        if (!$users->in()) { 
-            echo '2';
-            exit;
+        if (!$user->in()) { 
+            return new Response(2);
         }
 
         $statement = $database->connection->prepare(
@@ -265,16 +241,14 @@ class PostController
             SQL
         );
 
-        $result = $statement->execute([$content, $users->id()]);
+        $result = $statement->execute([$content, $user->id()]);
 
         if (!$result) { 
-            echo '2';
-            exit;
+            return new Response(2);
         }
 
         if (!isset($statement->fetch()['result'])) {
-            echo '2';
-            exit;
+            return new Response(2);
         }
 
         $statement = $database->connection->prepare(
@@ -286,8 +260,7 @@ class PostController
         $result = $statement->execute([$content]);
 
         if (!$result) { 
-            echo '2';
-            exit;
+            return new Response(2);
         }
 
         $statment = $database->connection->prepare(
@@ -299,34 +272,29 @@ class PostController
         $result = $statment->execute([$content]);
 
         if (!$result) {
-            echo '2';
-            exit;
+            return new Response(2);
         }
 
-        echo '0';
-        exit;
+        return new Response(0);
     }
 
-    public function posts(Users $users, Database $database)
+    public function posts(User $user, Database $database)
     {
         $json = json_decode(file_get_contents('php://input'));
 
         if (!$json) {
-            echo json_encode(['code' => 1]);
-            exit;
+            return new Response(json_encode(['code' => 1]));
         }
 
         if (!isset($json->from) || !isset($json->limit)) {
-            echo json_encode(['code' => 2]);
-            exit;
+            return new Response(json_encode(['code' => 2]));
         }
 
         $from = $json->from ?? 0;
         $limit = $json->limit ?? 1;
 
         if (!is_numeric($from)) {
-            echo json_encode(['code' => 2]);
-            exit;
+            return new Response(json_encode(['code' => 2]));
         } 
 
         if (!is_numeric($limit)) $limit = 10;
@@ -372,14 +340,13 @@ class PostController
 
         $postr = $postsql->execute($params);
         $posts = [];
-        $user = $users->get();    
+        $user = $user->get();    
 
         if (!$postr) {
-            echo json_encode([
+            return new Response(json_encode([
                 'code' => 3, 
                 'cause' => $postsql->errorinfo(),
-            ]);
-            exit;
+            ]));
         }
 
         while ($post = $postsql->fetch()) {
@@ -412,7 +379,7 @@ class PostController
             $posts[] = $post;
         }
 
-        echo json_encode([
+        return new Response(json_encode([
             'code' => 0,
             'posts' => $posts,
 
@@ -420,6 +387,6 @@ class PostController
                 'id' => $user['id'],
                 'public' => $user['public'],
             ]
-        ]);
+        ]));
     }
 }

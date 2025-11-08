@@ -112,7 +112,7 @@ send.onclick = (e) => {
     pics.forEach((e, i) => data.append('p' + i, e))
 
     request.onreadystatechange = handleRequest
-    request.open('post', '/create-post', true)
+    request.open('post', '/api/post/create', true)
     request.send(data)
 
     // form data сам задает тип контента 

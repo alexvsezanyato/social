@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Services\Auth;
 use App\Services\Database;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController
 {
@@ -14,24 +15,23 @@ class AuthController
 
         $statement = $database->connection->prepare(
             <<<SQL
-            SELECT * FROM "user" WHERE "login"=?
+            SELECT * FROM "user" WHERE "login"=:login
             SQL
         );
 
-        $statement->execute([$login]);
+        $statement->bindParam('login', $login);
+        $statement->execute();
         $user = $statement->fetch();
 
         if (!$user) {
-            echo '1';
-            return;
+            return new Response(1);
         }
 
         $salt = $user['salt'];
         $hash = hash('sha512', $password . $salt);
 
         if ($hash != $user['hash']) {
-            echo '1';
-            return;
+            return new Response(1);
         }
 
         session_start();
@@ -44,17 +44,18 @@ class AuthController
         if (!isset($user['random'])) {
             $statement = $database->connection->prepare(
                 <<<SQL
-                UPDATE "user" SET "random"=? WHERE "id"=?
+                UPDATE "user" SET "random"=:random WHERE "id"=:id
                 SQL
             );
 
-            $r = $statement->execute([$random, $id]);
+            $statement->bindParam('random', $random);
+            $statement->bindParam('id', $id);
+            $result = $statement->execute();
 
-            if (!$r) {
+            if (!$result) {
                 unset($_SESSION['id']);
                 unset($_SESSION['hash']);
-                echo '2';
-                return;
+                return new Response(2);
             }
         }
 
@@ -67,39 +68,36 @@ class AuthController
             'samesite' => 'Lax'
         ]);
 
-        echo '0';
+        return new Response(0);
     }
 
     public function logout(Auth $auth)
     {
         $auth->logout();
+        return new Response(0);
     }
 
     public function register(Database $database)
     {
-        $login = trim($_POST['login']) ?? null;
-        $password = trim($_POST['password']) ?? null;
-        $prepeat = trim($_POST['prepeat']) ?? null;
-        $age = trim($_POST['age']) ?? null;
+        $login = trim($_POST['login'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+        $prepeat = trim($_POST['prepeat'] ?? '');
+        $age = trim($_POST['age'] ?? '');
 
         if (strlen($login) < 3) {
-            echo '1';
-            return;
+            return new Response(content: 1);
         }
 
         if ($password != $prepeat) {
-            echo '2';
-            return;
+            return new Response(content: 2);
         }
 
         if (strlen($password) < 6) { 
-            echo '3';
-            return;
+            return new Response(content: 3);
         }
 
         if (!is_numeric($age) || (int) $age < 14) {
-            echo '4';
-            return;
+            return new Response(content: 4);
         }
 
         $salt = base64_encode(random_bytes(32*0.66));
@@ -107,32 +105,35 @@ class AuthController
 
         $statement = $database->connection->prepare(
             <<<SQL
-            SELECT COUNT(*) AS "count" FROM "user" WHERE "login"=?
+            SELECT COUNT(*) AS "count"
+            FROM "user"
+            WHERE "login"=:login
             SQL
         );
+        $statement->bindParam(':login', $login);
+        $statement->execute();
+        $result = $statement->fetch();
 
-        $statement->execute([$login]);
-        $count = $statement->fetch()['count'];
+        ['count' => $count] = $result;
 
         if ($count != '0') { 
-            echo '5';
-            return;
+            return new Response(content: 5);
         }
 
         $database->connection
             ->prepare(
                 <<<SQL
                 INSERT INTO "user"("login", "age", "hash", "salt")
-                VALUES (?, ?, ?, ?)
+                VALUES (:login, :age, :hash, :salt)
                 SQL
             )
             ->execute([
-                $login,
-                $age,
-                $hash,
-                $salt,
+                'login' => $login,
+                'age' => $age,
+                'hash' => $hash,
+                'salt' => $salt,
             ]);
 
-        echo '0';
+        return new Response(content: 0);
     }
 }

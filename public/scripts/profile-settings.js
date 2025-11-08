@@ -53,7 +53,7 @@ submit.onclick = (e) => {
         .parentNode
         .querySelector('input');
 
-    r.open('post', '/apply-profile', true);
+    r.open('post', '/api/profile/apply', true);
     let data = 'public=' + i.value;
     r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     r.send(data);
