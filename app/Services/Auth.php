@@ -8,7 +8,8 @@ class Auth
     {
         session_start();
         session_unset();
-        setcookie('pid', '', time() - 1, '/');
         session_commit();
+
+        setcookie('pid', '', time() - 1, '/');
     }
 }

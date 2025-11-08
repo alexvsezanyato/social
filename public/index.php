@@ -3,6 +3,7 @@
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\HttpFoundation\Response;
 
 define('BASE_DIR', dirname(__DIR__));
 define('RESOURCE_DIR', BASE_DIR.'/resources');
@@ -30,4 +31,11 @@ try {
 }
 
 [$controller, $action] = $parameters['_controller'];
-echo $container->call([$container->make($controller), $action]);
+$response = $container->call([$container->make($controller), $action]);
+
+if ($response instanceof Response) {
+    http_response_code($response->getStatusCode());
+    echo $response->getContent();
+} else {
+    throw new \Exception(sprintf('Response must be %s', Response::class));
+}
