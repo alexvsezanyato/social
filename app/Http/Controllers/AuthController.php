@@ -8,19 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController
 {
-    public function __construct(User $user) {
-        if ($user->in()) {
-            header("Location: /");
-            exit;
-        }
-    }
-
     public function login(User $user)
     {
         return new Response(view('auth/login'));
     }
 
-    public function register(User $user): string
+    public function register(User $user)
     {
         return new Response(view('auth/register'));
     }
@@ -28,7 +21,9 @@ class AuthController
     public function logout(Auth $auth)
     {
         $auth->logout();
-        header('Location: /auth/login');
-        return new Response(0);
+
+        return new Response('', Response::HTTP_TEMPORARY_REDIRECT, [
+            'location' => '/auth/login',
+        ]);
     }
 }
