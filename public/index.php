@@ -1,9 +1,7 @@
 <?php
 
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use App\Services\App;
 
 define('BASE_DIR', dirname(__DIR__));
 define('RESOURCE_DIR', BASE_DIR.'/resources');
@@ -15,27 +13,10 @@ define('BOOTSTRAP_DIR', BASE_DIR.'/bootstrap');
 define('VENDOR_DIR', BASE_DIR.'/vendor');
 
 require_once VENDOR_DIR.'/autoload.php';
-require_once BOOTSTRAP_DIR.'/app.php';
 
-$uri = parse_url($_SERVER['REQUEST_URI']);
-$context = new RequestContext();
-$context->fromRequest($request);
-$matcher = new UrlMatcher($routes, $context);
+/**
+ * @var App
+ */
+$app = require BOOTSTRAP_DIR.'/app.php';
 
-try {
-    $parameters = $matcher->match($uri['path']);
-} catch (ResourceNotFoundException $e) {
-    http_response_code(404);
-    echo $e->getMessage();
-    exit;
-}
-
-[$controller, $action] = $parameters['_controller'];
-$response = $container->call([$container->make($controller), $action]);
-
-if ($response instanceof Response) {
-    http_response_code($response->getStatusCode());
-    echo $response->getContent();
-} else {
-    throw new \Exception(sprintf('Response must be %s', Response::class));
-}
+$app->handleRequest(Request::createFromGlobals());
