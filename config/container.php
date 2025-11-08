@@ -1,28 +1,43 @@
 <?php
 
-use App\Services\Auth;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+
 use App\Services\Database;
+use App\Services\DocumentRepository;
+use App\Services\PictureRepository;
+use App\Services\PostRepository;
 use App\Services\User;
-use App\Services\Users;
-use App\Services\Documents;
-use App\Services\Pictures;
-use App\Services\Posts;
+use App\Services\UserRepository;
 
 return [
-    Database::class  => fn()  => new Database(connection: connect()),
-    User::class      => DI\autowire(User::class),
-    Users::class     => DI\autowire(Users::class),
-    Documents::class => DI\autowire(Documents::class),
-    Pictures::class  => DI\autowire(Pictures::class),
-    Posts::class     => DI\autowire(Posts::class),
-    Auth::class      => DI\autowire(Auth::class),
+    Request::class            => Request::createFromGlobals(),
+    SessionInterface::class   => DI\autowire(Session::class),
 
-    \Twig\Environment::class => function() {
+    Database::class           => DI\autowire(Database::class)->constructor(connect()),
+    User::class               => DI\autowire(User::class),
+
+    DocumentRepository::class => DI\autowire(DocumentRepository::class),
+    PictureRepository::class  => DI\autowire(PictureRepository::class),
+    PostRepository::class     => DI\autowire(PostRepository::class),
+    UserRepository::class     => DI\autowire(UserRepository::class),
+
+    Connection::class => function() {
+        $config = require CONFIG_DIR.'/db.php';
+        $driver = new (DriverManager::DRIVER_MAP[$config['driver']])();
+        return new Connection($config['connection'], $driver);
+    },
+
+    \Twig\Environment::class => function(\DI\Container $container) {
         $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader(VIEW_DIR), [
             # 'cache' => CACHE_DIR.'/twig',
         ]);
 
-        $twig->addExtension(new \App\Twig\Extensions\AppExtension());
+        $twig->addExtension($container->make(\App\Twig\Extensions\AppExtension::class));
         return $twig;
     },
 ];

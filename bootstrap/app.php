@@ -3,8 +3,6 @@
 use Symfony\Component\Routing\RouteCollection;
 use App\Services\App;
 
-$container = new DI\Container(require CONFIG_DIR.'/container.php');
-
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator(BASE_DIR.'/helpers/'),
 );
@@ -14,6 +12,8 @@ foreach ($iterator as $file) {
         require_once $file->getPathname();
     }
 }
+
+$container = new DI\Container(require CONFIG_DIR.'/container.php');
 
 $routes = new RouteCollection();
 require BASE_DIR.'/routes/web.php';

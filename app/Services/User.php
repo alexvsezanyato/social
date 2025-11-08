@@ -2,12 +2,17 @@
 
 namespace App\Services;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 class User {
     public function __construct(
         private Database $database,
+        private SessionInterface $session,
+        private Request $request,
     ) {}
 
-    public function get(): iterable {
+    public function get(?string $field = null): mixed {
         $statement = $this->database->connection->prepare(
             <<<SQL
             SELECT * FROM "user" WHERE "id"=:id
@@ -21,33 +26,32 @@ class User {
             return [];
         }
 
-        return $statement->fetch();
+        $user = $statement->fetch();
+        return $field === null ? $user : $user[$field];
     }
 
     public function in(): bool {
-        session_start();
-        $id = $_SESSION['id'] ?? null;
-        $hash = $_SESSION['hash'] ?? null;
-        session_commit();
+        $server = $this->request->server;
+        $cookies = $this->request->cookies;
 
-        $hashHit = $hash === hash('md5', $_SERVER['HTTP_USER_AGENT'] ?? 'agent');
+        $id = $this->session->get('id');
+        $hash = $this->session->get('hash');
 
-        if ($id !== null && $hashHit) { 
+        $userAgent = $server->get('HTTP_USER_AGENT', 'agent');
+
+        if ($id !== null && $hash === hash('md5', $userAgent)) { 
             return true; 
         }
 
-        if (!isset($_COOKIE['pid'])) {
+        if (!$cookies->has('pid')) {
             return false;
         }
 
-        $cookie = $_COOKIE['pid'];
-        $data = explode('-', $cookie);
-        $id = $data[0] ?? null;
-        $hash = $data[1];
-        $random = $this->get()['random'];
-        $hashHit = ($hash === hash('sha256', $id . $random));
+        [$id, $hash] = explode('-', $cookies->get('pid'));
+        $user = $this->get();
+        $random = $user['random'];
 
-        if ($id !== null && $hashHit) {
+        if ($id !== null && $hash === hash('sha256', $id . $random)) {
             return true;
         }
 
@@ -55,54 +59,24 @@ class User {
     }
 
     public function id(): ?int {
-        session_start();
-        $id = $_SESSION['id'] ?? null;
-        session_commit();
+        $cookies = $this->request->cookies;
+
+        $id = $this->session->get('id');
 
         if ($id !== null) {
             return $id;
         }
 
-        if (!isset($_COOKIE['pid'])) {
+        if (!$cookies->has('pid')) {
             return null;
         }
 
-        ['pid' => $pid] = $_COOKIE;
-        $data = explode('-', $pid);
-        $id = $data[0];
+        [$id] = explode('-', $cookies->get('pid'));
 
         if (!is_numeric($id)) {
             throw new \Exception('Invalid user ID in auth cookie');
         }
 
-        # if (!preg_match('^[0-9]+$', $data[0])) return; 
         return (int)$id;
     }
-
-    # function in() {
-    #     session_start();
-    #     $id = $_SESSION['id'] ?? null;
-    #     $hash = $_SESSION['hash'] ?? null;
-    #     session_commit();
-    #     $hashHit = $hash === hash('md5', $_SERVER['HTTP_USER_AGENT'] ?? 'ua');
-
-    #     if ($id !== null && $hashHit) {
-    #         return true; 
-    #     }
-
-    #     if (!isset($_COOKIE['pid'])) {
-    #         return false;
-    #     }
-
-    #     $cookie = $_COOKIE['pid'];
-    #     $data = explode('-', $cookie);
-    #     $id = $data[0] ?? null;
-    #     $hash = $data[1];
-    #     $random = $this->get()['random'];
-    #     $hashHit = $hash === hash('sha256', $id . $random);
-
-    #     if ($id !== null && $hashHit) {
-    #         return true;
-    #     }
-    # }
 }

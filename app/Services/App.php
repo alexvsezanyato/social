@@ -9,8 +9,6 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use App\Middlewares\DefaultMiddleware;
-
 class App {
     public static ?self $instance;
 
@@ -20,11 +18,11 @@ class App {
         public private(set) array $middlewares = [],
     ) {}
 
-    public function handleRequest(Request $request)
+    public function handleRequest(Request $request): Response
     {
         $this->container->set(Request::class, $request);
 
-        $uri = parse_url($_SERVER['REQUEST_URI']);
+        $uri = parse_url($request->getRequestUri());
         $context = new RequestContext();
         $context->fromRequest($request);
         $matcher = new UrlMatcher($this->routes, $context);
@@ -54,8 +52,6 @@ class App {
             }
         };
 
-        $instance = $this->container->make(DefaultMiddleware::class);
-
         foreach ($this->middlewares as $middleware) {
             $instance = $this->container->make($middleware);
             $handler = fn (Request $request): Response => $instance->process($request, $handler);
@@ -66,5 +62,7 @@ class App {
          */
         $response = $handler($request);
         $response->send();
+
+        return $response;
     }
 }

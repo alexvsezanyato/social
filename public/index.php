@@ -1,6 +1,7 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
+
 use App\Services\App;
 
 define('BASE_DIR', dirname(__DIR__));
@@ -19,4 +20,4 @@ require_once VENDOR_DIR.'/autoload.php';
  */
 $app = require BOOTSTRAP_DIR.'/app.php';
 
-$app->handleRequest(Request::createFromGlobals());
+$app->handleRequest($app->container->make(Request::class));

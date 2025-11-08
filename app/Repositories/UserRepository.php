@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 class UserRepository {
     public function __construct(
         private Database $database,
@@ -10,7 +12,11 @@ class UserRepository {
     public function find(array $filters = []) {
         $statement = $this->database->connection->prepare(
             <<<SQL
-            SELECT * FROM "user" WHERE "id" = :id
+            SELECT *
+            FROM "user"
+            WHERE
+                (:id IS NULL OR "id"=:id)
+                AND ()
             SQL
         );
 

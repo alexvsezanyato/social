@@ -1,7 +1,6 @@
 <?php
 
-use App\Middlewares\AuthMiddleware;
-
 return [
-    AuthMiddleware::class,
+    \App\Middlewares\AuthMiddleware::class,
+    \App\Middlewares\SessionMiddleware::class,
 ];
