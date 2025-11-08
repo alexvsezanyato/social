@@ -26,7 +26,9 @@ class ProfileController
     public function logout(Auth $auth)
     {
         $auth->logout();
-        header('Location: /auth/login');
-        return new Response(0);
+
+        return new Response('', Response::HTTP_TEMPORARY_REDIRECT, [
+            'location' => '/auth/login',
+        ]);
     }
 }
