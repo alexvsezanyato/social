@@ -12,7 +12,9 @@
         "doctrine/migrations": "^3.9",
         "php-di/php-di": "^7.1",
         "twig/twig": "^3.22",
-        "doctrine/dbal": "^4.3"
+        "doctrine/dbal": "^4.3",
+        "doctrine/orm": "^3.5",
+        "symfony/mime": "^7.3"
     },
     "scripts": {
         "migrate": "./vendor/bin/doctrine-migrations"

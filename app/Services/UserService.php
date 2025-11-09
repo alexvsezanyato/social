@@ -2,35 +2,21 @@
 
 namespace App\Services;
 
+use DI\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Entities\User;
+use App\Repositories\UserRepository;
 
-class User {
+class UserService {
     public function __construct(
-        private Database $database,
         private SessionInterface $session,
         private Request $request,
+        private Container $container,
+        private UserRepository $userRepository,
     ) {}
 
-    public function get(?string $field = null): mixed {
-        $statement = $this->database->connection->prepare(
-            <<<SQL
-            SELECT * FROM "user" WHERE "id"=:id
-            SQL
-        );
-        $id = $this->id();
-        $statement->bindParam('id', $id);
-        $result = $statement->execute();
-
-        if (!$result) {
-            return [];
-        }
-
-        $user = $statement->fetch();
-        return $field === null ? $user : $user[$field];
-    }
-
-    public function in(): bool {
+    public function isAuthenticated(): bool {
         $server = $this->request->server;
         $cookies = $this->request->cookies;
 
@@ -48,17 +34,16 @@ class User {
         }
 
         [$id, $hash] = explode('-', $cookies->get('pid'));
-        $user = $this->get();
-        $random = $user['random'];
+        $user = $this->userRepository->find($id);
 
-        if ($id !== null && $hash === hash('sha256', $id . $random)) {
+        if ($id !== null && $hash === hash('sha256', $id . $user->random)) {
             return true;
         }
 
         return false;
     }
 
-    public function id(): ?int {
+    public function getId(): ?int {
         $cookies = $this->request->cookies;
 
         $id = $this->session->get('id');
@@ -78,5 +63,10 @@ class User {
         }
 
         return (int)$id;
+    }
+
+    public function getCurrentUser(): ?User
+    {
+        return $this->userRepository->find($this->getId());
     }
 }

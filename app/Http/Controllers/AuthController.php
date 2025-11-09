@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Auth;
-use App\Services\User;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController
 {
-    public function login(User $user)
+    public function login()
     {
         return new Response(view('auth/login'));
     }
 
-    public function register(User $user)
+    public function register()
     {
         return new Response(view('auth/register'));
     }

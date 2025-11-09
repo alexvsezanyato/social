@@ -6,7 +6,9 @@ return [
         'user' => 'postgres',
         'password' => '',
         'host' => 'localhost',
-        'driver' => 'pgsql',
+        'driver' => 'pdo_pgsql',
+        'driverOptions' => [
+            PDO::ATTR_CASE => PDO::CASE_NATURAL,
+        ],
     ],
-    'driver' => 'pdo_pgsql',
 ];
