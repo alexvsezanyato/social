@@ -28,35 +28,6 @@ class PostController
         private PictureRepository $pictureRepository,
     ) {}
 
-    public function download()
-    {
-        $fid = $this->request->query->get('id');
-
-        if (!preg_match("/[a-zA-Z0-9\-]+\/[a-zA-Z0-9\-]+/", $fid)) {
-            return new Response(content: 1);
-        }
-
-        $fid = basename($fid);
-
-        $filepath = UPLOAD_DIR.'/'.$fid;
-
-        if (!file_exists($filepath)) {
-            return new Response(content: 2);
-        }
-
-        $name = $this->request->query->get('name', $fid);
-        $name = basename($name);
-        $type = $this->request->query->get('type', 'application/octet-stream');
-        $size = filesize($filepath);
-
-        return new Response(content: 0, headers: [
-            'X-Sendfile' => realpath($filepath),
-            'Content-Type' => $type,
-            'Content-Disposition' => "attachment; filename=$name",
-            'Content-Length' => $size,
-        ]);
-    }
-
     public function create()
     {
         /**
@@ -189,7 +160,7 @@ class PostController
 
     public function remove()
     {
-        $postId = file_get_contents('php://input');
+        $postId = $this->request->getContent();
         $post = $this->postRepository->find($postId);
 
         if (!$post) { 
@@ -227,7 +198,7 @@ class PostController
 
     public function posts()
     {
-        $json = json_decode(file_get_contents('php://input'));
+        $json = json_decode($this->request->getContent());
 
         if (!$json) {
             return new Response(content: json_encode([
