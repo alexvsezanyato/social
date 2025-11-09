@@ -2,87 +2,86 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Services\Auth;
-use App\Services\Database;
+use App\Entities\User;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repositories\UserRepository;
 
 class AuthController
 {
-    public function login(Database $database)
+    public function __construct(
+        private Request $request,
+        private UserRepository $userRepository,
+        private SessionInterface $session,
+        private Connection $connection,
+        private EntityManagerInterface $entityManager,
+    ) {}
+
+    public function login()
     {
-        $login = $_POST['login'] ?? null;
-        $password = $_POST['password'] ?? null;
+        $login = $this->request->request->get('login');
+        $password = $this->request->request->get('password');
 
-        $statement = $database->connection->prepare(
-            <<<SQL
-            SELECT * FROM "user" WHERE "login"=:login
-            SQL
-        );
-
-        $statement->bindParam('login', $login);
-        $statement->execute();
-        $user = $statement->fetch();
+        $user = $this->userRepository->findOneBy([
+            'login' => $login,
+        ]);
 
         if (!$user) {
-            return new Response(1);
+            return new Response(content: 1);
         }
 
-        $salt = $user['salt'];
+        $salt = $user->salt;
         $hash = hash('sha512', $password . $salt);
 
-        if ($hash != $user['hash']) {
-            return new Response(1);
+        if ($hash !== $user->hash) {
+            return new Response(content: 1);
         }
 
-        session_start();
-        $_SESSION['id'] = $user['id'];
-        $_SESSION['hash'] = hash('md5', $_SERVER['HTTP_USER_AGENT'] ?? 'ua');
-        $random = $user['random'] ?? base64_encode(random_bytes(256 * 0.6666));
-        $id = $user['id'];
-        $cookie = $id . '-' . hash('sha256', $id . $random); 
+        $this->session->set('id', $user->id);
+        $userAgent = $this->request->server->get('HTTP_USER_AGENT', 'ua');
+        $this->session->set('hash', hash('md5', $userAgent));
 
-        if (!isset($user['random'])) {
-            $statement = $database->connection->prepare(
-                <<<SQL
-                UPDATE "user" SET "random"=:random WHERE "id"=:id
-                SQL
-            );
+        $random = $user->random ?? base64_encode(random_bytes(256 * 0.6666));
+        $id = $user->id;
+        $cookie = $id . '-' . hash('sha256', $id . $random);
 
-            $statement->bindParam('random', $random);
-            $statement->bindParam('id', $id);
-            $result = $statement->execute();
+        if ($user->random === null) {
+            $user->random = $random;
 
-            if (!$result) {
-                unset($_SESSION['id']);
-                unset($_SESSION['hash']);
-                return new Response(2);
+            $this->entityManager->persist($user);
+            
+            try {
+                $this->entityManager->flush();
+            } catch (\Exception $e) {
+                $this->session->remove('id');
+                $this->session->remove('hash');
+
+                return new Response(content: 2);
             }
         }
 
-        setcookie('pid', $cookie, [
-            'expires' => time() + 60*60*24*365, 
-            'path' => '/',
-            'domain' => '',
-            'secure' => false,
-            'httponly' => true,
-            'samesite' => 'Lax'
-        ]);
+        $response = new Response(content: 0);
 
-        return new Response(0);
+        $response->headers->setCookie(new Cookie(
+            name: 'pid',
+            value: $cookie,
+            expire: time() + 60*60*24*365,
+            secure: false,
+        ));
+
+        return $response;
     }
 
-    public function logout(Auth $auth)
+    public function register()
     {
-        $auth->logout();
-        return new Response(0);
-    }
-
-    public function register(Database $database)
-    {
-        $login = trim($_POST['login'] ?? '');
-        $password = trim($_POST['password'] ?? '');
-        $prepeat = trim($_POST['prepeat'] ?? '');
-        $age = trim($_POST['age'] ?? '');
+        $login = trim($this->request->request->get('login', ''));
+        $password = trim($this->request->request->get('password', ''));
+        $prepeat = trim($this->request->request->get('prepeat', ''));
+        $age = trim($this->request->request->get('age', ''));
 
         if (strlen($login) < 3) {
             return new Response(content: 1);
@@ -96,43 +95,29 @@ class AuthController
             return new Response(content: 3);
         }
 
-        if (!is_numeric($age) || (int) $age < 14) {
+        if (!is_numeric($age) || (int)$age < 14) {
             return new Response(content: 4);
         }
 
         $salt = base64_encode(random_bytes(32*0.66));
         $hash = hash('sha512', $password . $salt);
 
-        $statement = $database->connection->prepare(
-            <<<SQL
-            SELECT COUNT(*) AS "count"
-            FROM "user"
-            WHERE "login"=:login
-            SQL
-        );
-        $statement->bindParam(':login', $login);
-        $statement->execute();
-        $result = $statement->fetch();
+        $count = $this->userRepository->count([
+            'login' => $login,
+        ]);
 
-        ['count' => $count] = $result;
-
-        if ($count != '0') { 
+        if ($count) { 
             return new Response(content: 5);
         }
 
-        $database->connection
-            ->prepare(
-                <<<SQL
-                INSERT INTO "user"("login", "age", "hash", "salt")
-                VALUES (:login, :age, :hash, :salt)
-                SQL
-            )
-            ->execute([
-                'login' => $login,
-                'age' => $age,
-                'hash' => $hash,
-                'salt' => $salt,
-            ]);
+        $user = new User();
+        $user->login = $login;
+        $user->age = (int)$age;
+        $user->hash = $hash;
+        $user->salt = $salt;
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
 
         return new Response(content: 0);
     }

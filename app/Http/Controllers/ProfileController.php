@@ -4,30 +4,29 @@ namespace App\Http\Controllers;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
-use App\Services\User;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Services\UserService;
 
 class ProfileController
 {
-    public function index(User $user)
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private UserService $userService,
+    ) {}
+
+    public function index()
     {
-        return new Response(view('profile/index', [
-            'user' => $user,
-        ]));
+        return new Response(view('profile/index'));
     }
 
-    public function settings(User $user)
+    public function settings()
     {
-        return new Response(view('profile/settings', [
-            'user' => $user,
-        ]));
+        return new Response(view('profile/settings'));
     }
 
     public function logout(SessionInterface $session)
     {
-        $session->start();
         $session->invalidate();
-        $session->save();
 
         $response = new Response(status: Response::HTTP_TEMPORARY_REDIRECT, headers: [
             'location' => '/auth/login',

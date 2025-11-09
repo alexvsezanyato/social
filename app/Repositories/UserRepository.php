@@ -1,30 +1,7 @@
 <?php
 
-namespace App\Services;
+namespace App\Repositories;
 
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\EntityRepository;
 
-class UserRepository {
-    public function __construct(
-        private Database $database,
-    ) {}
-
-    public function find(array $filters = []) {
-        $statement = $this->database->connection->prepare(
-            <<<SQL
-            SELECT *
-            FROM "user"
-            WHERE
-                (:id IS NULL OR "id"=:id)
-                AND ()
-            SQL
-        );
-
-        foreach ($filters as $k => $v) {
-            $statement->bindParam($k, $v);
-        }
-
-        $statement->execute();
-        return $statement;
-    }
-}
+class UserRepository extends EntityRepository {}
