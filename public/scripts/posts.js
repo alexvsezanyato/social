@@ -63,8 +63,8 @@ let printPosts = r => {
                 <div class="file-name">
                     <i class="fas fa-file"></i>
                     <a 
-                    href="/download?id=${doc.source}&name=${doc.name}&type=${doc.mime}" 
-                    download
+                        href="/document/download?id=${doc.source}&name=${doc.name}&type=${doc.mime}" 
+                        download
                     >${doc.name}</a>
                 </div>
             </li>

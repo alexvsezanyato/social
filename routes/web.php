@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentController;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
@@ -146,5 +147,15 @@ $routes->add('api.post.remove', new Route(
     ],
     methods: [
         'POST',
+    ],
+));
+
+$routes->add('document.download', new Route(
+    path: '/document/download',
+    defaults: [
+        '_controller' => [DocumentController::class, 'download'],
+    ],
+    methods: [
+        'GET',
     ],
 ));
