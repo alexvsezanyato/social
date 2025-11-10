@@ -20,4 +20,5 @@ require_once VENDOR_DIR.'/autoload.php';
  */
 $app = require BOOTSTRAP_DIR.'/app.php';
 
-$app->handleRequest($app->container->make(Request::class));
+$response = $app->handleRequest($app->container->make(Request::class));
+$response->send();

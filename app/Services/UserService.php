@@ -67,6 +67,7 @@ class UserService {
 
     public function getCurrentUser(): ?User
     {
-        return $this->userRepository->find($this->getId());
+        $id = $this->getId();
+        return $id ? $this->userRepository->find($id) : null;
     }
 }

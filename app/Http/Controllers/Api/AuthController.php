@@ -99,7 +99,7 @@ class AuthController
             return new Response(content: 4);
         }
 
-        $salt = base64_encode(random_bytes(32*0.66));
+        $salt = base64_encode(random_bytes((int)floor(32*0.66)));
         $hash = hash('sha512', $password . $salt);
 
         $count = $this->userRepository->count([
@@ -115,6 +115,7 @@ class AuthController
         $user->age = (int)$age;
         $user->hash = $hash;
         $user->salt = $salt;
+        $user->random = rand();
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

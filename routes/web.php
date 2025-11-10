@@ -26,17 +26,6 @@ $routes->add('api.auth.login', new Route(
     ],
 ));
 
-$routes->add('api.auth.logout', new Route(
-    path: '/api/auth/logout',
-    defaults: [
-        '_controller' => [ApiAuthController::class, 'logout'],
-        'tags' => ['auth'],
-    ],
-    methods: [
-        'POST',
-    ],
-));
-
 $routes->add('api.auth.register', new Route(
     path: '/api/auth/register',
     defaults: [
