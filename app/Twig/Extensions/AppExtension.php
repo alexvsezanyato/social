@@ -2,10 +2,12 @@
 
 namespace App\Twig\Extensions;
 
+use App\Entities\User;
 use App\Services\UserService;
 use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
 
-class AppExtension extends AbstractExtension
+class AppExtension extends AbstractExtension implements GlobalsInterface
 {
     public function __construct(
         private UserService $userService,
@@ -15,7 +17,15 @@ class AppExtension extends AbstractExtension
     {
         return [
             new \Twig\TwigFunction('authenticated', fn(): bool => $this->userService->isAuthenticated()),
-            new \Twig\TwigFunction('user', fn(?string $field = null): mixed => $this->userService->getCurrentUser()->{$field}),
+        ];
+    }
+
+    public function getGlobals(): array
+    {
+        return [
+            'globals' => [
+                'user' => $this->userService->getCurrentUser(),
+            ],
         ];
     }
 }
