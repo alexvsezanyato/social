@@ -61,7 +61,6 @@ class App {
          * @var Response
          */
         $response = $handler($request);
-        $response->send();
 
         return $response;
     }

@@ -78,7 +78,7 @@
                         break;
                     }
                 }); 
-                request.open('post', '/register', true);
+                request.open('post', '/api/auth/register', true);
                 let data = 'login=' + login.value;
                 data += '&password=' + password.value;
                 data += '&prepeat=' + rpassword.value;
