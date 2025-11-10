@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,8 +15,6 @@ class DocumentController
 
     public function download()
     {
-        # Нет валидации, ULTRA HUYOVA!
-
         $documentId = $this->request->query->get('id');
         $publicFilePath = '/public/uploads/'.$documentId;
         $filePath = BASE_DIR.$publicFilePath;

@@ -5,7 +5,7 @@
     <div>
         <ul>
         {% if authenticated() %}
-            <li>{{ user('login') }}</li>
+            <li>{{ globals.user.login }}</li>
             <li><a href="/profile/index">Home page</a></li>
             <li><a href="/profile/settings">Settings</a></li>
             <li><a href="/profile/logout">Logout</a></li>
