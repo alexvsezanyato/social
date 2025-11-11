@@ -11,6 +11,10 @@ define('APP_DIR', BASE_DIR.'/app');
 define('ENTITY_DIR', APP_DIR.'/Entities');
 define('PUBLIC_DIR', BASE_DIR.'/public');
 define('UPLOAD_DIR', PUBLIC_DIR.'/uploads');
+define('LOG_DIR', STORAGE_DIR.'/logs');
 
 define('DEBUG_MODE', true);
 define('SITE_URL', 'http://social.local/');
+
+# define('TWIG_CACHE_DIR', CACHE_DIR.'/twig');
+define('TWIG_CACHE_DIR', false);

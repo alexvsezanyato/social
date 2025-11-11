@@ -1,6 +1,7 @@
 <?php
 
 return [
-    \App\Middlewares\AuthMiddleware::class,
+    \App\Middlewares\ExceptionHandlerMiddleware::class,
     \App\Middlewares\SessionMiddleware::class,
+    \App\Middlewares\AuthMiddleware::class,
 ];

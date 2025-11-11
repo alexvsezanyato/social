@@ -15,7 +15,8 @@
         "twig/twig": "^3.22",
         "doctrine/dbal": "^4.3",
         "doctrine/orm": "^3.5",
-        "symfony/mime": "^7.3"
+        "symfony/mime": "^7.3",
+        "monolog/monolog": "^3.9"
     },
     "scripts": {
         "migrate": "./vendor/bin/doctrine-migrations"
