@@ -3,9 +3,15 @@
 use App\Entities\Document;
 use App\Entities\Picture;
 use App\Entities\Post;
+use App\Entities\User;
+
+use App\Services\UserService;
+
+use App\Repositories\UserRepository;
 use App\Repositories\DocumentRepository;
 use App\Repositories\PictureRepository;
 use App\Repositories\PostRepository;
+
 use DI\Container;
 
 use Doctrine\DBAL\Connection;
@@ -21,9 +27,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-use App\Entities\User;
-use App\Repositories\UserRepository;
-use App\Services\UserService;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+use Psr\Log\LoggerInterface;
 
 return [
     'config' => function() {
@@ -43,6 +50,12 @@ return [
     DocumentRepository::class => fn (EntityManagerInterface $em) => $em->getRepository(Document::class),
     PictureRepository::class  => fn (EntityManagerInterface $em) => $em->getRepository(Picture::class),
 
+    LoggerInterface::class => function(): Logger {
+        $logger = new Logger('app');
+        $logger->pushHandler(new StreamHandler(LOG_DIR.'/app.log', Logger::DEBUG));
+        return $logger;
+    },
+
     EntityManagerInterface::class => function(Connection $connection): EntityManagerInterface {
         $config = new ORMConfiguration();
         $config->setMetadataDriverImpl(new AttributeDriver([ENTITY_DIR]));
@@ -57,7 +70,7 @@ return [
 
     \Twig\Environment::class => function(Container $container): \Twig\Environment {
         $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader(VIEW_DIR), [
-            # 'cache' => CACHE_DIR.'/twig',
+            'cache' => TWIG_CACHE_DIR,
         ]);
 
         $twig->addExtension($container->make(\App\Twig\Extensions\AppExtension::class));
