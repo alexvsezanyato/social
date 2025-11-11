@@ -1,7 +1,6 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
-
 use App\Services\App;
 
 define('BASE_DIR', dirname(__DIR__));

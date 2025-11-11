@@ -13,18 +13,11 @@ foreach ($iterator as $file) {
     }
 }
 
-$container = new DI\Container(require CONFIG_DIR.'/container.php');
-
 $routes = new RouteCollection();
 require BASE_DIR.'/routes/web.php';
 
-$middlewares = require CONFIG_DIR.'/middleware.php';
-
-App::$instance = new App(
-    container: $container,
+return App::$instance = new App(
+    container: new DI\Container(require CONFIG_DIR.'/container.php'),
     routes: $routes,
-    middlewares: $middlewares,
+    middlewares: require CONFIG_DIR.'/middleware.php',
 );
-
-$container->set(App::class, App::$instance);
-return App::$instance;
