@@ -1,7 +1,27 @@
 <?php
 
+use DI\Container;
 use Symfony\Component\Routing\RouteCollection;
+use Dotenv\Dotenv;
+use App\Support\Paths;
 use App\Services\App;
+
+$dotenv = Dotenv::createImmutable(BASE_DIR);
+$dotenv->safeLoad();
+
+$paths = new Paths(
+    base:     BASE_DIR,
+    app:      BASE_DIR.'/app',
+    public:   BASE_DIR.'/public',
+    config:   BASE_DIR.'/config',
+    route:    BASE_DIR.'/routes',
+    resource: BASE_DIR.'/resources',
+    view:     BASE_DIR.'/resources/views',
+    storage:  BASE_DIR.'/storage',
+    cache:    BASE_DIR.'/storage/cache',
+    log:      BASE_DIR.'/storage/logs',
+    upload:   BASE_DIR.'/storage/uploads',
+);
 
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator(BASE_DIR.'/helpers/'),
@@ -13,11 +33,15 @@ foreach ($iterator as $file) {
     }
 }
 
+$container = new Container(require BASE_DIR.'/config/container.php');
+$container->set(Paths::class, $paths);
+$config = $container->get('config');
+
 $routes = new RouteCollection();
-require BASE_DIR.'/routes/web.php';
+require $paths->route.'/web.php';
 
 return App::$instance = new App(
-    container: new DI\Container(require CONFIG_DIR.'/container.php'),
+    container: $container,
     routes: $routes,
-    middlewares: require CONFIG_DIR.'/middleware.php',
+    middlewares: $config['middleware'],
 );

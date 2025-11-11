@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Support\Paths;
 use App\Entities\Document;
 use App\Entities\Picture;
 use App\Entities\Post;
@@ -26,6 +27,7 @@ class PostController
         private PostRepository $postRepository,
         private DocumentRepository $documentRepository,
         private PictureRepository $pictureRepository,
+        private Paths $paths,
     ) {}
 
     public function create()
@@ -74,8 +76,8 @@ class PostController
         $this->entityManager->persist($post);
         $this->entityManager->flush();
 
-        $documentUploadDirectory = UPLOAD_DIR.'/documents';
-        $pictureUploadDirectory = UPLOAD_DIR.'/pictures';
+        $documentUploadDirectory = $this->paths->upload.'/documents';
+        $pictureUploadDirectory = $this->paths->upload.'/pictures';
 
         foreach ($documents as $i => $file) {
             if (!$file->isValid()) {
