@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\Paths;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -11,13 +11,14 @@ class DocumentController
 {
     public function __construct(
         private Request $request,
+        private Paths $paths,
     ) {}
 
     public function download()
     {
         $documentId = $this->request->query->get('id');
         $publicFilePath = '/public/uploads/'.$documentId;
-        $filePath = BASE_DIR.$publicFilePath;
+        $filePath = $this->paths->base.$publicFilePath;
 
         if (!file_exists($filePath)) {
             throw new FileException('The requested file does not exist');

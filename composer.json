@@ -16,7 +16,8 @@
         "doctrine/dbal": "^4.3",
         "doctrine/orm": "^3.5",
         "symfony/mime": "^7.3",
-        "monolog/monolog": "^3.9"
+        "monolog/monolog": "^3.9",
+        "vlucas/phpdotenv": "^5.6"
     },
     "scripts": {
         "migrate": "./vendor/bin/doctrine-migrations"

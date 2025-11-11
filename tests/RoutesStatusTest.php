@@ -7,8 +7,7 @@ use App\Services\App;
 
 beforeAll(function () {
     define('BASE_DIR', dirname(__DIR__));
-    require BASE_DIR.'/constants.php';
-    App::$instance = require BOOTSTRAP_DIR.'/app.php';
+    App::$instance = require BASE_DIR.'/bootstrap/app.php';
 });
 
 it('returns 200', function ($path, $method) {
