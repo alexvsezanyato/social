@@ -13,3 +13,4 @@ define('PUBLIC_DIR', BASE_DIR.'/public');
 define('UPLOAD_DIR', PUBLIC_DIR.'/uploads');
 
 define('DEBUG_MODE', true);
+define('SITE_URL', 'http://social.local/');
