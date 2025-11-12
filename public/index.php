@@ -13,5 +13,8 @@ Dotenv::createImmutable(BASE_DIR)->safeLoad();
  */
 $app = require BASE_DIR.'/bootstrap/app.php';
 
-$response = $app->handleRequest(Request::createFromGlobals());
+$request = Request::createFromGlobals();
+$app->container->set(Request::class, $request);
+
+$response = $app->handleRequest($request);
 $response->send();
