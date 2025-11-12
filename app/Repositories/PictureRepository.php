@@ -4,4 +4,6 @@ namespace App\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
-class PictureRepository extends EntityRepository {}
+class PictureRepository extends EntityRepository
+{
+}

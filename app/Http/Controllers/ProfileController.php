@@ -14,7 +14,8 @@ class ProfileController
         private EntityManagerInterface $entityManager,
         private UserService $userService,
         private ViewInterface $view,
-    ) {}
+    ) {
+    }
 
     public function index()
     {

@@ -7,7 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Middlewares\MiddlewareInterface;
 
-class App {
+class App
+{
     public static ?self $instance;
 
     /**
@@ -16,7 +17,8 @@ class App {
     public function __construct(
         public private(set) Container $container,
         public private(set) array $middlewares = [],
-    ) {}
+    ) {
+    }
 
     public function handleRequest(Request $request): Response
     {

@@ -17,13 +17,13 @@ final class Version20251106195959 extends AbstractMigration
 
     public function getDescription(): string
     {
-        return 'Add column "'.self::COLUMN_NAME.'" to table "'.self::TABLE_NAME.'"';
+        return 'Add column "' . self::COLUMN_NAME . '" to table "' . self::TABLE_NAME . '"';
     }
 
     public function up(Schema $schema): void
     {
         $table = $schema->getTable(self::TABLE_NAME);
-        $table->addColumn(self::COLUMN_NAME,'datetime', ['default' => 'CURRENT_TIMESTAMP']);
+        $table->addColumn(self::COLUMN_NAME, 'datetime', ['default' => 'CURRENT_TIMESTAMP']);
     }
 
     public function down(Schema $schema): void

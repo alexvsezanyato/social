@@ -27,7 +27,8 @@ class PostController
         private DocumentRepository $documentRepository,
         private PictureRepository $pictureRepository,
         private Paths $paths,
-    ) {}
+    ) {
+    }
 
     public function create(Request $request)
     {
@@ -75,8 +76,8 @@ class PostController
         $this->entityManager->persist($post);
         $this->entityManager->flush();
 
-        $documentUploadDirectory = $this->paths->upload.'/documents';
-        $pictureUploadDirectory = $this->paths->upload.'/pictures';
+        $documentUploadDirectory = $this->paths->upload . '/documents';
+        $pictureUploadDirectory = $this->paths->upload . '/pictures';
 
         foreach ($documents as $i => $file) {
             if (!$file->isValid()) {
@@ -86,14 +87,14 @@ class PostController
 
             $documentFileName = $post->id . $i;
 
-            if (file_exists($documentUploadDirectory.'/'.$documentFileName)) {
+            if (file_exists($documentUploadDirectory . '/' . $documentFileName)) {
                 $this->entityManager->rollback();
                 return new Response(content: 7);
             }
 
             $documentOriginalName = basename($file->getClientOriginalName());
 
-            if (strlen($documentOriginalName) > 64) { 
+            if (strlen($documentOriginalName) > 64) {
                 $this->entityManager->rollback();
                 return new Response(content: 6);
             }
@@ -121,14 +122,14 @@ class PostController
 
             $pictureFileName = $post->id . $i;
 
-            if (file_exists($pictureUploadDirectory.'/'.$pictureFileName)) {
+            if (file_exists($pictureUploadDirectory . '/' . $pictureFileName)) {
                 $this->entityManager->rollback();
                 return new Response(content: 7);
             }
 
             $pictureOriginalName = basename($file->getClientOriginalName());
 
-            if (strlen($pictureOriginalName) > 64) { 
+            if (strlen($pictureOriginalName) > 64) {
                 $this->entityManager->rollback();
                 return new Response(content: 6);
             }
@@ -139,7 +140,7 @@ class PostController
                 $this->entityManager->rollback();
                 return new Response(content: 9);
             }
-            
+
             $picture = new Picture();
             $picture->pid = $post->id;
             $picture->source = $pictureFileName;
@@ -164,7 +165,7 @@ class PostController
         $postId = $request->getContent();
         $post = $this->postRepository->find($postId);
 
-        if (!$post) { 
+        if (!$post) {
             return new Response(content: 2);
         }
 
@@ -219,7 +220,7 @@ class PostController
             return new Response(content: json_encode([
                 'code' => 2,
             ]));
-        } 
+        }
 
         $result = [];
 

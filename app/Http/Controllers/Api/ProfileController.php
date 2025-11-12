@@ -13,7 +13,8 @@ class ProfileController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserService $userService,
-    ) {}
+    ) {
+    }
 
     public function apply(Request $request)
     {

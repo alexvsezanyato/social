@@ -4,14 +4,14 @@ namespace App\Middlewares;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 use App\Services\UserService;
 
 class AuthMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private UserService $userService,
-    ) {}
+    ) {
+    }
 
     public function process(Request $request, callable $handler): Response
     {

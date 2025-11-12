@@ -9,7 +9,8 @@ class IndexController
 {
     public function __construct(
         private ViewInterface $view,
-    ) {}
+    ) {
+    }
 
     public function index()
     {

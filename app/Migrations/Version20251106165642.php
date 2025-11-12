@@ -13,7 +13,7 @@ final class Version20251106165642 extends AbstractMigration
 
     public function getDescription(): string
     {
-        return 'Create table "'.self::TABLE_NAME.'"';
+        return 'Create table "' . self::TABLE_NAME . '"';
     }
 
     public function up(Schema $schema): void
