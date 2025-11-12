@@ -38,7 +38,6 @@ use Psr\Log\LoggerInterface;
 return [
     'config' => fn (Paths $paths) => require $paths->base.'/config/app.php',
 
-    Request::class            => Request::createFromGlobals(),
     SessionInterface::class   => DI\autowire(Session::class),
 
     UserService::class        => DI\autowire(UserService::class),
@@ -56,7 +55,7 @@ return [
 
     EntityManagerInterface::class => function(Connection $connection, Paths $paths): EntityManagerInterface {
         $config = new ORMConfiguration();
-        $config->setMetadataDriverImpl(new AttributeDriver([$paths->app.'/Entity']));
+        $config->setMetadataDriverImpl(new AttributeDriver([$paths->app.'/Entities']));
         $config->setProxyDir($paths->cache.'/doctrine/proxy');
         $config->setProxyNamespace('App\\Cache\\Doctrine\\Proxy');
         return new EntityManager($connection, $config);
