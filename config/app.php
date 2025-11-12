@@ -12,7 +12,9 @@ return [
     ],
     'middleware' => [
         \App\Middlewares\ExceptionHandlerMiddleware::class,
+        \App\Middlewares\ResourceNotFoundHandlerMiddleware::class,
         \App\Middlewares\SessionMiddleware::class,
+        \App\Middlewares\RoutingMiddleware::class,
         \App\Middlewares\AuthMiddleware::class,
     ],
 ];
