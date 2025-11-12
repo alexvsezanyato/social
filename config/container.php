@@ -42,12 +42,23 @@ return [
 
     SessionInterface::class   => DI\autowire(Session::class),
     UserService::class        => DI\autowire(UserService::class),
-    ViewInterface::class      => DI\autowire(TwigView::class),
 
     UserRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(User::class),
     PostRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(Post::class),
     DocumentRepository::class => fn (EntityManagerInterface $em) => $em->getRepository(Document::class),
     PictureRepository::class  => fn (EntityManagerInterface $em) => $em->getRepository(Picture::class),
+
+    ViewInterface::class => function (Container $container, Paths $paths): TwigView {
+        $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader($paths->view), [
+            'cache' => (bool)Env::get('DEBUG_MODE', false) ? false : $paths->cache.'/twig',
+        ]);
+
+        $twig->addExtension($container->make(\App\Twig\Extensions\AppExtension::class));
+
+        return $container->make(TwigView::class, [
+            'twig' => $twig,
+        ]);
+    },
 
     LoggerInterface::class => function(Paths $paths): Logger {
         $logger = new Logger('app');
@@ -65,14 +76,5 @@ return [
 
     Connection::class => function(Container $container): Connection {
         return DriverManager::getConnection($container->get('config')['database']['connection']);
-    },
-
-    \Twig\Environment::class => function(Container $container, Paths $paths): \Twig\Environment {
-        $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader($paths->view), [
-            'cache' => (bool)Env::get('DEBUG_MODE', false) ? false : $paths->cache.'/twig',
-        ]);
-
-        $twig->addExtension($container->make(\App\Twig\Extensions\AppExtension::class));
-        return $twig;
     },
 ];
