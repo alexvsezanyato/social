@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use DI\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entities\User;
@@ -12,7 +11,6 @@ class UserService {
     public function __construct(
         private SessionInterface $session,
         private Request $request,
-        private Container $container,
         private UserRepository $userRepository,
     ) {}
 

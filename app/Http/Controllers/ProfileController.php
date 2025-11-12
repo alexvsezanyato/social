@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\View;
+use App\Helpers\ViewInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,7 +13,7 @@ class ProfileController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserService $userService,
-        private View $view,
+        private ViewInterface $view,
     ) {}
 
     public function index()
