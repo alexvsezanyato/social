@@ -9,7 +9,8 @@ class AuthController
 {
     public function __construct(
         private ViewInterface $view,
-    ) {}
+    ) {
+    }
 
     public function login()
     {

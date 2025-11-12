@@ -11,7 +11,8 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
 {
     public function __construct(
         private UserService $userService,
-    ) {}
+    ) {
+    }
 
     public function getFunctions()
     {

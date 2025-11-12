@@ -23,7 +23,10 @@
         "migrate": "./vendor/bin/doctrine-migrations"
     },
     "require-dev": {
-        "pestphp/pest": "^4.1"
+        "pestphp/pest": "^4.1",
+        "squizlabs/php_codesniffer": "^4.0",
+        "friendsofphp/php-cs-fixer": "^3.89",
+        "phpstan/phpstan": "^2.1"
     },
     "config": {
         "allow-plugins": {

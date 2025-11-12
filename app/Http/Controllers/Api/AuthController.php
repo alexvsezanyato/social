@@ -18,7 +18,8 @@ class AuthController
         private SessionInterface $session,
         private Connection $connection,
         private EntityManagerInterface $entityManager,
-    ) {}
+    ) {
+    }
 
     public function login(Request $request)
     {
@@ -52,7 +53,7 @@ class AuthController
             $user->random = $random;
 
             $this->entityManager->persist($user);
-            
+
             try {
                 $this->entityManager->flush();
             } catch (\Exception $e) {
@@ -68,7 +69,7 @@ class AuthController
         $response->headers->setCookie(new Cookie(
             name: 'pid',
             value: $cookie,
-            expire: time() + 60*60*24*365,
+            expire: time() + 60 * 60 * 24 * 365,
             secure: false,
         ));
 
@@ -90,7 +91,7 @@ class AuthController
             return new Response(content: 2);
         }
 
-        if (strlen($password) < 6) { 
+        if (strlen($password) < 6) {
             return new Response(content: 3);
         }
 
@@ -98,14 +99,14 @@ class AuthController
             return new Response(content: 4);
         }
 
-        $salt = base64_encode(random_bytes((int)floor(32*0.66)));
+        $salt = base64_encode(random_bytes((int)floor(32 * 0.66)));
         $hash = hash('sha512', $password . $salt);
 
         $count = $this->userRepository->count([
             'login' => $login,
         ]);
 
-        if ($count) { 
+        if ($count) {
             return new Response(content: 5);
         }
 

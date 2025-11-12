@@ -2,7 +2,8 @@
 
 namespace App\Support;
 
-class Paths {
+class Paths
+{
     public function __construct(
         public private(set) string $base,
         public private(set) string $app,
@@ -15,5 +16,6 @@ class Paths {
         public private(set) string $cache,
         public private(set) string $log,
         public private(set) string $upload,
-    ) {}
+    ) {
+    }
 }

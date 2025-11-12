@@ -14,12 +14,13 @@ class RoutingMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private Paths $paths,
-    ) {}
+    ) {
+    }
 
     public function process(Request $request, callable $handler): Response
     {
         $routes = new RouteCollection();
-        require $this->paths->route.'/web.php';
+        require $this->paths->route . '/web.php';
 
         $context = new RequestContext();
         $context->fromRequest($request);

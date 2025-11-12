@@ -10,7 +10,8 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private LoggerInterface $logger,
-    ) {}
+    ) {
+    }
 
     public function process(Request $request, callable $handler): Response
     {

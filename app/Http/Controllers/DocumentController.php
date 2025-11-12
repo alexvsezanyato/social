@@ -11,13 +11,14 @@ class DocumentController
 {
     public function __construct(
         private Paths $paths,
-    ) {}
+    ) {
+    }
 
     public function download(Request $request)
     {
         $documentId = $request->query->get('id');
-        $publicFilePath = '/public/uploads/'.$documentId;
-        $filePath = $this->paths->base.$publicFilePath;
+        $publicFilePath = '/public/uploads/' . $documentId;
+        $filePath = $this->paths->base . $publicFilePath;
 
         if (!file_exists($filePath)) {
             throw new FileException('The requested file does not exist');

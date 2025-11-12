@@ -7,14 +7,17 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entities\User;
 use App\Repositories\UserRepository;
 
-class UserService {
+class UserService
+{
     public function __construct(
         private SessionInterface $session,
         private Request $request,
         private UserRepository $userRepository,
-    ) {}
+    ) {
+    }
 
-    public function isAuthenticated(): bool {
+    public function isAuthenticated(): bool
+    {
         $server = $this->request->server;
         $cookies = $this->request->cookies;
 
@@ -23,8 +26,8 @@ class UserService {
 
         $userAgent = $server->get('HTTP_USER_AGENT', 'agent');
 
-        if ($id !== null && $hash === hash('md5', $userAgent)) { 
-            return true; 
+        if ($id !== null && $hash === hash('md5', $userAgent)) {
+            return true;
         }
 
         if (!$cookies->has('pid')) {
@@ -41,7 +44,8 @@ class UserService {
         return false;
     }
 
-    public function getId(): ?int {
+    public function getId(): ?int
+    {
         $cookies = $this->request->cookies;
 
         $id = $this->session->get('id');
