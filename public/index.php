@@ -11,5 +11,5 @@ require_once BASE_DIR.'/vendor/autoload.php';
  */
 $app = require BASE_DIR.'/bootstrap/app.php';
 
-$response = $app->handleRequest($app->container->make(Request::class));
+$response = $app->handleRequest(Request::createFromGlobals());
 $response->send();
