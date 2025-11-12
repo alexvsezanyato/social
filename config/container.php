@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 use App\Helpers\Env;
-use App\Helpers\View;
+use App\Helpers\ViewInterface;
+use App\Helpers\TwigView;
 use App\Support\Paths;
 
 use App\Entities\Document;
@@ -41,7 +42,7 @@ return [
 
     SessionInterface::class   => DI\autowire(Session::class),
     UserService::class        => DI\autowire(UserService::class),
-    View::class               => DI\autowire(View::class),
+    ViewInterface::class      => DI\autowire(TwigView::class),
 
     UserRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(User::class),
     PostRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(Post::class),

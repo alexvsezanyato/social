@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\View;
+use App\Helpers\ViewInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController
 {
     public function __construct(
-        private View $view,
+        private ViewInterface $view,
     ) {}
 
     public function login()
