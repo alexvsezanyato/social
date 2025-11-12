@@ -20,12 +20,13 @@ class App {
 
     public function handleRequest(Request $request): Response
     {
-        $this->container->set(Request::class, $request);
-
         $handler = function (Request $request): Response {
             $parameters = $request->attributes->get('parameters');
             [$controller, $action] = $parameters['_controller'];
-            return $this->container->call([$this->container->make($controller), $action]);
+
+            return $this->container->call([$this->container->make($controller), $action], [
+                'request' => $request,
+            ]);
         };
 
         foreach (array_reverse($this->middlewares) as $middleware) {

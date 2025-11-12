@@ -13,21 +13,15 @@ class ProfileController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserService $userService,
-        private Request $request,
     ) {}
 
-    public function settings()
-    {
-        return new Response(view('settings'));
-    }
-
-    public function apply()
+    public function apply(Request $request)
     {
         if (!$this->userService->isAuthenticated()) {
             return new Response(content: 1);
         }
 
-        $public = $this->request->request->get('public');
+        $public = $request->request->get('public');
 
         if (!preg_match('/^[0-9a-zA-Z\ ]{3,20}$/', $public)) {
             return new Response(content: 2);
