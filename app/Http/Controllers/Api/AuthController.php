@@ -14,17 +14,16 @@ use App\Repositories\UserRepository;
 class AuthController
 {
     public function __construct(
-        private Request $request,
         private UserRepository $userRepository,
         private SessionInterface $session,
         private Connection $connection,
         private EntityManagerInterface $entityManager,
     ) {}
 
-    public function login()
+    public function login(Request $request)
     {
-        $login = $this->request->request->get('login');
-        $password = $this->request->request->get('password');
+        $login = $request->request->get('login');
+        $password = $request->request->get('password');
 
         $user = $this->userRepository->findOneBy([
             'login' => $login,
@@ -42,7 +41,7 @@ class AuthController
         }
 
         $this->session->set('id', $user->id);
-        $userAgent = $this->request->server->get('HTTP_USER_AGENT', 'ua');
+        $userAgent = $request->server->get('HTTP_USER_AGENT', 'ua');
         $this->session->set('hash', hash('md5', $userAgent));
 
         $random = $user->random ?? base64_encode(random_bytes(256 * 0.6666));
@@ -76,12 +75,12 @@ class AuthController
         return $response;
     }
 
-    public function register()
+    public function register(Request $request)
     {
-        $login = trim($this->request->request->get('login', ''));
-        $password = trim($this->request->request->get('password', ''));
-        $prepeat = trim($this->request->request->get('prepeat', ''));
-        $age = trim($this->request->request->get('age', ''));
+        $login = trim($request->request->get('login', ''));
+        $password = trim($request->request->get('password', ''));
+        $prepeat = trim($request->request->get('prepeat', ''));
+        $age = trim($request->request->get('age', ''));
 
         if (strlen($login) < 3) {
             return new Response(content: 1);

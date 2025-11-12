@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class PostController
 {
     public function __construct(
-        private Request $request,
         private UserRepository $userRepository,
         private UserService $userService,
         private EntityManagerInterface $entityManager,
@@ -30,7 +29,7 @@ class PostController
         private Paths $paths,
     ) {}
 
-    public function create()
+    public function create(Request $request)
     {
         /**
          * @var UploadedFile[]
@@ -42,13 +41,13 @@ class PostController
          */
         $pictures = [];
 
-        $text = $this->request->request->get('text');
+        $text = $request->request->get('text');
 
         if (strlen($text) < 5) {
             return new Response(content: 3);
         }
 
-        if ($this->request->files->count() > 20) {
+        if ($request->files->count() > 20) {
             return new Response(content: 4);
         }
 
@@ -56,7 +55,7 @@ class PostController
             return new Response(content: 2);
         }
 
-        foreach ($this->request->files->all() as $k => $file) {
+        foreach ($request->files->all() as $k => $file) {
             if ($k[0] === 'd') {
                 $documents[] = $file;
             } elseif ($k[0] === 'p') {
@@ -160,9 +159,9 @@ class PostController
         return new Response(content: 0);
     }
 
-    public function remove()
+    public function remove(Request $request)
     {
-        $postId = $this->request->getContent();
+        $postId = $request->getContent();
         $post = $this->postRepository->find($postId);
 
         if (!$post) { 
@@ -198,9 +197,9 @@ class PostController
         return new Response(content: 0);
     }
 
-    public function posts()
+    public function posts(Request $request)
     {
-        $json = json_decode($this->request->getContent());
+        $json = json_decode($request->getContent());
 
         if (!$json) {
             return new Response(content: json_encode([
