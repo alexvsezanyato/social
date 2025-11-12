@@ -1,7 +1,6 @@
 <?php
 
 use DI\Container;
-use Symfony\Component\Routing\RouteCollection;
 use Dotenv\Dotenv;
 use App\Support\Paths;
 use App\Services\App;
@@ -37,11 +36,7 @@ $container = new Container(require BASE_DIR.'/config/container.php');
 $container->set(Paths::class, $paths);
 $config = $container->get('config');
 
-$routes = new RouteCollection();
-require $paths->route.'/web.php';
-
 return App::$instance = new App(
     container: $container,
-    routes: $routes,
     middlewares: $config['middleware'],
 );

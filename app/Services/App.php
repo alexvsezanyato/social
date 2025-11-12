@@ -3,9 +3,6 @@
 namespace App\Services;
 
 use DI\Container;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Middlewares\MiddlewareInterface;
@@ -18,7 +15,6 @@ class App {
      */
     public function __construct(
         public private(set) Container $container,
-        public private(set) RouteCollection $routes = new RouteCollection(),
         public private(set) array $middlewares = [],
     ) {}
 
@@ -26,14 +22,8 @@ class App {
     {
         $this->container->set(Request::class, $request);
 
-        $context = new RequestContext();
-        $context->fromRequest($request);
-        $matcher = new UrlMatcher($this->routes, $context);
-
-        $parameters = $matcher->match($request->getPathInfo());
-        $request->attributes->set('parameters', $parameters);
-
-        $handler = function (Request $request) use ($parameters): Response {
+        $handler = function (Request $request): Response {
+            $parameters = $request->attributes->get('parameters');
             [$controller, $action] = $parameters['_controller'];
             return $this->container->call([$this->container->make($controller), $action]);
         };
