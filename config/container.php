@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Helpers\Env;
+use App\Helpers\View;
 use App\Support\Paths;
 
 use App\Entities\Document;
@@ -26,7 +28,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -39,8 +40,8 @@ return [
     'config' => fn (Paths $paths) => require $paths->base.'/config/app.php',
 
     SessionInterface::class   => DI\autowire(Session::class),
-
     UserService::class        => DI\autowire(UserService::class),
+    View::class               => DI\autowire(View::class),
 
     UserRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(User::class),
     PostRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(Post::class),
@@ -67,7 +68,7 @@ return [
 
     \Twig\Environment::class => function(Container $container, Paths $paths): \Twig\Environment {
         $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader($paths->view), [
-            'cache' => (bool)env('DEBUG_MODE', false) ? false : $paths->cache.'/twig',
+            'cache' => (bool)Env::get('DEBUG_MODE', false) ? false : $paths->cache.'/twig',
         ]);
 
         $twig->addExtension($container->make(\App\Twig\Extensions\AppExtension::class));

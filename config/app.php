@@ -1,13 +1,15 @@
 <?php
 
+use App\Helpers\Env;
+
 return [
     'database' => [
         'connection' => [
-            'dbname' => env('DB_NAME'),
-            'user'   => env('DB_USER', 'guest'),
-            'password' => env('DB_PASSWORD', ''),
-            'host' => env('DB_HOST', 'localhost'),
-            'driver' => env('DB_DRIVER'),
+            'dbname'   => Env::get('DB_NAME'),
+            'user'     => Env::get('DB_USER', 'guest'),
+            'password' => Env::get('DB_PASSWORD', ''),
+            'host'     => Env::get('DB_HOST', 'localhost'),
+            'driver'   => Env::get('DB_DRIVER'),
         ],
     ],
     'middleware' => [

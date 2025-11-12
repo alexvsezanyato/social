@@ -1,10 +1,12 @@
 <?php
 
+use Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
 use App\Services\App;
 
 define('BASE_DIR', dirname(__DIR__));
 require_once BASE_DIR.'/vendor/autoload.php';
+Dotenv::createImmutable(BASE_DIR)->safeLoad();
 
 /**
  * @var App

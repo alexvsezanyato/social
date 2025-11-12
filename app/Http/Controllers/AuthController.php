@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController
 {
+    public function __construct(
+        private View $view,
+    ) {}
+
     public function login()
     {
-        return new Response(view('auth/login'));
+        return new Response($this->view->render('auth/login'));
     }
 
     public function register()
     {
-        return new Response(view('auth/register'));
+        return new Response($this->view->render('auth/register'));
     }
 }
