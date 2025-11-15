@@ -57,13 +57,9 @@
             {% endif %}
         </div>
 
-        <div id="post-list" class="posts">
-            {% if not user.public %}
-            <hr class="hr"><div class="notice posts-end">You must have public name to post</div>
-            {% else %}
-            <script src="/scripts/posts.js"></script>
-            {% endif %}
-        </div>
+        {% include '/components/posts.html.twig' with {
+            'posts': user.posts,
+        } %}
     </div>
 
     {% if isOwnProfile and user.public %}

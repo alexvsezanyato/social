@@ -27,6 +27,11 @@ class Post
 
     #[ORM\ManyToOne(
         targetEntity: User::class,
+        inversedBy: 'posts',
+    )]
+    #[ORM\JoinColumn(
+        name: 'author_id',
+        referencedColumnName: 'id',
     )]
     public User $author;
 

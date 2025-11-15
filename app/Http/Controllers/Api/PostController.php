@@ -74,7 +74,7 @@ class PostController
         $this->entityManager->beginTransaction();
 
         $post = new Post();
-        $post->authorId = $this->userService->getCurrentUser()->id;
+        $post->author = $this->userService->getCurrentUser();
         $post->text = htmlspecialchars($text);
         $this->entityManager->persist($post);
         $this->entityManager->flush();
@@ -110,7 +110,7 @@ class PostController
             }
 
             $document = new Document();
-            $document->pid = $post->id;
+            $document->post = $post;
             $document->source = "documents/$documentFileName";
             $document->mime = $file->getMimeType();
             $document->name = $documentOriginalName;
@@ -145,7 +145,7 @@ class PostController
             }
 
             $picture = new Picture();
-            $picture->pid = $post->id;
+            $picture->post = $post;
             $picture->source = $pictureFileName;
             $picture->mime = $file->getMimeType();
             $picture->name = $pictureOriginalName;
@@ -163,13 +163,23 @@ class PostController
         return new Response(content: 0);
     }
 
-    public function remove(Request $request)
+    public function delete(Request $request)
     {
-        $postId = $request->getContent();
+        $postId = $request->query->get('id');
         $post = $this->postRepository->find($postId);
 
+        if ($post->authorId !== $this->userService->getId()) {
+            return new JsonResponse([
+                'status' => 'fail',
+                'error' => 'Permission denied',
+            ]);
+        }
+
         if (!$post) {
-            return new Response(content: 2);
+            return new JsonResponse([
+                'status' => 'fail',
+                'error'=> 'Post not found',
+            ]);
         }
 
         $this->entityManager->beginTransaction();
@@ -195,10 +205,15 @@ class PostController
             $this->entityManager->flush();
             $this->entityManager->commit();
         } catch (\Exception $e) {
-            return new Response(content: 2);
+            return new JsonResponse([
+                'status' => 'fail',
+                'error' => $e->getMessage(),
+            ]);
         }
 
-        return new Response(content: 0);
+        return new JsonResponse([
+            'status' => 'success',
+        ]);
     }
 
     public function posts(Request $request)

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\PostCommentController;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
@@ -140,13 +141,13 @@ $routes->add('api.posts', new Route(
     ],
 ));
 
-$routes->add('api.post.remove', new Route(
-    path: '/api/post/remove',
+$routes->add('api.post.delete', new Route(
+    path: '/api/post/delete',
     defaults: [
-        '_controller' => [ApiPostController::class, 'remove'],
+        '_controller' => [ApiPostController::class, 'delete'],
     ],
     methods: [
-        'POST',
+        'GET',
     ],
 ));
 
@@ -160,12 +161,22 @@ $routes->add('document.download', new Route(
     ],
 ));
 
-$routes->add('post-comment.create', new Route(
+$routes->add('api.post-comment.create', new Route(
     path: '/api/post-comment/create',
     defaults: [
         '_controller' => [ApiPostCommentController::class, 'create'],
     ],
     methods: [
         'POST',
+    ],
+));
+
+$routes->add('post-comment.index', new Route(
+    path: '/post-comment/index',
+    defaults: [
+        '_controller' => [PostCommentController::class, 'index'],
+    ],
+    methods: [
+        'GET',
     ],
 ));
