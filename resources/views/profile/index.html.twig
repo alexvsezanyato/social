@@ -1,32 +1,32 @@
 {% extends '/layouts/base.html.twig' %}
 
 {% block main %}
-    {% if globals.user.public %}
+    {% if user.public %}
     <h3 style="padding-top: 2px;">Profile</h3>
     <ul class="profile-header">
         <li class="ph-row">
             <div class="title">Name: </div>
-            <div class="value">{{ globals.user.public }}</div>
+            <div class="value">{{ user.public }}</div>
         </li>
         <li class="ph-row">
             <div class="title">Login: </div>
-            <div class="value">{{ globals.user.login }}</div>
+            <div class="value">{{ user.login }}</div>
         </li>
         <li class="ph-row">
             <div class="title">Age: </div>
-            <div class="value">{{ globals.user.age }}</div>
+            <div class="value">{{ user.age }}</div>
         </li>
     </ul>
-    {% elseif globals.user %}
+    {% elseif user %}
     <h3>Profile</h3>
     <ul class="profile-header">
         <li class="ph-row">
             <div class="title">Login: </div>
-            <div class="value">{{ globals.user.login }}</div>
+            <div class="value">{{ user.login }}</div>
         </li>
         <li class="ph-row">
             <div class="title">Age: </div>
-            <div class="value">{{ globals.user.age }}</div>
+            <div class="value">{{ user.age }}</div>
         </li>
     </ul>
     <div class="sets">
@@ -38,7 +38,7 @@
                     <input 
                         id="public-input" 
                         placeholder="..." 
-                        value="{{ globals.user.public }}"
+                        value="{{ user.public }}"
                     >
                 </label>
                 <div class="set-desc">You must have public name to post or to comment.</div>
@@ -52,13 +52,13 @@
         <div class="posts-header">
             <h3>Posts</h3>
 
-            {% if globals.user.public %}
+            {% if isOwnProfile and user.public %}
             <div class="new-post"><input id="np-btn" type="button" value="New"></div>
             {% endif %}
         </div>
 
         <div id="post-list" class="posts">
-            {% if not globals.user.public %}
+            {% if not user.public %}
             <hr class="hr"><div class="notice posts-end">You must have public name to post</div>
             {% else %}
             <script src="/scripts/posts.js"></script>
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    {% if globals.user.public %}
+    {% if isOwnProfile and user.public %}
     {{ include('/components/new-post.html.twig') }}
     {% endif %}
 {% endblock %}

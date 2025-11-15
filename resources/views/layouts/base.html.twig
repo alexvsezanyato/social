@@ -11,6 +11,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
     {% block style %}{% endblock %}
+
+    <script>
+        {
+            let user = null;
+
+            window.globals = {
+                getUser: async function(id) {
+                    if (user !== null) {
+                        return user;
+                    }
+
+                    const uri = new URL('/api/profile/get', window.location.origin);
+
+                    if (id) {
+                        uri.searchParams.set('id', id);
+                    }
+
+                    try {
+                        const response = await fetch(uri);
+                        user = response.json();
+                    } catch (e) {
+                        console.error('Failed to fetch user data', e);
+                        return null;
+                    }
+
+                    return user;
+                },
+            };
+        }
+    </script>
 </head>
 <body>
     {{ include('/common/header.html.twig') }}

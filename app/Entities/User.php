@@ -38,5 +38,5 @@ class User
             'default' => '',
         ],
     )]
-    public ?string $public = null;
+    public string $public = '';
 }

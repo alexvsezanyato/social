@@ -1,11 +1,13 @@
 ;(() => {
 // begin scope
 
-function getCommentHtml(authorName, text) {
+const userId = new URLSearchParams(window.location.search).get('id')
+
+function getCommentHtml(authorId, authorName, text) {
     return `<div class="comment">
         <div class="author">
             <div class="icon"><i class="fa-solid fa-user"></i></div>
-            <div class="name">${authorName}</div>
+            <div class="name"><a href="/profile/index?id=${authorId}">${authorName}</a></div>
         </div>
         <div class="text">${text}</div>
     </div>`
@@ -15,18 +17,16 @@ let list = document.querySelector('#post-list')
 let more
 let limit = 3
 
-let fetchPosts = (from, limit) => {
-    fetch('/api/posts', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+let fetchPosts = (from, limit, authorId) => {
+    const uri = new URL('/api/posts', window.location.origin)
+    uri.searchParams.append('from', from)
+    uri.searchParams.append('limit', limit)
 
-        body: JSON.stringify({
-            'from': from,
-            'limit': limit
-        })
-    })
-    .then(r => r.json())
-    .then(r => printPosts(r))
+    if (authorId) {
+        uri.searchParams.append('user_id', authorId)
+    }
+
+    fetch(uri).then(r => r.json()).then(r => printPosts(r))
 }
 
 let printPosts = r => {
@@ -100,7 +100,7 @@ let printPosts = r => {
         `
 
         for (let comment of post.comments) {
-            commentsHtml += '<li>' + getCommentHtml(comment.author.public, comment.text) + '</li>'
+            commentsHtml += '<li>' + getCommentHtml(comment.author.id, comment.author.public, comment.text) + '</li>'
         }
 
         commentsHtml = `
@@ -168,46 +168,47 @@ let printPosts = r => {
         }
 
         let moreButton = more.querySelector('.wrapper')
-        moreButton.onclick = e => fetchPosts(minId - 1, limit)
+        moreButton.onclick = e => fetchPosts(minId - 1, limit, userId)
         list.append(more)
     }
-
-    list.addEventListener('click', (e) => {
-        if (e.target.closest('.send-comment')) {
-            const post = e.target.closest('.post')
-            const commentInput = post.querySelector('.new-comment').querySelector('.input')
-            const commentText = commentInput.value.trim()
-
-            if (!commentText.length) {
-                new notification(
-                    'Comment cannot be empty.'
-                )
-                return
-            }
-
-            const data = new FormData()
-            data.append('post_id', post.dataset.id)
-            data.append('text', commentText)
-
-            fetch('/api/post-comment/create', {
-                method: 'POST',
-                body: data,
-            }).then(r => r.json()).then(response => {
-                if (response.status === 'success') {
-                    const commentList = post.querySelector('.comment-list')
-                    commentList.innerHTML += '<li>' + getCommentHtml(r.user.public, commentText) + '</li>'
-                    commentInput.value = ''
-                } else {
-                    new notification(
-                        'Failed to add comment. Please try again.'
-                    )
-                }
-            })
-        }
-    })
 }
 
-fetchPosts(0, limit)
+list.addEventListener('click', (e) => {
+    if (e.target.closest('.send-comment')) {
+        const post = e.target.closest('.post')
+        const commentInput = post.querySelector('.new-comment').querySelector('.input')
+        const commentText = commentInput.value.trim()
+
+        if (!commentText.length) {
+            new notification(
+                'Comment cannot be empty.'
+            )
+            return
+        }
+
+        const data = new FormData()
+        data.append('post_id', post.dataset.id)
+        data.append('text', commentText)
+
+        fetch('/api/post-comment/create', {
+            method: 'POST',
+            body: data,
+        }).then(r => r.json()).then(async response => {
+            if (response.status === 'success') {
+                const user = await window.globals.getUser()
+                const commentList = post.querySelector('.comment-list')
+                commentList.innerHTML += '<li>' + getCommentHtml(user.id, user.public, commentText) + '</li>'
+                commentInput.value = ''
+            } else {
+                new notification(
+                    'Failed to add comment. Please try again.'
+                )
+            }
+        })
+    }
+})
+
+fetchPosts(0, limit, userId)
 let menu
 
 let hideMenu = (e) => {

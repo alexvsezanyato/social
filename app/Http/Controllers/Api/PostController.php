@@ -14,6 +14,7 @@ use App\Repositories\PostCommentRepository;
 use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -202,26 +203,22 @@ class PostController
 
     public function posts(Request $request)
     {
-        $json = json_decode($request->getContent());
+        $authorId = (int)$request->query->get('user_id', $this->userService->getId());
+        $author = $this->userRepository->find($authorId);
 
-        if (!$json) {
-            return new Response(content: json_encode([
-                'code' => 1,
-            ]));
-        }
-
-        if (!isset($json->from) || !isset($json->limit)) {
-            return new Response(content: json_encode([
+        if (!$request->query->has('from') || !$request->query->has('limit')) {
+            return new JsonResponse([
                 'code' => 2,
-            ]));
+            ]);
         }
 
-        $from = $json->from ?? 0;
+        $from = $request->query->get('from');
+        $limit = $request->query->get('limit');
 
         if (!is_numeric($from)) {
-            return new Response(content: json_encode([
+            return new JsonResponse([
                 'code' => 2,
-            ]));
+            ]);
         }
 
         $result = [];
@@ -229,7 +226,8 @@ class PostController
         try {
             $posts = $this->postRepository->findWithPagination(
                 offset: $from,
-                limit: 10,
+                limit: $limit,
+                authorId: $authorId,
             );
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -284,28 +282,26 @@ class PostController
             ]);
 
             foreach ($comments as $comment) {
-                $author = $this->userRepository->find($comment->authorId);
+                $commentAuthor = $this->userRepository->find($comment->authorId);
 
                 $result[$post->id]['comments'][] = [
                     'id' => $comment->id,
                     'author' => [
-                        'id' => $author->id,
-                        'public' => $author->public,
+                        'id' => $commentAuthor->id,
+                        'public' => $commentAuthor->public,
                     ],
                     'text' => $comment->text,
                 ];
             }
         }
 
-        $user = $this->userService->getCurrentUser();
-
         return new Response(json_encode([
             'code' => 0,
             'posts' => array_values($result),
 
             'user' => [
-                'id' => $user->id,
-                'public' => $user->public,
+                'id' => $author->id,
+                'public' => $author->public,
             ]
         ]));
     }
