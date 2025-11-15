@@ -2,9 +2,11 @@
 
 namespace App\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repositories\PostRepository;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\Table('`post`')]
@@ -23,6 +25,29 @@ class Post
     )]
     public ?int $authorId = null;
 
+    #[ORM\ManyToOne(
+        targetEntity: User::class,
+    )]
+    public User $author;
+
+    #[ORM\OneToMany(
+        targetEntity: Picture::class,
+        mappedBy: 'post',
+    )]
+    public Collection $pictures;
+
+    #[ORM\OneToMany(
+        targetEntity: Document::class,
+        mappedBy: 'post',
+    )]
+    public Collection $documents;
+
+    #[ORM\OneToMany(
+        targetEntity: PostComment::class,
+        mappedBy: 'post',
+    )]
+    public Collection $comments;
+
     #[ORM\Column(
         name: 'created_at',
         type: Types::DATETIME_MUTABLE,
@@ -36,5 +61,9 @@ class Post
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+
+        $this->pictures = new ArrayCollection();
+        $this->documents = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 }

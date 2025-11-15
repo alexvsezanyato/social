@@ -25,4 +25,8 @@ class Picture
 
     #[ORM\Column]
     public ?string $name = null;
+
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'pictures')]
+    #[ORM\JoinColumn(name: 'pid', referencedColumnName: 'id')]
+    public Post $post;
 }

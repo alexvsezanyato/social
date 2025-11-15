@@ -34,4 +34,8 @@ class PostComment
         length: 2000,
     )]
     public string $text;
+
+    #[ORM\ManyToOne(inversedBy: "comments")]
+    #[ORM\JoinColumn(nullable: false)]
+    public Post $post;
 }
