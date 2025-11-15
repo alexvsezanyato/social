@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Entities\PostComment;
 use App\Repositories\PostCommentRepository;
+use App\Repositories\PostRepository;
 use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +16,7 @@ class PostCommentController
         private UserService $userService,
         private EntityManagerInterface $entityManager,
         private PostCommentRepository $postCommentRepository,
+        private PostRepository $postRepository,
     ) {
     }
 
@@ -25,8 +27,8 @@ class PostCommentController
         $text = $request->request->get('text');
 
         $comment = new PostComment();
-        $comment->authorId = $user->id;
-        $comment->postId = $postId;
+        $comment->author = $user;
+        $comment->post = $this->postRepository->find($postId);
         $comment->text = $text;
         $this->entityManager->persist($comment);
         $this->entityManager->flush();

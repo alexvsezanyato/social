@@ -5,6 +5,10 @@
     box-sizing: border-box;
 }
 
+.hidden {
+    display: none;
+}
+
 body {
     overflow-y: scroll;
     background: #f7f7f7;
@@ -214,7 +218,7 @@ main > * {
     white-space: pre-wrap;
 }
 
-.post .file-list {
+.post .documents {
     list-style-type: none;   
     margin: 0;
     padding: 0;
@@ -223,39 +227,32 @@ main > * {
     font-weight: bold;
 }
 
-.post .file-list > * {
+.post .document {
     border-top: 1px solid #ddd;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     white-space: nowrap;
     overflow: hidden;
-}
-
-.post .file-list .file-name {
     flex-shrink: 1;
     flex-grow: 1;
     overflow: hidden;
+    padding: 10px;
 }
 
-.post .file-list .file-name > a {
+.post .document .link {
     color: #000;
     text-decoration: none;
 }
 
-.post .file-list .file-name > a:hover {
+.post .document .link:hover {
     text-decoration: underline;
 }
 
-.post .file-list > li > * {
-    padding: 10px;
-}
-
-.post .file-list > li > *:first-of-type > i {
+.post .document .icon {
     padding-right: 10px;
 }
 
-.post-options {
+.post .menu .items {
     position: absolute;
     z-index: 4;
     top: 0;
@@ -280,40 +277,34 @@ main > * {
     user-select: none;
 }
 
-.post-options .option  {
+.post .menu .item {
     padding: 7px;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
     transition: background .03s;
 }
 
-.post-options .option:last-of-type {
+.post .menu .item:last-of-type {
     border-bottom: none;
 }
 
-.post-options .option:hover {
+.post .menu .item:hover {
     background: #eee;
 }
 
-.post-options .back {
+.post .menu .item.back {
     color: #444;
 }
 
-.post-options .back i {
+.post .menu .item.back i {
     font-size: 16px;
 }
 
-.post-options i {
+.post .menu .item i {
     box-sizing: content-box;
     padding-right: 10px;
     width: 14px;
     text-align: center;
-}
-
-.scaled {
-    transform: scale(0.94) translate(3%, -3%);
-    opacity: 0;
-    box-shadow: none;
 }
 
 .more-posts {
@@ -357,7 +348,7 @@ main > * {
     font-weight: bold;
 }
 
-.post .pic-list {
+.post .pictures {
     list-style-type: none;   
     padding: 5px;
     margin: 0;
@@ -366,21 +357,16 @@ main > * {
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.post .pic-list .image {
+.post .picture {
     margin: 5px;
     flex-grow: 1;
     max-height: 100px;
     min-height: 30px;
     min-width: 20%;
-    display: flex;
-    flex-direction: column;
     background-size: contain;
     border-radius: 5px;
     min-height: 70px;
     cursor: pointer;
-}
-
-.post .pic-list .image {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -389,7 +375,7 @@ main > * {
     border: 1px solid #ddd;
 }
 
-.post .comment-list {
+.post .comments {
     list-style-type: none;   
     margin: 0;
     padding: 0;

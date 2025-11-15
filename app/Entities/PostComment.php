@@ -16,26 +16,24 @@ class PostComment
     public int $id;
 
     #[ORM\Column(
-        name: 'author_id',
-        type: Types::INTEGER,
-        nullable: false,
-    )]
-    public int $authorId;
-
-    #[ORM\Column(
-        name: 'post_id',
-        type: Types::INTEGER,
-        nullable: false,
-    )]
-    public int $postId;
-
-    #[ORM\Column(
         type: Types::STRING,
         length: 2000,
     )]
     public string $text;
 
-    #[ORM\ManyToOne(inversedBy: "comments")]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Post::class)]
+    #[ORM\JoinColumn(
+        name: 'post_id',
+        referencedColumnName: 'id',
+        nullable: false,
+    )]
     public Post $post;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(
+        name: 'author_id',
+        referencedColumnName: 'id',
+        nullable: false,
+    )]
+    public User $author;
 }

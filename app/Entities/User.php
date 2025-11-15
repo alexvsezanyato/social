@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repositories\UserRepository;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table('`user`')]
@@ -39,4 +40,10 @@ class User
         ],
     )]
     public string $public = '';
+
+    #[ORM\OneToMany(
+        targetEntity: Post::class,
+        mappedBy: 'author',
+    )]
+    public Collection $posts;
 }

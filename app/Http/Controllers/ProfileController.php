@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ViewInterface;
+use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,7 @@ class ProfileController
         private UserService $userService,
         private ViewInterface $view,
         private UserRepository $userRepository,
+        private PostRepository $postRepository,
     ) {
     }
 
