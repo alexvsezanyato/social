@@ -10,6 +10,7 @@ use App\Repositories\DocumentRepository;
 use App\Repositories\PictureRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\PostCommentRepository;
 use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -27,6 +28,7 @@ class PostController
         private DocumentRepository $documentRepository,
         private PictureRepository $pictureRepository,
         private Paths $paths,
+        private PostCommentRepository $postCommentRepository,
     ) {
     }
 
@@ -246,6 +248,7 @@ class PostController
                 'time' => $time,
                 'pics' => [],
                 'docs' => [],
+                'comments' => [],
             ];
 
             $documents = $this->documentRepository->findBy([
@@ -273,6 +276,23 @@ class PostController
                     'name' => $picture->name,
                     'mime' => $picture->mime,
                     'source' => $picture->source,
+                ];
+            }
+
+            $comments = $this->postCommentRepository->findBy([
+                'postId' => $post->id,
+            ]);
+
+            foreach ($comments as $comment) {
+                $author = $this->userRepository->find($comment->authorId);
+
+                $result[$post->id]['comments'][] = [
+                    'id' => $comment->id,
+                    'author' => [
+                        'id' => $author->id,
+                        'public' => $author->public,
+                    ],
+                    'text' => $comment->text,
                 ];
             }
         }

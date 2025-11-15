@@ -26,9 +26,17 @@ class User
     #[ORM\Column]
     public ?string $salt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(
+        options: [
+            'default' => '',
+        ],
+    )]
     public ?string $random = null;
 
-    #[ORM\Column]
+    #[ORM\Column(
+        options: [
+            'default' => '',
+        ],
+    )]
     public ?string $public = null;
 }

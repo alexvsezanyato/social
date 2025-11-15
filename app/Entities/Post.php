@@ -27,6 +27,9 @@ class Post
         name: 'created_at',
         type: Types::DATETIME_MUTABLE,
         nullable: false,
+        options: [
+            'default' => 'CURRENT_TIMESTAMP',
+        ],
     )]
     public \DateTimeInterface $createdAt;
 
