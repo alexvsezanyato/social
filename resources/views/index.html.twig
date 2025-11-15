@@ -1,5 +1,7 @@
 {% extends "/layouts/base.html.twig" %}
 
 {% block main %}
-News
+    {% for post in posts %}
+    {% include '/components/post/index.html.twig' %}
+    {% endfor %}
 {% endblock %}

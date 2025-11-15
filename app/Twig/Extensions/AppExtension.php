@@ -2,7 +2,6 @@
 
 namespace App\Twig\Extensions;
 
-use App\Entities\User;
 use App\Services\UserService;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
