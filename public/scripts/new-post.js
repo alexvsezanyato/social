@@ -16,26 +16,30 @@ let pics = []
 let sizeError = false
 modal.onscroll = (e) => e.preventDefault();
 
-openbtn.onclick = (e) => {
-    document.body.style.overflowY = 'hidden'
-    modal.style.overflowY = 'hidden'
+if (openbtn) {
+    openbtn.onclick = (e) => {
+        document.body.style.overflowY = 'hidden'
+        modal.style.overflowY = 'hidden'
 
-    wrapper.style.visibility = 'visible'
-    modal.style.visibility = 'visible'
-    wrapper.style.opacity = '1'
-    iwindow.style.transform = 'scale(1)'
-    setTimeout(() => input.focus(), 100)
+        wrapper.style.visibility = 'visible'
+        modal.style.visibility = 'visible'
+        wrapper.style.opacity = '1'
+        iwindow.style.transform = 'scale(1)'
+        setTimeout(() => input.focus(), 100)
+    }
 }
 
-closebtn.onclick = (e) => {
-    input.blur()
-    iwindow.style.transform = 'scale(0.94)'
-    wrapper.style.opacity = '0'
-    modal.style.visibility = 'hidden'
-    wrapper.style.visibility = 'hidden'
+if (closebtn) {
+    closebtn.onclick = (e) => {
+        input.blur()
+        iwindow.style.transform = 'scale(0.94)'
+        wrapper.style.opacity = '0'
+        modal.style.visibility = 'hidden'
+        wrapper.style.visibility = 'hidden'
 
-    modal.style.overflowY = 'hidden'
-    document.body.style.overflowY = 'scroll'
+        modal.style.overflowY = 'hidden'
+        document.body.style.overflowY = 'scroll'
+    }
 }
 
 let handleRequest = (e) => {
@@ -93,34 +97,37 @@ let handleRequest = (e) => {
     }
 }
 
+if (send) {
+    send.onclick = (e) => {
+        if (sizeError) { 
+            new notification(
+                'Notd: some data is too large'
+            )
+            return
+        }
 
-send.onclick = (e) => {
-    if (sizeError) { 
-        new notification(
-            'Notd: some data is too large'
-        )
-        return
+        // send post
+        let value = input.value
+        let request = new XMLHttpRequest()
+        let data = new FormData()
+
+        data.append('text', value)
+        files.forEach((e, i) => data.append('d' + i, e))
+        pics.forEach((e, i) => data.append('p' + i, e))
+
+        request.onreadystatechange = handleRequest
+        request.open('post', '/api/post/create', true)
+        request.send(data)
+
+        // form data сам задает тип контента 
+        // в котором также указывается boundary
+        // request.setRequestHeader('Content-Type', 'multipart/form-data')
     }
-
-    // send post
-    let value = input.value
-    let request = new XMLHttpRequest()
-    let data = new FormData()
-
-    data.append('text', value)
-    files.forEach((e, i) => data.append('d' + i, e))
-    pics.forEach((e, i) => data.append('p' + i, e))
-
-    request.onreadystatechange = handleRequest
-    request.open('post', '/api/post/create', true)
-    request.send(data)
-
-    // form data сам задает тип контента 
-    // в котором также указывается boundary
-    // request.setRequestHeader('Content-Type', 'multipart/form-data')
 }
 
 ;(() => {
+    if (!options) return
+    if (!modal) return
     let picBtn = options.querySelector('.pics')    
     let picInput = options.querySelector('.input-pic')
     let picList = modal.querySelector('.pic-list')

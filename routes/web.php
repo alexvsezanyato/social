@@ -110,6 +110,16 @@ $routes->add('api.profile.apply', new Route(
     ],
 ));
 
+$routes->add('api.profile.get', new Route(
+    path: '/api/profile/get',
+    defaults: [
+        '_controller' => [ApiProfileController::class, 'get'],
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
 $routes->add('api.post.create', new Route(
     path: '/api/post/create',
     defaults: [
@@ -126,7 +136,7 @@ $routes->add('api.posts', new Route(
         '_controller' => [ApiPostController::class, 'posts'],
     ],
     methods: [
-        'POST',
+        'GET',
     ],
 ));
 
