@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Entities\PostComment;
 use App\Helpers\Env;
 use App\Helpers\ViewInterface;
 use App\Helpers\TwigView;
+use App\Repositories\PostCommentRepository;
 use App\Support\Paths;
 
 use App\Entities\Document;
@@ -40,13 +42,14 @@ use Psr\Log\LoggerInterface;
 return [
     'config' => fn (Paths $paths) => require $paths->base.'/config/app.php',
 
-    SessionInterface::class   => DI\autowire(Session::class),
-    UserService::class        => DI\autowire(UserService::class),
+    SessionInterface::class      => DI\autowire(Session::class),
+    UserService::class           => DI\autowire(UserService::class),
 
-    UserRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(User::class),
-    PostRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(Post::class),
-    DocumentRepository::class => fn (EntityManagerInterface $em) => $em->getRepository(Document::class),
-    PictureRepository::class  => fn (EntityManagerInterface $em) => $em->getRepository(Picture::class),
+    UserRepository::class        => fn (EntityManagerInterface $em) => $em->getRepository(User::class),
+    PostRepository::class        => fn (EntityManagerInterface $em) => $em->getRepository(Post::class),
+    DocumentRepository::class    => fn (EntityManagerInterface $em) => $em->getRepository(Document::class),
+    PictureRepository::class     => fn (EntityManagerInterface $em) => $em->getRepository(Picture::class),
+    PostCommentRepository::class => fn (EntityManagerInterface $em) => $em->getRepository(PostComment::class),
 
     ViewInterface::class => function (Container $container, Paths $paths): TwigView {
         $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader($paths->view), [

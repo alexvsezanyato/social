@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\AuthController as ApiAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\ProfileController as ApiProfileController;
 use App\Http\Controllers\Api\PostController as ApiPostController;
+use App\Http\Controllers\Api\PostCommentController as ApiPostCommentController;
 
 /**
  * @var RouteCollection $routes
@@ -146,5 +147,15 @@ $routes->add('document.download', new Route(
     ],
     methods: [
         'GET',
+    ],
+));
+
+$routes->add('post-comment.create', new Route(
+    path: '/api/post-comment/create',
+    defaults: [
+        '_controller' => [ApiPostCommentController::class, 'create'],
+    ],
+    methods: [
+        'POST',
     ],
 ));

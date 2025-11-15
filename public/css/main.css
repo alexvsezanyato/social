@@ -388,3 +388,61 @@ main > * {
     padding: 5px;
     border: 1px solid #ddd;
 }
+
+.post .comment-list {
+    list-style-type: none;   
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    font-family: Roboto, Arial, Tahoma;
+    font-weight: bold;
+}
+
+.post .new-comment {
+    display: flex;
+    border-top: 1px solid #ddd;
+}
+
+.post .new-comment .input {
+    display: flex;
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    outline: none;
+}
+
+.post .new-comment .author {
+    padding: 10px;
+}
+
+.post .new-comment .sending {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.post .new-comment .send-comment {
+    border-radius: 20%;
+}
+
+.post .new-comment .sending:hover .send-comment {
+    background: #ddd;
+}
+
+.post .comment {
+    border-top: 1px solid #ddd;
+}
+
+.post .comment .author {
+    padding: 10px;
+    display: flex;
+}
+
+.post .comment .author .icon {
+    padding-right: 10px;
+}
+
+.post .comment .text {
+    padding: 10px;
+    padding-top: 0;
+    font-weight: 400;
+}
