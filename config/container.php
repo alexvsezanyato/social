@@ -7,6 +7,7 @@ use App\Helpers\Env;
 use App\Helpers\ViewInterface;
 use App\Helpers\TwigView;
 use App\Repositories\PostCommentRepository;
+use App\Services\Vite;
 use App\Support\Paths;
 
 use App\Entities\Document;
@@ -79,5 +80,10 @@ return [
 
     Connection::class => function(Container $container): Connection {
         return DriverManager::getConnection($container->get('config')['database']['connection']);
+    },
+
+    Vite::class => function(Paths $paths): Vite {
+        $manifest = json_decode(file_get_contents($paths->public.'/.vite/manifest.json'), true);
+        return new Vite($manifest);
     },
 ];
