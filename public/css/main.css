@@ -254,7 +254,6 @@ main > * {
 
 .post .menu .items {
     position: absolute;
-    z-index: 4;
     top: 0;
     right: 0;
     margin: 10px;
