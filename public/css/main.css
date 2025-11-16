@@ -382,6 +382,7 @@ main > * {
     font-size: 13px;
     font-family: Roboto, Arial, Tahoma;
     font-weight: bold;
+    border-top: 1px solid #ddd;
 }
 
 .post .new-comment {
@@ -414,8 +415,17 @@ main > * {
     background: #ddd;
 }
 
-.post .comment {
-    border-top: 1px solid #ddd;
+.post .comment:before {
+    content: '';
+    width: calc(100% - 20px);
+    margin: 0 10px;
+    height: 1px;
+    background: #e8e8e8;
+    display: block;
+}
+
+.post .comments > .comment:first-of-type:before {
+    content: none;
 }
 
 .post .comment .author {

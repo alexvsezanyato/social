@@ -13,11 +13,11 @@
 
                 <div class="menu" data-menu>
                     <div class="toggler">
-                        <i class="fas fa-caret-down" data-menu></i>
+                        <i class="fa-solid fa-caret-down"></i>
                     </div>
                     <div class="items hidden">
-                        <div class="item back"><i class="fas fa-caret-left"></i>Back</div>
-                        <div class="item delete" data-href="/api/post/delete?id={{ post.id }}"><i class="far fa-trash-alt"></i>Delete</div>
+                        <div class="item back"><i class="fa-solid fa-caret-left"></i>Back</div>
+                        <div class="item delete" data-href="/api/post/delete?id={{ post.id }}"><i class="fa-solid fa-trash"></i>Delete</div>
                     </div>
                 </div>
             </div>
@@ -46,16 +46,18 @@
         </div>
         {% endif %}
 
-        <div class="comments">
-            <div class="new-comment">
-                <div class="author"><i class="fa-solid fa-user"></i></div>
-                <input name="comment" class="input" type="text" placeholder="Comment">
-                <div class="sending"><div class="send-comment"><i class="fas fa-solid fa-paper-plane"></i></div></div>
-            </div>
+        <div class="new-comment">
+            <div class="author"><i class="fa-solid fa-user"></i></div>
+            <input name="comment" class="input" type="text" placeholder="Comment">
+            <div class="sending"><div class="send-comment"><i class="fas fa-solid fa-paper-plane"></i></div></div>
+        </div>
 
+        {% if not post.comments.isEmpty() %}
+        <div class="comments">
             {% for comment in post.comments %}
             {% include '/components/post/comment.html.twig' %}
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 </div>
