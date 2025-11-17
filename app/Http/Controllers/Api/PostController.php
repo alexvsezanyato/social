@@ -59,13 +59,8 @@ class PostController
             return new Response(content: 2);
         }
 
-        foreach ($request->files->all() as $k => $file) {
-            if ($k[0] === 'd') {
-                $documents[] = $file;
-            } elseif ($k[0] === 'p') {
-                $pictures[] = $file;
-            }
-        }
+        $documents = $request->files->all('documents') ?: [];
+        $pictures = $request->files->all('pictures') ?: [];
 
         if (count($pictures) > 9 || count($documents) > 5) {
             return new Response(content: 5);

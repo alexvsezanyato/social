@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite';
-import path from 'path';
+import type { UserConfig } from 'vite';
+import * as path from 'path';
 
-export default defineConfig({
+export default {
     root: path.resolve(__dirname, 'resources/scripts'),
     build: {
         target: 'esnext',
@@ -10,8 +10,8 @@ export default defineConfig({
         manifest: true,
         rollupOptions: {
             input: {
-                main: path.resolve(__dirname, 'resources/scripts/main.js')
-            }
-        }
+                main: path.resolve(__dirname, 'resources/scripts/main.ts'),
+            },
+        },
     },
-});
+} satisfies UserConfig
