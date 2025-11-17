@@ -126,7 +126,7 @@ main > * {
     align-items: center;
 }
 
-.new-post input {
+.new-post {
     padding: 8px 10px;
     border-radius: 5px;
     font-size: 13px;
@@ -140,13 +140,13 @@ main > * {
     transition: all .1s ease;
 }
 
-.new-post input:hover {
+.new-post:hover {
     background: #009e35;
     border-bottom: 1px solid #017d2a;
     box-shadow: 0 2px 0 0 #017d2a;
 }
 
-.new-post input:active {
+.new-post:active {
     transform: translate(0, 3px);
     box-shadow: none;
 }

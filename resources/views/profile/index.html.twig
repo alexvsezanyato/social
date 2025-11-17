@@ -53,7 +53,7 @@
             <h3>Posts</h3>
 
             {% if isOwnProfile and user.public %}
-            <div class="new-post"><input id="np-btn" type="button" value="New"></div>
+            <button onclick="document.querySelector('#post-form').getModal().show()" class="new-post">New</button>
             {% endif %}
         </div>
 
@@ -63,6 +63,6 @@
     </div>
 
     {% if isOwnProfile and user.public %}
-    {{ include('/components/new-post.html.twig') }}
+    <x-post-form-modal id="post-form"></x-post-form-modal>
     {% endif %}
 {% endblock %}
