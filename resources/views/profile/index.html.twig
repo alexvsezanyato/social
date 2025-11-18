@@ -57,9 +57,7 @@
             {% endif %}
         </div>
 
-        {% include '/components/posts.html.twig' with {
-            'posts': user.posts,
-        } %}
+        <x-posts></x-posts>
     </div>
 
     {% if isOwnProfile and user.public %}

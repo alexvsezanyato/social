@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import {Modal} from './Modal';
 
 @customElement('x-post-form-modal')
-export class PostFormModal extends LitElement {
+export default class PostFormModal extends LitElement {
     @property({attribute: 'x-title'})
     private _title: string = 'New post';
 

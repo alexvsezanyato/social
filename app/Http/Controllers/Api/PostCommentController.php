@@ -34,8 +34,12 @@ class PostCommentController
         $this->entityManager->flush();
 
         return new JsonResponse([
-            'status' => 'success',
-            'comment_id' => $comment->id,
+            'id' => $comment->id,
+            'text' => $comment->text,
+            'author' => [
+                'id' => $comment->author->id,
+                'public' => $comment->author->public,
+            ],
         ]);
     }
 
