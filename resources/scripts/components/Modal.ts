@@ -1,9 +1,8 @@
 import {css, CSSResultGroup, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@awesome.me/webawesome/dist/components/icon/icon.js';
 
 @customElement('x-modal')
-export class Modal extends LitElement {
+export default class Modal extends LitElement {
     static styles: CSSResultGroup = css`
         .modal {
             z-index: 2;

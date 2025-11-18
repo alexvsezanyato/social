@@ -178,23 +178,16 @@ class PostController
         }
 
         $this->entityManager->beginTransaction();
-        $this->entityManager->remove($post);
 
-        $documents = $this->documentRepository->findBy([
-            'pid' => $postId,
-        ]);
-
-        foreach ($documents as $document) {
+        foreach ($post->documents as $document) {
             $this->entityManager->remove($document);
         }
 
-        $pictures = $this->pictureRepository->findBy([
-            'pid' => $postId,
-        ]);
-
-        foreach ($pictures as $picture) {
+        foreach ($post->pictures as $picture) {
             $this->entityManager->remove($picture);
         }
+
+        $this->entityManager->remove($post);
 
         try {
             $this->entityManager->flush();
@@ -214,7 +207,6 @@ class PostController
     public function posts(Request $request)
     {
         $authorId = (int)$request->query->get('user_id', $this->userService->getId());
-        $author = $this->userRepository->find($authorId);
 
         if (!$request->query->has('from') || !$request->query->has('limit')) {
             return new JsonResponse([
@@ -245,26 +237,24 @@ class PostController
         }
 
         foreach ($posts as $post) {
-            $date = $post->createdAt->format('Y-m-d');
-            $time = $post->createdAt->format('H:i:s');
-
             $result[$post->id] = [
                 'id' => $post->id,
                 'text' => $post->text,
-                'author_id' => $post->authorId,
-                'date' => $date,
-                'time' => $time,
-                'pics' => [],
-                'docs' => [],
+                'author' => [
+                    'id' => $post->author->id,
+                    'public' => $post->author->public,
+                ],
+                'createdAt' => [
+                    'date' => $post->createdAt->format('Y-m-d'),
+                    'time' => $post->createdAt->format('H:i:s'),
+                ],
+                'pictures' => [],
+                'documents' => [],
                 'comments' => [],
             ];
 
-            $documents = $this->documentRepository->findBy([
-                'pid' => $post->id,
-            ]);
-
-            foreach ($documents as $document) {
-                $result[$post->id]['docs'][] = [
+            foreach ($post->documents as $document) {
+                $result[$post->id]['documents'][] = [
                     'id' => $document->id,
                     'pid' => $document->pid,
                     'name' => $document->name,
@@ -273,12 +263,8 @@ class PostController
                 ];
             }
 
-            $pictures = $this->pictureRepository->findBy([
-                'pid' => $post->id,
-            ]);
-
-            foreach ($pictures as $picture) {
-                $result[$post->id]['pics'][] = [
+            foreach ($post->pictures as $picture) {
+                $result[$post->id]['pictures'][] = [
                     'id' => $picture->id,
                     'pid' => $picture->pid,
                     'name' => $picture->name,
@@ -287,32 +273,18 @@ class PostController
                 ];
             }
 
-            $comments = $this->postCommentRepository->findBy([
-                'postId' => $post->id,
-            ]);
-
-            foreach ($comments as $comment) {
-                $commentAuthor = $this->userRepository->find($comment->authorId);
-
+            foreach ($post->comments as $comment) {
                 $result[$post->id]['comments'][] = [
                     'id' => $comment->id,
                     'author' => [
-                        'id' => $commentAuthor->id,
-                        'public' => $commentAuthor->public,
+                        'id' => $comment->author->id,
+                        'public' => $comment->author->public,
                     ],
                     'text' => $comment->text,
                 ];
             }
         }
 
-        return new Response(json_encode([
-            'code' => 0,
-            'posts' => array_values($result),
-
-            'user' => [
-                'id' => $author->id,
-                'public' => $author->public,
-            ]
-        ]));
+        return new Response(json_encode(array_values($result)));
     }
 }

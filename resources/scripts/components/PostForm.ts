@@ -1,10 +1,9 @@
 import {LitElement, html, css, CSSResultGroup} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
-import '@awesome.me/webawesome/dist/components/icon/icon.js';
 
 @customElement('x-post-form')
-export class PostForm extends LitElement {
+export default class PostForm extends LitElement {
     static styles: CSSResultGroup = css`
         [hidden] {
             display: none!important;
@@ -97,7 +96,7 @@ export class PostForm extends LitElement {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 12px;
+            font-size: 16px;
         }
 
         .action .icon {
