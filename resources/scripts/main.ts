@@ -9,6 +9,6 @@ import './components/Posts';
 
 webawesome.registerIconLibrary('default', {
     resolver: (name) => {
-        return `/fontawesome-free-7.1.0-web/svgs-full/solid/${name}.svg`;
+        return `/icons/fontawesome-free/svgs-full/solid/${name}.svg`;
     },
 });

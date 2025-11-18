@@ -1,3 +1,6 @@
+Для установки иконок в публичную директорию:
+npm run postinstall
+
 - Registering
 - Logining
 - Creating posts (text, images, attachments) 
