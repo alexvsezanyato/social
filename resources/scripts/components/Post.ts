@@ -363,6 +363,7 @@ export default class Post extends LitElement {
             body: formData,
         });
 
+        input.value = '';
         this.data.comments.push(await response.json());
         this.requestUpdate();
     }
