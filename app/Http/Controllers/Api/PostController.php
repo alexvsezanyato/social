@@ -47,7 +47,7 @@ class PostController
 
         $text = $request->request->get('text');
 
-        if (strlen($text) < 5) {
+        if (strlen($text) === 0) {
             return new Response(content: 3);
         }
 
