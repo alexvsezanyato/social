@@ -256,7 +256,7 @@ class PostController
             foreach ($post->documents as $document) {
                 $result[$post->id]['documents'][] = [
                     'id' => $document->id,
-                    'pid' => $document->pid,
+                    'pid' => $document->post->id,
                     'name' => $document->name,
                     'mime' => $document->mime,
                     'source' => $document->source,
@@ -266,7 +266,7 @@ class PostController
             foreach ($post->pictures as $picture) {
                 $result[$post->id]['pictures'][] = [
                     'id' => $picture->id,
-                    'pid' => $picture->pid,
+                    'pid' => $picture->post->id,
                     'name' => $picture->name,
                     'mime' => $picture->mime,
                     'source' => $picture->source,
