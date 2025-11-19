@@ -17,7 +17,7 @@ interface Document {
     mime: string;
 }
 
-interface Comment {
+export interface Comment {
     id: number;
     text: string;
     author: Author;
