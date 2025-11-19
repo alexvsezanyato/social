@@ -1,6 +1,8 @@
-let user: object;
+import User from "../types/user";
 
-export async function getUser(id: number) {
+let user: User;
+
+export async function getUser(id?: number): Promise<User> {
     if (user !== undefined) {
         return user;
     }
@@ -13,7 +15,7 @@ export async function getUser(id: number) {
 
     try {
         const response = await fetch(uri);
-        user = response.json();
+        user = await response.json();
     } catch (e) {
         console.error('Failed to fetch user data', e);
         return null;
