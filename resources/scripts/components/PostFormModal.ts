@@ -1,6 +1,6 @@
 import {html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {Modal} from './Modal';
+import Modal from './Modal';
 
 @customElement('x-post-form-modal')
 export default class PostFormModal extends LitElement {
