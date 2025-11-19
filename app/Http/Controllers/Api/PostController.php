@@ -48,22 +48,22 @@ class PostController
         $text = $request->request->get('text');
 
         if (strlen($text) === 0) {
-            return new Response(content: 3);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         if ($request->files->count() > 20) {
-            return new Response(content: 4);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         if (preg_match('/(\r\n|\r|\n){3,}/', $text)) {
-            return new Response(content: 2);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         $documents = $request->files->all('documents') ?: [];
         $pictures = $request->files->all('pictures') ?: [];
 
         if (count($pictures) > 9 || count($documents) > 5) {
-            return new Response(content: 5);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         $this->entityManager->beginTransaction();
@@ -80,28 +80,28 @@ class PostController
         foreach ($documents as $i => $file) {
             if (!$file->isValid()) {
                 $this->entityManager->rollback();
-                return new Response(content: $file->getErrorMessage());
+                return new Response(content: $file->getErrorMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             $documentFileName = $post->id . $i;
 
             if (file_exists($documentUploadDirectory . '/' . $documentFileName)) {
                 $this->entityManager->rollback();
-                return new Response(content: 7);
+                return new Response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             $documentOriginalName = basename($file->getClientOriginalName());
 
             if (strlen($documentOriginalName) > 64) {
                 $this->entityManager->rollback();
-                return new Response(content: 6);
+                return new Response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             try {
                 $file = $file->move($documentUploadDirectory, $documentFileName);
             } catch (FileException $e) {
                 $this->entityManager->rollback();
-                return new Response(content: 9);
+                return new Response(content: $e->getMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             $document = new Document();
@@ -115,28 +115,28 @@ class PostController
         foreach ($pictures as $i => $file) {
             if (!$file->isValid()) {
                 $this->entityManager->rollback();
-                return new Response(content: $file->getErrorMessage());
+                return new Response(content: $file->getErrorMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             $pictureFileName = $post->id . $i;
 
             if (file_exists($pictureUploadDirectory . '/' . $pictureFileName)) {
                 $this->entityManager->rollback();
-                return new Response(content: 7);
+                return new Response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             $pictureOriginalName = basename($file->getClientOriginalName());
 
             if (strlen($pictureOriginalName) > 64) {
                 $this->entityManager->rollback();
-                return new Response(content: 6);
+                return new Response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             try {
                 $file = $file->move($pictureUploadDirectory, $pictureFileName);
             } catch (FileException $e) {
                 $this->entityManager->rollback();
-                return new Response(content: 9);
+                return new Response(content: $e->getMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             $picture = new Picture();
@@ -152,10 +152,10 @@ class PostController
             $this->entityManager->commit();
         } catch (\Exception $e) {
             $this->entityManager->rollback();
-            return new Response(content: $e->getMessage());
+            return new Response(content: $e->getMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return new Response(content: 0);
+        return new Response(content: $post->id, status: Response::HTTP_CREATED);
     }
 
     public function delete(Request $request)
@@ -286,5 +286,59 @@ class PostController
         }
 
         return new Response(json_encode(array_values($result)));
+    }
+
+    public function get(Request $request)
+    {
+        $post = $this->postRepository->find($request->query->get('id'));
+
+        $result = [
+            'id' => $post->id,
+            'text' => $post->text,
+            'author' => [
+                'id' => $post->author->id,
+                'public' => $post->author->public,
+            ],
+            'createdAt' => [
+                'date' => $post->createdAt->format('Y-m-d'),
+                'time' => $post->createdAt->format('H:i:s'),
+            ],
+            'pictures' => [],
+            'documents' => [],
+            'comments' => [],
+        ];
+
+        foreach ($post->documents as $document) {
+            $result['documents'][] = [
+                'id' => $document->id,
+                'pid' => $document->post->id,
+                'name' => $document->name,
+                'mime' => $document->mime,
+                'source' => $document->source,
+            ];
+        }
+
+        foreach ($post->pictures as $picture) {
+            $result['pictures'][] = [
+                'id' => $picture->id,
+                'pid' => $picture->post->id,
+                'name' => $picture->name,
+                'mime' => $picture->mime,
+                'source' => $picture->source,
+            ];
+        }
+
+        foreach ($post->comments as $comment) {
+            $result[$post->id]['comments'][] = [
+                'id' => $comment->id,
+                'author' => [
+                    'id' => $comment->author->id,
+                    'public' => $comment->author->public,
+                ],
+                'text' => $comment->text,
+            ];
+        }
+
+        return new JsonResponse($result);
     }
 }

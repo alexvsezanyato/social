@@ -141,6 +141,16 @@ $routes->add('api.posts', new Route(
     ],
 ));
 
+$routes->add('api.post.get', new Route(
+    path: '/api/post',
+    defaults: [
+        '_controller' => [ApiPostController::class, 'get'],
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
 $routes->add('api.post.delete', new Route(
     path: '/api/post/delete',
     defaults: [

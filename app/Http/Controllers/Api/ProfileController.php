@@ -53,6 +53,8 @@ class ProfileController
 
         return new JsonResponse([
             'id' => $user->id,
+            'login' => $user->login,
+            'age' => $user->age,
             'public' => $user->public,
         ]);
     }

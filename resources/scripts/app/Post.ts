@@ -12,3 +12,9 @@ export async function getPosts(params: {userId?: number, limit?: number, from?: 
     const response = await fetch(uri);
     return await response.json();
 }
+
+export async function getPost(id: number): Promise<PostData> {
+    const uri = new URL('/api/post', window.location.origin);
+    uri.searchParams.set('id', String(id));
+    return (await fetch(uri)).json();
+}

@@ -1,6 +1,8 @@
 import {LitElement, html, css, CSSResultGroup} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
+import PostData from '../types/post';
+import { getPost } from '../app/Post';
 
 @customElement('x-post-form')
 export default class PostForm extends LitElement {
@@ -228,11 +230,21 @@ export default class PostForm extends LitElement {
             formData.append('pictures[]', picture);
         }
 
-        await fetch('/api/post/create', {
+        const response = await fetch('/api/post/create', {
             method: 'POST',
             body: formData,
         });
 
-        this.dispatchEvent(new Event('post:created'));
+        this.dispatchEvent(new CustomEvent<PostData>('post:created', {
+            bubbles: true,
+            composed: true,
+            detail: await getPost(Number(await response.text())),
+        }));
+    }
+
+    public clean() {
+        (this.shadowRoot.querySelector('.input') as HTMLTextAreaElement).value = '';
+        this.pictures = [];
+        this.documents = [];
     }
 }
