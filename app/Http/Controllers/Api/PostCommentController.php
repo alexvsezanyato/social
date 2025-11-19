@@ -9,6 +9,7 @@ use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostCommentController
 {
@@ -47,8 +48,9 @@ class PostCommentController
     {
         $id = $request->query->get('id');
         $comment = $this->postCommentRepository->find($id);
-        $comment->delete();
+        $this->entityManager->remove($comment);
         $this->entityManager->flush();
+        return new Response();
     }
 
     public function get(Request $request)

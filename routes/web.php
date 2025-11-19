@@ -181,6 +181,16 @@ $routes->add('api.post-comment.create', new Route(
     ],
 ));
 
+$routes->add('api.post-comment.delete', new Route(
+    path: '/api/post-comment/delete',
+    defaults: [
+        '_controller' => [ApiPostCommentController::class, 'delete'],
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
 $routes->add('post-comment.index', new Route(
     path: '/post-comment/index',
     defaults: [
