@@ -19,4 +19,6 @@ return [
         \App\Middlewares\RoutingMiddleware::class,
         \App\Middlewares\AuthMiddleware::class,
     ],
+    'environment' => Env::get('ENVIRONMENT'),
+    'url' => Env::get('URL'),
 ];

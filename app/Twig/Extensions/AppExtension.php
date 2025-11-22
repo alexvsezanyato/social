@@ -3,7 +3,7 @@
 namespace App\Twig\Extensions;
 
 use App\Services\UserService;
-use App\Services\Vite;
+use App\Services\Vite\ViteInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
@@ -11,7 +11,7 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
 {
     public function __construct(
         private UserService $userService,
-        private Vite $vite,
+        private ViteInterface $vite,
     ) {
     }
 
