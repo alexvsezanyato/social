@@ -37,7 +37,7 @@ class UserService
         [$id, $hash] = explode('-', $cookies->get('pid'));
         $user = $this->userRepository->find($id);
 
-        if ($id !== null && $hash === hash('sha256', $id . $user->random)) {
+        if ($user !== null && $id !== null && $hash === hash('sha256', $id . $user->random)) {
             return true;
         }
 
