@@ -4,3 +4,7 @@ RUN apt update
 RUN apt install -y libzip-dev libpq-dev
 RUN docker-php-ext-install zip pdo_pgsql pgsql
 COPY --from=composer:2.9.1 /usr/bin/composer /usr/local/bin/composer
+RUN groupadd -g 1000 app
+RUN adduser www-data app
+RUN useradd -u 1000 -s /bin/sh -g app app
+USER www-data
