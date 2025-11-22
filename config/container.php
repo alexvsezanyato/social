@@ -3,11 +3,12 @@
 declare(strict_types=1);
 
 use App\Entities\PostComment;
-use App\Helpers\Env;
 use App\Helpers\ViewInterface;
 use App\Helpers\TwigView;
 use App\Repositories\PostCommentRepository;
-use App\Services\Vite;
+use App\Services\Vite\ViteDevelopment;
+use App\Services\Vite\ViteInterface;
+use App\Services\Vite\ViteProduction;
 use App\Support\Paths;
 
 use App\Entities\Document;
@@ -53,8 +54,10 @@ return [
     PostCommentRepository::class => fn (EntityManagerInterface $em) => $em->getRepository(PostComment::class),
 
     ViewInterface::class => function (Container $container, Paths $paths): TwigView {
+        $config = $container->get('config');
+
         $twig = new \Twig\Environment(new \Twig\Loader\FilesystemLoader($paths->view), [
-            'cache' => (bool)Env::get('DEBUG_MODE', false) ? false : $paths->cache.'/twig',
+            'cache' => $config['environment'] === 'production' ? $paths->cache.'/twig' : false,
         ]);
 
         $twig->addExtension($container->make(\App\Twig\Extensions\AppExtension::class));
@@ -82,8 +85,17 @@ return [
         return DriverManager::getConnection($container->get('config')['database']['connection']);
     },
 
-    Vite::class => function(Paths $paths): Vite {
-        $manifest = json_decode(file_get_contents($paths->public.'/.vite/manifest.json'), true);
-        return new Vite($manifest);
+    ViteInterface::class => function(Container $container, Paths $paths): ViteInterface {
+        $config = $container->get('config');
+
+        if ($config['environment'] === 'development') {
+            return new ViteDevelopment(
+                url: $config['url'].'/vite',
+            );
+        } else {
+            return new ViteProduction(
+                manifest: json_decode(file_get_contents($paths->public.'/.vite/manifest.json'), true),
+            );
+        }
     },
 ];

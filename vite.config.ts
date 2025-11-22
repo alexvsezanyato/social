@@ -2,6 +2,7 @@ import type { UserConfig } from 'vite';
 import * as path from 'path';
 
 export default {
+    base: '/vite/',
     root: path.resolve(__dirname, 'resources/scripts'),
     build: {
         target: 'esnext',
@@ -13,5 +14,17 @@ export default {
                 main: path.resolve(__dirname, 'resources/scripts/main.ts'),
             },
         },
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './resources/scripts'),
+        },
+    },
+    server: {
+        host: true,
+        port: 5173,
+        allowedHosts: [
+            'social.local',
+        ],
     },
 } satisfies UserConfig

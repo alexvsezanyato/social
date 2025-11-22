@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["resources/scripts/*"]
+    },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,
     "useDefineForClassFields": false
-  },
+  }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Vite;
 
-class Vite
+class ViteProduction implements ViteInterface
 {
     public function __construct(
         private array $manifest = [],
