@@ -23,8 +23,17 @@ export default {
     server: {
         host: true,
         port: 5173,
+        strictPort: true,
         allowedHosts: [
             'social.local',
         ],
+        watch: {
+            usePolling: true,
+            interval: 100,
+        },
+        hmr: {
+            host: 'social.local',
+            port: 5173,
+        },
     },
 } satisfies UserConfig
