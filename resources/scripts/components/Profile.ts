@@ -2,9 +2,9 @@ import {CSSResultGroup, LitElement, css, html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import PostData from './../types/post.d';
 import Modal from './Modal';
-import {getUser} from '../app/User';
+import {getUser} from '@/api/user';
 import User from '../types/user';
-import {getPosts} from '../app/Post';
+import {getPosts} from '@/api/post';
 import PostForm from './PostForm';
 
 @customElement('x-profile')
@@ -121,7 +121,9 @@ export default class Profile extends LitElement {
             this._user = user;
         });
 
-        getPosts().then(posts => {
+        getPosts({
+            limit: 10,
+        }).then(posts => {
             this._posts = posts;
         });
 

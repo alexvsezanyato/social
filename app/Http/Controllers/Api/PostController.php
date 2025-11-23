@@ -6,11 +6,7 @@ use App\Support\Paths;
 use App\Entities\Document;
 use App\Entities\Picture;
 use App\Entities\Post;
-use App\Repositories\DocumentRepository;
-use App\Repositories\PictureRepository;
 use App\Repositories\PostRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\PostCommentRepository;
 use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -22,47 +18,32 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class PostController
 {
     public function __construct(
-        private UserRepository $userRepository,
         private UserService $userService,
         private EntityManagerInterface $entityManager,
         private PostRepository $postRepository,
-        private DocumentRepository $documentRepository,
-        private PictureRepository $pictureRepository,
         private Paths $paths,
-        private PostCommentRepository $postCommentRepository,
     ) {
     }
 
     public function create(Request $request)
     {
-        /**
-         * @var UploadedFile[]
-         */
-        $documents = [];
-
-        /**
-         * @var UploadedFile[]
-         */
-        $pictures = [];
-
         $text = $request->request->get('text');
 
-        if (strlen($text) === 0) {
+        if (strlen($text) === 0 || mb_strlen($text) > 2000) {
             return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        if ($request->files->count() > 20) {
+        if ($request->files->count() > 18) {
             return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        if (preg_match('/(\r\n|\r|\n){3,}/', $text)) {
-            return new Response(status: Response::HTTP_BAD_REQUEST);
-        }
-
+        /** @var UploadedFile[] */
         $documents = $request->files->all('documents') ?: [];
+
+        /** @var UploadedFile[] */
         $pictures = $request->files->all('pictures') ?: [];
 
-        if (count($pictures) > 9 || count($documents) > 5) {
+        if (count($pictures) > 9 || count($documents) > 9) {
             return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
@@ -70,12 +51,12 @@ class PostController
 
         $post = new Post();
         $post->author = $this->userService->getCurrentUser();
-        $post->text = htmlspecialchars($text);
+        $post->text = $text;
         $this->entityManager->persist($post);
         $this->entityManager->flush();
 
-        $documentUploadDirectory = $this->paths->upload . '/documents';
-        $pictureUploadDirectory = $this->paths->upload . '/pictures';
+        $documentUploadDirectory = $this->paths->upload.'/documents';
+        $pictureUploadDirectory = $this->paths->upload.'/pictures';
 
         foreach ($documents as $i => $file) {
             if (!$file->isValid()) {
@@ -158,23 +139,16 @@ class PostController
         return new Response(content: $post->id, status: Response::HTTP_CREATED);
     }
 
-    public function delete(Request $request)
+    public function delete(int $id)
     {
-        $postId = $request->query->get('id');
-        $post = $this->postRepository->find($postId);
+        $post = $this->postRepository->find($id);
 
         if ($post->authorId !== $this->userService->getId()) {
-            return new JsonResponse([
-                'status' => 'fail',
-                'error' => 'Permission denied',
-            ]);
+            return new Response(status: Response::HTTP_FORBIDDEN);
         }
 
         if (!$post) {
-            return new JsonResponse([
-                'status' => 'fail',
-                'error'=> 'Post not found',
-            ]);
+            return new Response(status: Response::HTTP_NOT_FOUND);
         }
 
         $this->entityManager->beginTransaction();
@@ -193,34 +167,22 @@ class PostController
             $this->entityManager->flush();
             $this->entityManager->commit();
         } catch (\Exception $e) {
-            return new JsonResponse([
-                'status' => 'fail',
-                'error' => $e->getMessage(),
-            ]);
+            return new Response(
+                content: $e->getMessage(),
+                status: Response::HTTP_INTERNAL_SERVER_ERROR,
+            );
         }
 
-        return new JsonResponse([
-            'status' => 'success',
-        ]);
+        return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
-    public function posts(Request $request)
-    {
-        $authorId = (int)$request->query->get('user_id', $this->userService->getId());
+    public function index(Request $request) {
+        $authorId = (int)$request->query->get('authorId', 0);
+        $from = (int)$request->query->get('from', 0);
+        $limit = (int)$request->query->get('limit', 1);
 
-        if (!$request->query->has('from') || !$request->query->has('limit')) {
-            return new JsonResponse([
-                'code' => 2,
-            ]);
-        }
-
-        $from = $request->query->get('from');
-        $limit = $request->query->get('limit');
-
-        if (!is_numeric($from)) {
-            return new JsonResponse([
-                'code' => 2,
-            ]);
+        if ($authorId === 0) {
+            $authorId = $this->userService->getId();
         }
 
         $result = [];
@@ -232,8 +194,10 @@ class PostController
                 authorId: $authorId,
             );
         } catch (\Exception $e) {
-            echo $e->getMessage();
-            exit;
+            return new Response(
+                content: $e->getMessage(),
+                status: Response::HTTP_INTERNAL_SERVER_ERROR,
+            );
         }
 
         foreach ($posts as $post) {
@@ -242,6 +206,8 @@ class PostController
                 'text' => $post->text,
                 'author' => [
                     'id' => $post->author->id,
+                    'login' => $post->author->login,
+                    'age' => $post->author->age,
                     'public' => $post->author->public,
                 ],
                 'createdAt' => [
@@ -278,6 +244,8 @@ class PostController
                     'id' => $comment->id,
                     'author' => [
                         'id' => $comment->author->id,
+                        'login' => $post->author->login,
+                        'age' => $post->author->age,
                         'public' => $comment->author->public,
                     ],
                     'text' => $comment->text,
@@ -285,18 +253,20 @@ class PostController
             }
         }
 
-        return new Response(json_encode(array_values($result)));
+        return new JsonResponse(array_values($result));
     }
 
-    public function get(Request $request)
+    public function show(int $id)
     {
-        $post = $this->postRepository->find($request->query->get('id'));
+        $post = $this->postRepository->find($id);
 
         $result = [
             'id' => $post->id,
             'text' => $post->text,
             'author' => [
                 'id' => $post->author->id,
+                'login' => $post->author->login,
+                'age' => $post->author->age,
                 'public' => $post->author->public,
             ],
             'createdAt' => [
@@ -329,10 +299,12 @@ class PostController
         }
 
         foreach ($post->comments as $comment) {
-            $result[$post->id]['comments'][] = [
+            $result['comments'][] = [
                 'id' => $comment->id,
                 'author' => [
                     'id' => $comment->author->id,
+                    'login' => $post->author->login,
+                    'age' => $post->author->age,
                     'public' => $comment->author->public,
                 ],
                 'text' => $comment->text,

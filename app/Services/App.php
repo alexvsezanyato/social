@@ -25,10 +25,9 @@ class App
         $handler = function (Request $request): Response {
             $parameters = $request->attributes->get('parameters');
             [$controller, $action] = $parameters['_controller'];
+            unset($parameters['_controller'], $parameters['_route']);
 
-            return $this->container->call([$this->container->make($controller), $action], [
-                'request' => $request,
-            ]);
+            return $this->container->call([$this->container->make($controller), $action], $parameters);
         };
 
         foreach (array_reverse($this->middlewares) as $middleware) {

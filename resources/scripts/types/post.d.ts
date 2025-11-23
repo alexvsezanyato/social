@@ -1,34 +1,15 @@
-interface Author {
-    id: number;
-    public: string;
-}
+import IUser from "@/types/user";
+import IPicture from "@/types/picture";
+import IDocument from "@/types/document";
+import IPostComment from "@/types/post-comment";
+import ICreatedAt from "@/types/created-at";
 
-interface Picture {
-    id: number;
-    name: string;
-    source: string;
-    mime: string;
-}
-
-interface Document {
-    id: number;
-    name: string;
-    source: string;
-    mime: string;
-}
-
-export interface Comment {
+export default interface IPost {
     id: number;
     text: string;
-    author: Author;
-}
-
-export default interface Post {
-    id: number;
-    text: string;
-    author: Author;
-    createdAt: { date: string, time: string };
-    pictures: Picture[];
-    documents: Document[];
-    comments: Comment[];
+    author: IUser;
+    createdAt: ICreatedAt;
+    pictures: IPicture[];
+    documents: IDocument[];
+    comments: IPostComment[];
 }

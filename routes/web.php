@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\PostCommentController;
 use Symfony\Component\Routing\RouteCollection;
@@ -55,6 +56,19 @@ $routes->add('auth.register', new Route(
     defaults: [
         '_controller' => [AuthController::class, 'register'],
         'tags' => ['auth'],
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
+$routes->add('api.user.show', new Route(
+    path: '/api/users/{id}',
+    defaults: [
+        '_controller' => [UserController::class, 'show'],
+    ],
+    requirements: [
+        'id' => '\d+',
     ],
     methods: [
         'GET',
@@ -122,7 +136,7 @@ $routes->add('api.profile.get', new Route(
 ));
 
 $routes->add('api.post.create', new Route(
-    path: '/api/post/create',
+    path: '/api/posts',
     defaults: [
         '_controller' => [ApiPostController::class, 'create'],
     ],
@@ -131,20 +145,23 @@ $routes->add('api.post.create', new Route(
     ],
 ));
 
-$routes->add('api.posts', new Route(
+$routes->add('api.post.index', new Route(
     path: '/api/posts',
     defaults: [
-        '_controller' => [ApiPostController::class, 'posts'],
+        '_controller' => [ApiPostController::class, 'index'],
     ],
     methods: [
         'GET',
     ],
 ));
 
-$routes->add('api.post.get', new Route(
-    path: '/api/post',
+$routes->add('api.post.show', new Route(
+    path: '/api/posts/{id}',
     defaults: [
-        '_controller' => [ApiPostController::class, 'get'],
+        '_controller' => [ApiPostController::class, 'show'],
+    ],
+    requirements: [
+        'id' => '\d+',
     ],
     methods: [
         'GET',
@@ -152,12 +169,15 @@ $routes->add('api.post.get', new Route(
 ));
 
 $routes->add('api.post.delete', new Route(
-    path: '/api/post/delete',
+    path: '/api/posts/{id}',
     defaults: [
         '_controller' => [ApiPostController::class, 'delete'],
     ],
+    requirements: [
+        'id' => '\d+',
+    ],
     methods: [
-        'GET',
+        'DELETE',
     ],
 ));
 
@@ -172,7 +192,7 @@ $routes->add('document.download', new Route(
 ));
 
 $routes->add('api.post-comment.create', new Route(
-    path: '/api/post-comment/create',
+    path: '/api/post-comments',
     defaults: [
         '_controller' => [ApiPostCommentController::class, 'create'],
     ],
@@ -182,9 +202,25 @@ $routes->add('api.post-comment.create', new Route(
 ));
 
 $routes->add('api.post-comment.delete', new Route(
-    path: '/api/post-comment/delete',
+    path: '/api/post-comments/{id}',
     defaults: [
         '_controller' => [ApiPostCommentController::class, 'delete'],
+    ],
+    requirements: [
+        'id' => '\d+',
+    ],
+    methods: [
+        'DELETE',
+    ],
+));
+
+$routes->add('api.post-comment.show', new Route(
+    path: '/api/post-comments/{id}',
+    defaults: [
+        '_controller' => [ApiPostCommentController::class, 'show'],
+    ],
+    requirements: [
+        'id' => '\d+',
     ],
     methods: [
         'GET',

@@ -1,7 +1,10 @@
 import {CSSResultGroup, LitElement, css, html} from 'lit';
 import {customElement, property, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
-import PostData, { Comment } from './../types/post.d';
+import PostData from '@/types/post.d';
+import {deletePost} from '@/api/post';
+import {createPostComment, deletePostComment, getPostComment} from '@/api/post-comment';
+import IPostComment from '@/types/post-comment';
 
 @customElement('x-post')
 export default class Post extends LitElement {
@@ -345,43 +348,31 @@ export default class Post extends LitElement {
     }
 
     public async delete() {
-        const responseBody = await fetch(`/api/post/delete?id=${this.data.id}`).then(response => {
-            return response.json();
-        });
+        await deletePost(this.data.id);
 
-        if (responseBody.status === 'success') {
-            this.dispatchEvent(new CustomEvent('post:deleted', {
-                bubbles: true,
-                composed: true,
-                detail: this.data,
-            }));
-        } else if (responseBody.error) {
-            console.error(responseBody.error);
-        }
+        this.dispatchEvent(new CustomEvent('post:deleted', {
+            bubbles: true,
+            composed: true,
+            detail: this.data,
+        }));
     }
 
     public async createComment() {
         const post = this.shadowRoot.querySelector('.post') as HTMLElement;
         const input = post.querySelector('.new-comment input') as HTMLInputElement;
 
-        const formData = new FormData();
-        formData.append('post_id', String(this.data.id));
-        formData.append('text', input.value);
-
-        const response = await fetch('/api/post-comment/create', {
-            method: 'POST',
-            body: formData,
+        const commentId = await createPostComment({
+            postId: this.data.id,
+            text: input.value,
         });
 
         input.value = '';
-        this.data.comments.push(await response.json());
+        this.data.comments.push(await getPostComment(commentId));
         this.requestUpdate();
     }
 
-    public async deleteComment(comment: Comment) {
-        const uri = new URL('/api/post-comment/delete', window.location.origin);
-        uri.searchParams.set('id', String(comment.id));
-        await fetch(uri);
+    public async deleteComment(comment: IPostComment) {
+        await deletePostComment(comment.id);
         this.data.comments = this.data.comments.filter(e => e.id !== comment.id);
         this.requestUpdate();
     }

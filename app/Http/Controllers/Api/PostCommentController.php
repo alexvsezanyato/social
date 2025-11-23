@@ -24,7 +24,7 @@ class PostCommentController
     public function create(Request $request)
     {
         $user = $this->userService->getCurrentUser();
-        $postId = (int)$request->request->get('post_id');
+        $postId = (int)$request->request->get('postId');
         $text = $request->request->get('text');
 
         $comment = new PostComment();
@@ -34,34 +34,30 @@ class PostCommentController
         $this->entityManager->persist($comment);
         $this->entityManager->flush();
 
-        return new JsonResponse([
-            'id' => $comment->id,
-            'text' => $comment->text,
-            'author' => [
-                'id' => $comment->author->id,
-                'public' => $comment->author->public,
-            ],
-        ]);
+        return new Response($comment->id);
     }
 
-    public function delete(Request $request)
+    public function delete(int $id)
     {
-        $id = $request->query->get('id');
         $comment = $this->postCommentRepository->find($id);
         $this->entityManager->remove($comment);
         $this->entityManager->flush();
         return new Response();
     }
 
-    public function get(Request $request)
+    public function show(int $id)
     {
-        $id = $request->query->get('id');
         $comment = $this->postCommentRepository->find($id);
 
         return new JsonResponse([
             'id' => $comment->id,
-            'author_id' => $comment->authorId,
-            'post_id' => $comment->postId,
+            'author' => [
+                'id' => $comment->author->id,
+                'login' => $comment->author->login,
+                'age' => $comment->author->age,
+                'public' => $comment->author->public,
+            ],
+            'postId' => $comment->post->id,
             'text' => $comment->text,
         ]);
     }
