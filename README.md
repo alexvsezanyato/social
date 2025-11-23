@@ -1,10 +1,11 @@
 ```
-docker compose -f compose.yaml -f compose.development.yaml up -d
-docker compose -f compose.yaml -f compose.development.yaml exec -w /var/www -it php sh -c "composer install"
-docker compose -f compose.yaml -f compose.development.yaml exec -w /var/www -it php sh -c "composer migration -n migrate"
-docker compose -f compose.yaml -f compose.development.yaml run --rm -w /var/www frontend sh -c "npm i"
-docker compose -f compose.yaml -f compose.development.yaml run --rm -w /var/www frontend sh -c "npm run build"
-docker compose -f compose.yaml -f compose.development.yaml run --rm -w /var/www frontend sh -c "npm run postinstall"
+ln -s compose.development.yaml compose.override.yaml
+docker compose run --rm frontend npm i
+docker compose up -d
+docker compose exec php composer install
+docker compose exec php composer migration -n migrate
+docker compose exec frontend npm i
+docker compose exec frontend npm run build
 ```
 
 Функционал:
