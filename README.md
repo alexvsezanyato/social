@@ -1,4 +1,5 @@
 ```
+cp .env.development .env
 ln -s compose.development.yaml compose.override.yaml
 docker compose run --rm frontend npm i
 docker compose up -d
