@@ -43,17 +43,4 @@ class ProfileController
     {
         return new Response($this->view->render('profile/settings'));
     }
-
-    public function logout(SessionInterface $session)
-    {
-        $session->invalidate();
-
-        $response = new Response(status: Response::HTTP_TEMPORARY_REDIRECT, headers: [
-            'location' => '/auth/login',
-        ]);
-
-        $response->headers->clearCookie('pid');
-
-        return $response;
-    }
 }

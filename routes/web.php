@@ -62,6 +62,16 @@ $routes->add('auth.register', new Route(
     ],
 ));
 
+$routes->add('auth.logout', new Route(
+    path: '/auth/logout',
+    defaults: [
+        '_controller' => [AuthController::class, 'logout'],
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
 $routes->add('api.user.show', new Route(
     path: '/api/users/{id}',
     defaults: [
@@ -99,16 +109,6 @@ $routes->add('profile.settings', new Route(
     path: '/profile/settings',
     defaults: [
         '_controller' => [ProfileController::class, 'settings'],
-    ],
-    methods: [
-        'GET',
-    ],
-));
-
-$routes->add('profile.logout', new Route(
-    path: '/profile/logout',
-    defaults: [
-        '_controller' => [ProfileController::class, 'logout'],
     ],
     methods: [
         'GET',
