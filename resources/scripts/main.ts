@@ -9,6 +9,7 @@ import '@/components/Profile';
 
 import '@/pages/IndexPage';
 import '@/pages/ProfilePage';
+import '@/pages/ProfileSettingsPage';
 
 webawesome.registerIconLibrary('default', {
     resolver: (name) => {
