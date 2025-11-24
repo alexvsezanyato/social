@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repositories\UserRepository;
 
@@ -16,29 +15,30 @@ class AuthController
     public function __construct(
         private UserRepository $userRepository,
         private SessionInterface $session,
-        private Connection $connection,
         private EntityManagerInterface $entityManager,
     ) {
     }
 
     public function login(Request $request)
     {
-        $login = $request->request->get('login');
-        $password = $request->request->get('password');
+        $data = $request->toArray();
+
+        $login = $data['login'];
+        $password = $data['password'];
 
         $user = $this->userRepository->findOneBy([
             'login' => $login,
         ]);
 
         if (!$user) {
-            return new Response(content: 1);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         $salt = $user->salt;
         $hash = hash('sha512', $password . $salt);
 
         if ($hash !== $user->hash) {
-            return new Response(content: 1);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         $this->session->set('id', $user->id);
@@ -60,11 +60,11 @@ class AuthController
                 $this->session->remove('id');
                 $this->session->remove('hash');
 
-                return new Response(content: 2);
+                return new Response(status: Response::HTTP_BAD_REQUEST);
             }
         }
 
-        $response = new Response(content: 0);
+        $response = new Response(status: Response::HTTP_NO_CONTENT);
 
         $response->headers->setCookie(new Cookie(
             name: 'pid',
@@ -78,25 +78,27 @@ class AuthController
 
     public function register(Request $request)
     {
-        $login = trim($request->request->get('login', ''));
-        $password = trim($request->request->get('password', ''));
-        $prepeat = trim($request->request->get('prepeat', ''));
-        $age = trim($request->request->get('age', ''));
+        $data = $request->toArray();
 
-        if (strlen($login) < 3) {
-            return new Response(content: 1);
+        $login = trim($data['login']);
+        $password = $data['password'];
+        $prepeat = $data['prepeat'];
+        $age = trim($data['age']);
+
+        if (strlen($login) === 0) {
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         if ($password != $prepeat) {
-            return new Response(content: 2);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
-        if (strlen($password) < 6) {
-            return new Response(content: 3);
+        if (strlen($password) === 0) {
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         if (!is_numeric($age) || (int)$age < 14) {
-            return new Response(content: 4);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         $salt = base64_encode(random_bytes((int)floor(32 * 0.66)));
@@ -107,7 +109,7 @@ class AuthController
         ]);
 
         if ($count) {
-            return new Response(content: 5);
+            return new Response(status: Response::HTTP_BAD_REQUEST);
         }
 
         $user = new User();
@@ -120,6 +122,6 @@ class AuthController
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        return new Response(content: 0);
+        return new Response(status: Response::HTTP_NO_CONTENT);
     }
 }
