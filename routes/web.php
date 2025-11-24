@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\ProfileController as ApiProfileController;
 use App\Http\Controllers\Api\PostController as ApiPostController;
 use App\Http\Controllers\Api\PostCommentController as ApiPostCommentController;
+use App\Http\Controllers\Api\RecommendedPostController as ApiRecommendedPostController;
 
 /**
  * @var RouteCollection $routes
@@ -178,6 +179,16 @@ $routes->add('api.post.delete', new Route(
     ],
     methods: [
         'DELETE',
+    ],
+));
+
+$routes->add('api.recommended-post.index', new Route(
+    path: '/api/recommended-posts',
+    defaults: [
+        '_controller' => [ApiRecommendedPostController::class, 'index'],
+    ],
+    methods: [
+        'GET',
     ],
 ));
 

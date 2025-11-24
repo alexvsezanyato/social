@@ -6,6 +6,7 @@ import './components/PostForm';
 import './components/Post';
 import './components/Posts';
 
+import './components/Index';
 import './components/Profile';
 
 webawesome.registerIconLibrary('default', {

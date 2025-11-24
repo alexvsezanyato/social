@@ -21,11 +21,12 @@ class PostRepository extends EntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function findRecommended(): array
+    public function findRecommended(int $limit = 1, int $from = 0): array
     {
         return $this->createQueryBuilder('p')
             ->orderBy('p.createdAt', 'DESC')
-            ->setMaxResults(100)
+            ->setMaxResults($limit)
+            ->setFirstResult($from)
             ->getQuery()
             ->getResult();
     }
