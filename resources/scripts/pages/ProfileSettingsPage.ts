@@ -1,6 +1,7 @@
 import {CSSResultGroup, LitElement, css, html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
-import {getUser} from '@/api/user';
+import {getUser, patchUser} from '@/api/user';
+import IUser from '@/types/user';
 
 @customElement('x-profile-settings-page')
 export default class ProfileSettingsPage extends LitElement {
@@ -125,13 +126,13 @@ export default class ProfileSettingsPage extends LitElement {
     `;
 
     @state()
-    private _public: string = '';
+    private _user: IUser;
 
     constructor() {
         super();
         
         getUser().then(user => {
-            this._public = user.public;
+            this._user = user;
         });
     }
 
@@ -144,7 +145,7 @@ export default class ProfileSettingsPage extends LitElement {
                     <div class="group-item">
                         <label class="input">
                             <div class="set-name">Public name: </div>
-                            <input placeholder="..." .value="${this._public}" @input="${(e: Event) => this._public = (e.target as HTMLInputElement).value}">
+                            <input placeholder="..." value="${this._user.public || ''}" @input="${(e: Event) => this._user.public = (e.target as HTMLInputElement).value}">
                         </label>
                         <div class="set-desc">You must have public name to post or to comment.</div>
                     </div>
@@ -155,33 +156,8 @@ export default class ProfileSettingsPage extends LitElement {
     }
 
     save() {
-        let r = new XMLHttpRequest();
-
-        let handleAnswer = r => {
-            switch (r.responseText) {
-            case '0':
-                alert('Successfully applied');
-                break;
-            case '1': 
-                alert('Fail to apply');
-                break;
-            case '2': 
-                alert('Doesn\'t meet the requirements');
-                break;
-            }
-        }
-
-        r.onreadystatechange = (e) => {
-            switch (r.readyState) {
-            case 4:
-                if (r.status == 200) handleAnswer(r);
-                break;
-            }
-        }
-
-        r.open('post', '/api/profile/apply', true);
-        let data = 'public=' + this._public;
-        r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        r.send(data);
+        patchUser(this._user.id, {
+            public: this._user.public,
+        });
     }
 }

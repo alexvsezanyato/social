@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\PostCommentController;
 use Symfony\Component\Routing\RouteCollection;
@@ -10,7 +9,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\AuthController as ApiAuthController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Api\ProfileController as ApiProfileController;
+use App\Http\Controllers\Api\UserController as ApiUserController;
 use App\Http\Controllers\Api\PostController as ApiPostController;
 use App\Http\Controllers\Api\PostCommentController as ApiPostCommentController;
 use App\Http\Controllers\Api\RecommendedPostController as ApiRecommendedPostController;
@@ -73,10 +72,23 @@ $routes->add('auth.logout', new Route(
     ],
 ));
 
+$routes->add('api.user.patch', new Route(
+    path: '/api/users/{id}',
+    defaults: [
+        '_controller' => [ApiUserController::class, 'patch'],
+    ],
+    requirements: [
+        'id' => '\d+',
+    ],
+    methods: [
+        'PATCH',
+    ],
+));
+
 $routes->add('api.user.show', new Route(
     path: '/api/users/{id}',
     defaults: [
-        '_controller' => [UserController::class, 'show'],
+        '_controller' => [ApiUserController::class, 'show'],
     ],
     requirements: [
         'id' => '\d+',
@@ -110,26 +122,6 @@ $routes->add('profile.settings', new Route(
     path: '/profile/settings',
     defaults: [
         '_controller' => [ProfileController::class, 'settings'],
-    ],
-    methods: [
-        'GET',
-    ],
-));
-
-$routes->add('api.profile.apply', new Route(
-    path: '/api/profile/apply',
-    defaults: [
-        '_controller' => [ApiProfileController::class, 'apply'],
-    ],
-    methods: [
-        'POST',
-    ],
-));
-
-$routes->add('api.profile.get', new Route(
-    path: '/api/profile/get',
-    defaults: [
-        '_controller' => [ApiProfileController::class, 'get'],
     ],
     methods: [
         'GET',

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Entities\User;
+use App\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Services\UserService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController
@@ -13,6 +15,7 @@ class UserController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserService $userService,
+        private UserRepository $userRepository,
     ) {
     }
 
@@ -34,5 +37,30 @@ class UserController
             'age' => $user->age,
             'public' => $user->public,
         ]);
+    }
+
+    public function patch(Request $request, int $id = 0)
+    {
+        $data = $request->toArray();
+
+        if ($id === 0) {
+            $id = $this->userService->getId();
+        }
+
+        if ($id !== $this->userService->getId()) {
+            return new Response(status: Response::HTTP_BAD_REQUEST);
+        }
+
+        $public = $data['public'];
+
+        if (!preg_match('/^[0-9a-zA-Z\ ]{3,20}$/', $public)) {
+            return new Response(status: Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->userRepository->find($id);
+        $user->public = $public;
+        $this->entityManager->flush();
+
+        return new Response(status: Response::HTTP_NO_CONTENT);
     }
 }
