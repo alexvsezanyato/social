@@ -25,11 +25,7 @@ let r = new XMLHttpRequest();
 let handleAnswer = r => {
     switch (r.responseText) {
     case '0':
-        if (this.hasAttribute('data-reload')) {
-            window.location = '/home';
-        } else {
-            alert('Successfully applied');
-        }
+        alert('Successfully applied');
         break;
     case '1': 
         alert('Fail to apply');
