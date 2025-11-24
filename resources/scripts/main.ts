@@ -5,6 +5,7 @@ import '@/components/Modal';
 import '@/components/PostForm';
 import '@/components/Post';
 import '@/components/Posts';
+import '@/components/Profile';
 
 import '@/pages/IndexPage';
 import '@/pages/ProfilePage';

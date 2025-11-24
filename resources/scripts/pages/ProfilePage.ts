@@ -10,31 +10,6 @@ import PostForm from '@/components/PostForm';
 @customElement('x-profile-page')
 export default class ProfilePage extends LitElement {
     static styles?: CSSResultGroup = css`
-        .profile-header {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 0;
-            margin: 0;
-            margin-bottom: 15px;
-        }
-
-        .profile-header > * {
-            display: flex;
-            padding: 10px;
-            list-style-type: none;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .profile-header > *:last-of-type {
-            border-bottom: none;
-        }
-
-        .profile-header .title {
-            color: #444;
-            margin-right: 5px;
-        }
-
         .posts-header {
             display: flex;
             justify-content: space-between;
@@ -138,29 +113,14 @@ export default class ProfilePage extends LitElement {
         return html`
             <h3>Profile</h3>
 
-            ${this._user !== undefined ? html`<div class="profile-header">
-                <div>
-                    <div class="title">Name: </div>
-                    <div class="value">${this._user.public}</div>
-                </div>
-                <div>
-                    <div class="title">Login: </div>
-                    <div class="value">${this._user.login}</div>
-                </div>
-                <div>
-                    <div class="title">Age: </div>
-                    <div class="value">${this._user.age}</div>
-                </div>
-            </div>` : ''}
+            ${this._user !== undefined ? html`<x-profile .user="${this._user}"></x-profile>` : '...'}
 
-            ${this._posts !== undefined ? html`<div class="posts">
-                <div class="posts-header">
-                    <h3>Posts</h3>
-                    <button @click="${() => this.getPostFormModal().show()}" class="new-post">New</button>
-                </div>
+            <div class="posts-header">
+                <h3>Posts</h3>
+                <button @click="${() => this.getPostFormModal().show()}" class="new-post">New</button>
+            </div>
 
-                <x-posts .posts="${this._posts}"></x-posts>
-            </div>` : ''}
+            ${this._posts !== undefined ? html`<x-posts .posts="${this._posts}"></x-posts>` : ''}
 
             <x-modal class="post-form-modal" x-title="New post">
                 <x-post-form class="post-form" slot="content"></x-post-form>
