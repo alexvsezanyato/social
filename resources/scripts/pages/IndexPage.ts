@@ -4,7 +4,7 @@ import PostData from '@/types/post.d';
 import {getRecommendedPosts} from '@/api/recommended-post';
 
 @customElement('x-index-page')
-export default class Index extends LitElement {
+export default class IndexPage extends LitElement {
     @state()
     private _posts: PostData[];
 

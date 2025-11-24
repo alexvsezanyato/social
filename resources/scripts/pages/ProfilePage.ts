@@ -7,8 +7,8 @@ import User from '../types/user';
 import {getPosts} from '@/api/post';
 import PostForm from '../components/PostForm';
 
-@customElement('x-profile')
-export default class Profile extends LitElement {
+@customElement('x-profile-page')
+export default class ProfilePage extends LitElement {
     static styles?: CSSResultGroup = css`
         .profile-header {
             background: #fff;
