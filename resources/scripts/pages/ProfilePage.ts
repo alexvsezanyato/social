@@ -1,11 +1,11 @@
 import {CSSResultGroup, LitElement, css, html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
-import PostData from '../types/post';
-import Modal from '../components/Modal';
+import PostData from '@/types/post';
+import Modal from '@/components/Modal';
 import {getUser} from '@/api/user';
-import User from '../types/user';
+import User from '@/types/user';
 import {getPosts} from '@/api/post';
-import PostForm from '../components/PostForm';
+import PostForm from '@/components/PostForm';
 
 @customElement('x-profile-page')
 export default class ProfilePage extends LitElement {

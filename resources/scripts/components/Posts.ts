@@ -1,7 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {repeat} from 'lit/directives/repeat.js';
-import PostData from './../types/post.d';
+import PostData from '@/types/post.d';
 
 @customElement('x-posts')
 export default class Posts extends LitElement {
