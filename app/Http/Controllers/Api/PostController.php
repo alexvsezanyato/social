@@ -27,7 +27,9 @@ class PostController
 
     public function create(Request $request)
     {
-        $text = $request->request->get('text');
+        $data = $request->toArray();
+
+        $text = $data['text'];
 
         if (strlen($text) === 0 || mb_strlen($text) > 2000) {
             return new Response(status: Response::HTTP_BAD_REQUEST);

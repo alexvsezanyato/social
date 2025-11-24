@@ -2,9 +2,6 @@ import axios, {AxiosResponse} from 'axios';
 
 export const http = axios.create({
     baseURL: '/api',
-    headers: {
-        'Content-Type': 'multipart/form-data',
-    },
 });
 
 http.interceptors.response.use(

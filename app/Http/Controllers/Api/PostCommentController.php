@@ -23,9 +23,11 @@ class PostCommentController
 
     public function create(Request $request)
     {
+        $data = $request->toArray();
+
         $user = $this->userService->getCurrentUser();
-        $postId = (int)$request->request->get('postId');
-        $text = $request->request->get('text');
+        $postId = (int)$data['postId'];
+        $text = $data['text'];
 
         $comment = new PostComment();
         $comment->author = $user;
