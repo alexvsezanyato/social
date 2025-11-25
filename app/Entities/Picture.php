@@ -15,9 +15,6 @@ class Picture
     public ?int $id = null;
 
     #[ORM\Column]
-    public ?int $pid = null;
-
-    #[ORM\Column]
     public ?string $source = null;
 
     #[ORM\Column]
