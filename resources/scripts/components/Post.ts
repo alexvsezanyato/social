@@ -75,7 +75,6 @@ export default class Post extends LitElement {
         }
 
         .documents {
-            list-style-type: none;   
             margin: 0;
             padding: 0;
             font-size: 13px;
@@ -108,7 +107,6 @@ export default class Post extends LitElement {
         }
 
         .pictures {
-            list-style-type: none;   
             padding: 5px;
             margin: 0;
             border-top: 1px solid #ddd;
@@ -135,7 +133,6 @@ export default class Post extends LitElement {
         }
 
         .comments {
-            list-style-type: none;   
             margin: 0;
             padding: 0;
             font-size: 13px;
@@ -217,9 +214,11 @@ export default class Post extends LitElement {
 
                 <div class="data">${this.data.text}</div>
 
-                <ul class="pictures" ?hidden="${this.data.pictures.length === 0}">
-                    ${map(this.data.pictures, picture => html`<li class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></li>`)}
-                </ul>
+                <div class="pictures" ?hidden="${this.data.pictures.length === 0}">
+                    ${map(this.data.pictures, picture => html`<a href="/pictures/${picture.id}/download">
+                        <div class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></div>
+                    </a>`)}
+                </div>
                 
                 <div class="documents" ?hidden="${this.data.documents.length === 0}">
                     <div class="documents-header">${this.data.documents.length} document(s)</div>
