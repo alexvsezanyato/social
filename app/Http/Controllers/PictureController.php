@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\DocumentRepository;
+use App\Repositories\PictureRepository;
 use App\Support\Paths;
 use Symfony\Component\HttpFoundation\Response;
 
-class DocumentController
+class PictureController
 {
     public function __construct(
         private Paths $paths,
-        private DocumentRepository $documentRepository,
+        private PictureRepository $pictureRepository,
     ) {
     }
 
     public function download(int $id)
     {
-        $path = $this->paths->upload.'/documents/'.$id;
+        $path = $this->paths->upload.'/pictures/'.$id;
 
         if (!file_exists($path)) {
             return new Response(status: Response::HTTP_NOT_FOUND);
         }
 
-        $document = $this->documentRepository->find($id);
+        $picture = $this->pictureRepository->find($id);
 
         return new Response(content: file_get_contents($path), headers: [
-            'Content-Type' => $document->mime,
-            'Content-Disposition' => "attachment; filename=$document->name",
+            'Content-Type' => $picture->mime,
+            'Content-Disposition' => "attachment; filename=$picture->name",
             'Content-Length' => filesize($path),
         ]);
     }

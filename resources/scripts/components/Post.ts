@@ -218,7 +218,7 @@ export default class Post extends LitElement {
                 <div class="data">${this.data.text}</div>
 
                 <ul class="pictures" ?hidden="${this.data.pictures.length === 0}">
-                    ${map(this.data.pictures, picture => html`<li class="picture" style="background: url('/uploads/pictures/${picture.source}') center / cover no-repeat"></li>`)}
+                    ${map(this.data.pictures, picture => html`<li class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></li>`)}
                 </ul>
                 
                 <div class="documents" ?hidden="${this.data.documents.length === 0}">
@@ -226,7 +226,7 @@ export default class Post extends LitElement {
 
                     ${map(this.data.documents, document => html`<div class="document">
                         <div class="icon"><x-icon x-name="file"></x-icon></div>
-                        <div class="name"><a class="link" href="/document/download?id=${document.source}&name=${document.name}&type=${document.mime}" download>${document.name}</a></div>
+                        <div class="name"><a class="link" href="/documents/${document.id}/download" download>${document.name}</a></div>
                     </div>`)}
                 </div>
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\UserController as ApiUserController;
 use App\Http\Controllers\Api\PostController as ApiPostController;
 use App\Http\Controllers\Api\PostCommentController as ApiPostCommentController;
 use App\Http\Controllers\Api\RecommendedPostController as ApiRecommendedPostController;
+use App\Http\Controllers\PictureController;
 
 /**
  * @var RouteCollection $routes
@@ -185,7 +186,7 @@ $routes->add('api.recommended-post.index', new Route(
 ));
 
 $routes->add('document.download', new Route(
-    path: '/document/download',
+    path: '/documents/{id}/download',
     defaults: [
         '_controller' => [DocumentController::class, 'download'],
     ],
@@ -234,6 +235,16 @@ $routes->add('post-comment.index', new Route(
     path: '/post-comment/index',
     defaults: [
         '_controller' => [PostCommentController::class, 'index'],
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
+$routes->add('picture.download', new Route(
+    path: '/pictures/{id}/download',
+    defaults: [
+        '_controller' => [PictureController::class, 'download'],
     ],
     methods: [
         'GET',

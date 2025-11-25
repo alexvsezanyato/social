@@ -10,6 +10,7 @@ use App\Repositories\PostRepository;
 use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,9 +28,7 @@ class PostController
 
     public function create(Request $request)
     {
-        $data = $request->toArray();
-
-        $text = $data['text'];
+        $text = $request->request->get('text', '');
 
         if (strlen($text) === 0 || mb_strlen($text) > 2000) {
             return new Response(status: Response::HTTP_BAD_REQUEST);
@@ -66,16 +65,17 @@ class PostController
                 return new Response(content: $file->getErrorMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            $documentFileName = $post->id . $i;
+            $document = new Document();
+            $document->post = $post;
+            $document->source = '';
+            $document->mime = $file->getMimeType();
+            $document->name = $file->getClientOriginalName();
+            $this->entityManager->persist($document);
+            $this->entityManager->flush();
+
+            $documentFileName = $document->id;
 
             if (file_exists($documentUploadDirectory . '/' . $documentFileName)) {
-                $this->entityManager->rollback();
-                return new Response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-
-            $documentOriginalName = basename($file->getClientOriginalName());
-
-            if (strlen($documentOriginalName) > 64) {
                 $this->entityManager->rollback();
                 return new Response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -86,13 +86,6 @@ class PostController
                 $this->entityManager->rollback();
                 return new Response(content: $e->getMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-
-            $document = new Document();
-            $document->post = $post;
-            $document->source = "documents/$documentFileName";
-            $document->mime = $file->getMimeType();
-            $document->name = $documentOriginalName;
-            $this->entityManager->persist($document);
         }
 
         foreach ($pictures as $i => $file) {
@@ -101,16 +94,17 @@ class PostController
                 return new Response(content: $file->getErrorMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            $pictureFileName = $post->id . $i;
+            $picture = new Picture();
+            $picture->post = $post;
+            $picture->source = '';
+            $picture->mime = $file->getMimeType();
+            $picture->name = $file->getClientOriginalName();
+            $this->entityManager->persist($picture);
+            $this->entityManager->flush();
+
+            $pictureFileName = $picture->id;
 
             if (file_exists($pictureUploadDirectory . '/' . $pictureFileName)) {
-                $this->entityManager->rollback();
-                return new Response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-
-            $pictureOriginalName = basename($file->getClientOriginalName());
-
-            if (strlen($pictureOriginalName) > 64) {
                 $this->entityManager->rollback();
                 return new Response(status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -121,13 +115,6 @@ class PostController
                 $this->entityManager->rollback();
                 return new Response(content: $e->getMessage(), status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-
-            $picture = new Picture();
-            $picture->post = $post;
-            $picture->source = $pictureFileName;
-            $picture->mime = $file->getMimeType();
-            $picture->name = $pictureOriginalName;
-            $this->entityManager->persist($picture);
         }
 
         try {

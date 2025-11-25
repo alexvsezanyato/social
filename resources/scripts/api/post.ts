@@ -18,7 +18,7 @@ export function getPost(id: number): Promise<IPost> {
 }
 
 export function createPost(data: any): Promise<number> {
-    return api<number>(http.post(prefix, data));
+    return api<number>(http.postForm(prefix, data));
 }
 
 export function deletePost(id: number): Promise<void> {
