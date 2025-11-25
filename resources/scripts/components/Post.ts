@@ -5,6 +5,7 @@ import PostData from '@/types/post.d';
 import {deletePost} from '@/api/post';
 import {createPostComment, deletePostComment, getPostComment} from '@/api/post-comment';
 import IPostComment from '@/types/post-comment';
+import {repeat} from 'lit/directives/repeat.js';
 
 @customElement('x-post')
 export default class Post extends LitElement {
@@ -16,30 +17,6 @@ export default class Post extends LitElement {
             display: none!important;
         }
 
-        .actions {
-            display: flex;
-        }
-
-        .icon {
-            width: 25px;
-            height: 25px;
-            padding: 0;
-            margin: 4px;
-            border-radius: 20%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-        }
-
-        .action .icon {
-            cursor: pointer;
-        }
-
-        .action .icon:hover {
-            background: #ddd;
-        }
-
         .post {
             position: relative;
         }
@@ -47,7 +24,6 @@ export default class Post extends LitElement {
         .post > .wrapper {
             border: 1px solid #ddd;
             border-radius: 8px;
-            overflow: hidden;
             margin-bottom: 15px;
             background: #fff;
             font-family: Roboto, Arial, Tahoma;
@@ -129,54 +105,6 @@ export default class Post extends LitElement {
 
         .document .link:hover {
             text-decoration: underline;
-        }
-
-        .menu .items {
-            position: absolute;
-            top: 0;
-            right: 0;
-            margin: 4px;
-
-            transition: 
-                transform .1s,
-                opacity .1s,
-                box-shadow .1s;
-
-            box-shadow: 0 0 100px 0 rgba(0,0,0,.4);
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 0;
-            list-style-type: none;
-            min-width: 120px;
-            color: #222;
-            font-weight: 600;
-            font-size: 13px;
-            user-select: none;
-        }
-
-        .menu .item {
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-            transition: background-color .03s;
-            display: flex;
-            align-items: center;
-            padding-right: 10px;
-        }
-
-        .menu .item:last-of-type {
-            border-bottom: none;
-        }
-
-        .menu .item:hover {
-            background: #eee;
-        }
-
-        .menu .item i {
-            box-sizing: content-box;
-            padding-right: 10px;
-            width: 14px;
-            text-align: center;
         }
 
         .pictures {
@@ -267,9 +195,6 @@ export default class Post extends LitElement {
     @property({attribute: false})
     public data: PostData;
 
-    @state()
-    private _hiddenMenu = true;
-
     render() {
         return html`<div class="post" data-id="${this.data.id}">
             <div class="wrapper">
@@ -284,16 +209,9 @@ export default class Post extends LitElement {
                             <div class="time">${this.data.createdAt.time}</div>
                         </div>
 
-                        <div class="actions">
-                            <div class="menu">
-                                <div class="action" @click="${this.toggleMenu}"><wa-icon class="icon" name="caret-down"></wa-icon></div>
-
-                                <div class="items" ?hidden="${this._hiddenMenu}">
-                                    <div class="item" @click="${this.toggleMenu}"><wa-icon class="icon" name="caret-left"></wa-icon>Back</div>
-                                    <div class="item" @click="${this.delete}"><wa-icon class="icon" name="trash"></wa-icon>Delete</div>
-                                </div>
-                            </div>
-                        </div>
+                        <x-dropdown-action>
+                            <x-action @click="${this.delete}" x-icon="trash" x-text="Delete"></x-action>
+                        </x-dropdown-action>
                     </div>
                 </div>
 
@@ -307,33 +225,30 @@ export default class Post extends LitElement {
                     <div class="documents-header">${this.data.documents.length} document(s)</div>
 
                     ${map(this.data.documents, document => html`<div class="document">
-                        <div class="icon"><wa-icon name="file"></wa-icon></div>
+                        <div class="icon"><x-icon x-name="file"></x-icon></div>
                         <div class="name"><a class="link" href="/document/download?id=${document.source}&name=${document.name}&type=${document.mime}" download>${document.name}</a></div>
                     </div>`)}
                 </div>
 
                 <div class="new-comment">
                     <div class="author">
-                        <wa-icon class="icon" name="user"></wa-icon>
+                        <x-icon class="icon" x-name="user"></x-icon>
                     </div>
 
                     <input name="comment" class="input" type="text" placeholder="Comment">
-
-                    <div class="actions">
-                        <div class="action" @click="${this.createComment}"><wa-icon class="icon" name="paper-plane"></wa-icon></div>
-                    </div>
+                    <x-action @click="${this.createComment}" x-icon="paper-plane"></x-action>
                 </div>
 
                 <div class="comments" ?hidden="${this.data.comments.length === 0}">
-                    ${map(this.data.comments, comment => html`<div class="comment">
+                    ${repeat(this.data.comments, comment => comment.id, comment => html`<div class="comment">
                         <div class="header">
                             <div class="author">
-                                <wa-icon class="icon" name="user"></wa-icon>
+                                <x-icon class="icon" x-name="user"></x-icon>
                                 <a class="name" href="/profile/index?id=${comment.author.id}">${comment.author.public}</a>
                             </div>
-                            <div class="actions">
-                                <div class="action" @click="${() => this.deleteComment(comment)}"><wa-icon class="icon" name="trash"></wa-icon></div>
-                            </div>
+                            <x-dropdown-action>
+                                <x-action @click="${() => this.deleteComment(comment)}" x-icon="trash" x-text="Delete"></x-action>
+                            </x-dropdown-action>
                         </div>
 
                         <div class="text">${comment.text}</div>
@@ -341,10 +256,6 @@ export default class Post extends LitElement {
                 </div>
             </div>
         </div>`;
-    }
-
-    public toggleMenu() {
-        this._hiddenMenu = !this._hiddenMenu;
     }
 
     public async delete() {
