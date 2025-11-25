@@ -1,5 +1,5 @@
 import {CSSResultGroup, LitElement, css, html} from 'lit';
-import {customElement, property, state} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import PostData from '@/types/post.d';
 import {deletePost} from '@/api/post';
