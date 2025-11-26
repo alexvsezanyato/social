@@ -3,8 +3,10 @@ import * as webawesome from '@awesome.me/webawesome/dist/webawesome.js';
 
 import '@/ui/Icon';
 import '@/ui/Action';
+import '@/ui/ActionDropdown';
 import '@/ui/Actions';
-import '@/ui/DropdownAction';
+import '@/ui/Dropdown';
+import '@/ui/DropdownItem';
 
 import '@/components/Modal';
 import '@/components/PostForm';

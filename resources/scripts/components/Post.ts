@@ -53,7 +53,6 @@ export default class Post extends LitElement {
 
         .title .datetime {
             font-size: 13px;
-            font-weight: bold;
             color: #444;
             margin-right: 10px;
         }
@@ -80,7 +79,6 @@ export default class Post extends LitElement {
             padding: 0;
             font-size: 13px;
             font-family: Roboto, Arial, Tahoma;
-            font-weight: bold;
         }
 
         .documents-header {
@@ -138,7 +136,6 @@ export default class Post extends LitElement {
             padding: 0;
             font-size: 13px;
             font-family: Roboto, Arial, Tahoma;
-            font-weight: bold;
             border-top: 1px solid #ddd;
         }
 
@@ -207,9 +204,9 @@ export default class Post extends LitElement {
                             <div class="time">${this.data.createdAt.time}</div>
                         </div>
 
-                        <x-dropdown-action>
-                            <x-action @click="${this.delete}" x-icon="trash" x-text="Delete"></x-action>
-                        </x-dropdown-action>
+                        <x-action-dropdown>
+                            <x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>
+                        </x-action-dropdown>
                     </div>
                 </div>
 
@@ -246,9 +243,9 @@ export default class Post extends LitElement {
                                 <x-icon class="icon" x-name="user"></x-icon>
                                 <a class="name" href="/profile/index?id=${comment.author.id}">${comment.author.public}</a>
                             </div>
-                            <x-dropdown-action>
-                                <x-action @click="${() => this.deleteComment(comment)}" x-icon="trash" x-text="Delete"></x-action>
-                            </x-dropdown-action>
+                            <x-action-dropdown>
+                                <x-dropdown-item @click="${() => this.deleteComment(comment)}" x-icon="trash" x-text="Delete"></x-dropdown-item>
+                            </x-action-dropdown>
                         </div>
 
                         <div class="text">${comment.text}</div>
