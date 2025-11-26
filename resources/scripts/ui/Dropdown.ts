@@ -15,7 +15,7 @@ export default class Dropdown extends LitElement {
             background: #fff;
             border-radius: 5px;
             overflow: hidden;
-            box-shadow: 0 2px 12px 2px rgba(0, 0, 0, .35)
+            box-shadow: 0 2px 20px 5px rgba(0, 0, 0, .35);
         }
         ::slotted(*) {
             display: block;
