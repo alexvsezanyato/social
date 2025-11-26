@@ -11,6 +11,8 @@ import '@/ui/DropdownItem';
 import '@/components/Modal';
 import '@/components/PostForm';
 import '@/components/Post';
+import '@/components/PostComment';
+import '@/components/PostCommentForm';
 import '@/components/Posts';
 import '@/components/Profile';
 

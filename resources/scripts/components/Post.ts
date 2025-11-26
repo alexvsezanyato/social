@@ -2,18 +2,13 @@ import {CSSResultGroup, LitElement, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import PostData from '@/types/post.d';
+import PostCommentData from '@/types/post-comment.d';
 import {deletePost} from '@/api/post';
-import {createPostComment, deletePostComment, getPostComment} from '@/api/post-comment';
-import IPostComment from '@/types/post-comment';
 import {repeat} from 'lit/directives/repeat.js';
 
 @customElement('x-post')
 export default class Post extends LitElement {
     static styles?: CSSResultGroup = css`
-        * {
-            box-sizing: border-box;
-        }
-
         [hidden] {
             display: none!important;
         }
@@ -139,53 +134,29 @@ export default class Post extends LitElement {
             border-top: 1px solid #ddd;
         }
 
-        .new-comment {
-            display: flex;
-            align-items: stretch;
-            border-top: 1px solid #ddd;
-        }
-
-        .new-comment .input {
-            width: 100%;
-            border: none;
-            outline: none;
-            padding: 0;
-        }
-
-        .comment:before {
-            content: '';
-            width: calc(100% - 20px);
-            margin: 0 10px;
-            height: 1px;
-            background: #e8e8e8;
+        .comments > * {
             display: block;
+            border-bottom: 1px solid #ddd;
         }
 
-        .comments > .comment:first-of-type:before {
-            content: none;
-        }
-
-        .comment .author {
-            display: flex;
-            align-items: center;
-        }
-
-        .comment .author .icon {
-            display: flex;
-            align-items: center;
-        }
-
-        .comment .text {
-            padding: 10px;
-            padding-top: 0;
-            font-weight: 400;
-        }
-
-        .comment .header {
-            display: flex;
-            justify-content: space-between;
+        .comments > *:last-child {
+            border-bottom: none;
         }
     `;
+
+    constructor() {
+        super();
+
+        this.addEventListener('post-comment:deleted', (e: CustomEvent<PostCommentData>) => {
+            this.data.comments = this.data.comments.filter(postComment => postComment.id !== e.detail.id);
+            this.requestUpdate();
+        });
+
+        this.addEventListener('post-comment:created', (e: CustomEvent<PostCommentData>) => {
+            this.data.comments.unshift(e.detail);
+            this.requestUpdate();
+        });
+    }
 
     @property({attribute: false})
     public data: PostData;
@@ -227,29 +198,10 @@ export default class Post extends LitElement {
                     </div>`)}
                 </div>
 
-                <div class="new-comment">
-                    <div class="author">
-                        <x-icon class="icon" x-name="user"></x-icon>
-                    </div>
-
-                    <input name="comment" class="input" type="text" placeholder="Comment">
-                    <x-action @click="${this.createComment}" x-icon="paper-plane"></x-action>
-                </div>
+                <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
 
                 <div class="comments" ?hidden="${this.data.comments.length === 0}">
-                    ${repeat(this.data.comments, comment => comment.id, comment => html`<div class="comment">
-                        <div class="header">
-                            <div class="author">
-                                <x-icon class="icon" x-name="user"></x-icon>
-                                <a class="name" href="/profile/index?id=${comment.author.id}">${comment.author.public}</a>
-                            </div>
-                            <x-action-dropdown>
-                                <x-dropdown-item @click="${() => this.deleteComment(comment)}" x-icon="trash" x-text="Delete"></x-dropdown-item>
-                            </x-action-dropdown>
-                        </div>
-
-                        <div class="text">${comment.text}</div>
-                    </div>`)}
+                    ${repeat(this.data.comments, comment => comment.id, comment => html`<x-post-comment .data="${comment}"></x-post-comment>`)}
                 </div>
             </div>
         </div>`;
@@ -263,25 +215,5 @@ export default class Post extends LitElement {
             composed: true,
             detail: this.data,
         }));
-    }
-
-    public async createComment() {
-        const post = this.shadowRoot.querySelector('.post') as HTMLElement;
-        const input = post.querySelector('.new-comment input') as HTMLInputElement;
-
-        const commentId = await createPostComment({
-            postId: this.data.id,
-            text: input.value,
-        });
-
-        input.value = '';
-        this.data.comments.push(await getPostComment(commentId));
-        this.requestUpdate();
-    }
-
-    public async deleteComment(comment: IPostComment) {
-        await deletePostComment(comment.id);
-        this.data.comments = this.data.comments.filter(e => e.id !== comment.id);
-        this.requestUpdate();
     }
 }
