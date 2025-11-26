@@ -1,23 +1,16 @@
-import {CSSResultGroup, LitElement, css, html} from 'lit';
+import XElement from '@/ui/XElement';
+import {CSSResultGroup, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
+import {repeat} from 'lit/directives/repeat.js';
 import PostData from '@/types/post.d';
 import PostCommentData from '@/types/post-comment.d';
 import {deletePost} from '@/api/post';
-import {repeat} from 'lit/directives/repeat.js';
 
 @customElement('x-post')
-export default class Post extends LitElement {
-    static styles?: CSSResultGroup = css`
-        [hidden] {
-            display: none!important;
-        }
-
-        .post {
-            position: relative;
-        }
-
-        .post > .wrapper {
+export default class XPost extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
+        :host {
             border: 1px solid #ddd;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -85,7 +78,6 @@ export default class Post extends LitElement {
             display: flex;
             align-items: center;
             white-space: nowrap;
-            overflow: hidden;
             flex-shrink: 1;
             flex-grow: 1;
             overflow: hidden;
@@ -142,7 +134,7 @@ export default class Post extends LitElement {
         .comments > *:last-child {
             border-bottom: none;
         }
-    `;
+    `];
 
     constructor() {
         super();
@@ -162,49 +154,47 @@ export default class Post extends LitElement {
     public data: PostData;
 
     render() {
-        return html`<div class="post" data-id="${this.data.id}">
-            <div class="wrapper">
-                <div class="title">
-                    <div class="user">
-                        <a href="/profile/index?id=${this.data.author.id}">${this.data.author.public}</a>
+        return html`
+            <div class="title">
+                <div class="user">
+                    <a href="/profile/index?id=${this.data.author.id}">${this.data.author.public}</a>
+                </div>
+
+                <div>
+                    <div class="datetime"> 
+                        <div class="date">${this.data.createdAt.date} at</div>
+                        <div class="time">${this.data.createdAt.time}</div>
                     </div>
 
-                    <div>
-                        <div class="datetime"> 
-                            <div class="date">${this.data.createdAt.date} at</div>
-                            <div class="time">${this.data.createdAt.time}</div>
-                        </div>
-
-                        <x-action-dropdown>
-                            <x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>
-                        </x-action-dropdown>
-                    </div>
-                </div>
-
-                <div class="data">${this.data.text}</div>
-
-                <div class="pictures" ?hidden="${this.data.pictures.length === 0}">
-                    ${map(this.data.pictures, picture => html`<a href="/pictures/${picture.id}/download">
-                        <div class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></div>
-                    </a>`)}
-                </div>
-                
-                <div class="documents" ?hidden="${this.data.documents.length === 0}">
-                    <div class="documents-header">${this.data.documents.length} document(s)</div>
-
-                    ${map(this.data.documents, document => html`<div class="document">
-                        <div class="icon"><x-icon x-name="file"></x-icon></div>
-                        <div class="name"><a class="link" href="/documents/${document.id}/download" download>${document.name}</a></div>
-                    </div>`)}
-                </div>
-
-                <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
-
-                <div class="comments" ?hidden="${this.data.comments.length === 0}">
-                    ${repeat(this.data.comments, comment => comment.id, comment => html`<x-post-comment .data="${comment}"></x-post-comment>`)}
+                    <x-action-dropdown>
+                        <x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>
+                    </x-action-dropdown>
                 </div>
             </div>
-        </div>`;
+
+            <div class="data">${this.data.text}</div>
+
+            <div class="pictures" ?hidden="${this.data.pictures.length === 0}">
+                ${map(this.data.pictures, picture => html`<a href="/pictures/${picture.id}/download">
+                    <div class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></div>
+                </a>`)}
+            </div>
+            
+            <div class="documents" ?hidden="${this.data.documents.length === 0}">
+                <div class="documents-header">${this.data.documents.length} document(s)</div>
+
+                ${map(this.data.documents, document => html`<div class="document">
+                    <div class="icon"><x-icon x-name="file"></x-icon></div>
+                    <div class="name"><a class="link" href="/documents/${document.id}/download" download>${document.name}</a></div>
+                </div>`)}
+            </div>
+
+            <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
+
+            <div class="comments" ?hidden="${this.data.comments.length === 0}">
+                ${repeat(this.data.comments, comment => comment.id, comment => html`<x-post-comment .data="${comment}"></x-post-comment>`)}
+            </div>
+        `;
     }
 
     public async delete() {

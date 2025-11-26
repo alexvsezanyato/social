@@ -1,9 +1,10 @@
-import {css, CSSResultGroup, html, LitElement} from 'lit';
-import {customElement, property, state} from 'lit/decorators.js';
+import XElement from '@/ui/XElement';
+import {css, CSSResultGroup, html} from 'lit';
+import {customElement, state} from 'lit/decorators.js';
 
 @customElement('x-action-dropdown')
-export default class ActionDropdown extends LitElement {
-    static styles: CSSResultGroup = css`
+export default class XActionDropdown extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
         [hidden] {
             display: none!important;
         }
@@ -16,7 +17,7 @@ export default class ActionDropdown extends LitElement {
             right: 0;
             z-index: 100;
         }
-    `;
+    `];
 
     @state()
     private _hidden: boolean = true;

@@ -1,27 +1,33 @@
-import {css, CSSResultGroup, html, LitElement} from 'lit';
+import XElement from '@/ui/XElement';
+import {css, CSSResultGroup, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
-@customElement('x-action')
-export default class Action extends LitElement {
-    static styles: CSSResultGroup = css`
-        .action {
+@customElement('x-dropdown-item')
+export default class XDropdownItem extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
+        :host {
+            cursor: pointer;
             display: flex;
             align-items: center;
-            margin: 4px;
-            border-radius: 5px;
-            cursor: pointer;
         }
-        .action:hover {
+
+        :host(:hover) {
+            background-color: #eee;
+        }
+
+        :host(:hover) .icon {
             background-color: #ddd;
         }
-        .icon::part(root) {
-            margin: 0;
+
+        .icon {
             border-radius: 5px;
+            background: #eee;
         }
+
         .text:not(:empty) {
             padding-left: 4px;
         }
-    `;
+    `];
 
     @property({attribute: 'x-icon'})
     private _icon: string = '';
@@ -30,9 +36,9 @@ export default class Action extends LitElement {
     private _text: string = '';
 
     render() {
-        return html`<div class="action" part="root">
+        return html`
             <x-icon class="icon" x-name="${this._icon}"></x-icon>
             <div class="text">${this._text}</div>
-        </div>`;
+        `;
     }
 }

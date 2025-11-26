@@ -1,10 +1,11 @@
+import XElement from '@/ui/XElement';
 import axios from 'axios';
 import {CSSResultGroup, LitElement, css, html} from 'lit';
 import {customElement} from 'lit/decorators.js';
 
 @customElement('x-register-page')
-export default class LoginPage extends LitElement {
-    static styles?: CSSResultGroup = css`
+export default class XRegisterPage extends XElement {
+    static styles?: CSSResultGroup = [XElement.styles, css`
         :host {
             width: 100%;
             height: 100%;
@@ -64,7 +65,7 @@ export default class LoginPage extends LitElement {
         .form input::placeholder {
             color: #888;
         }
-    `;
+    `];
 
     render() {
         return html`

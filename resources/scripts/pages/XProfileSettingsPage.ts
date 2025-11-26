@@ -1,11 +1,12 @@
-import {CSSResultGroup, LitElement, css, html} from 'lit';
+import XElement from '@/ui/XElement';
+import {CSSResultGroup, css, html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import {getUser, patchUser} from '@/api/user';
 import IUser from '@/types/user';
 
 @customElement('x-profile-settings-page')
-export default class ProfileSettingsPage extends LitElement {
-    static styles?: CSSResultGroup = css`
+export default class XProfileSettingsPage extends XElement {
+    static styles?: CSSResultGroup = [XElement.styles, css`
         .sets .group {
             overflow: hidden;
             border: 1px solid #ddd;
@@ -123,7 +124,7 @@ export default class ProfileSettingsPage extends LitElement {
             transform: translate(0, 3px);
             box-shadow: none;
         }
-    `;
+    `];
 
     @state()
     private _user: IUser;

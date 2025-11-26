@@ -1,10 +1,11 @@
-import {css, CSSResultGroup, html, LitElement} from 'lit';
+import XElement from '@/ui/XElement';
+import {css, CSSResultGroup, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
 @customElement('x-icon')
-export default class Icon extends LitElement {
-    static styles: CSSResultGroup = css`
-        .icon {
+export default class XIcon extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
+        :host {
             width: 25px;
             height: 25px;
             padding: 0;
@@ -14,12 +15,12 @@ export default class Icon extends LitElement {
             align-items: center;
             font-size: 16px;
         }
-    `;
+    `];
 
     @property({attribute: 'x-name'})
     private _name: string;
 
     render() {
-        return html`<wa-icon part="root" class="icon" name="${this._name}"></wa-icon>`;
+        return html`<wa-icon name="${this._name}"></wa-icon>`;
     }
 }

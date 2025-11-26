@@ -1,10 +1,11 @@
+import XElement from '@/ui/XElement';
 import axios from 'axios';
-import {CSSResultGroup, LitElement, css, html} from 'lit';
+import {CSSResultGroup, css, html} from 'lit';
 import {customElement} from 'lit/decorators.js';
 
 @customElement('x-login-page')
-export default class LoginPage extends LitElement {
-    static styles?: CSSResultGroup = css`
+export default class XLoginPage extends XElement {
+    static styles?: CSSResultGroup = [XElement.styles, css`
         :host {
             width: 100%;
             height: 100%;
@@ -14,6 +15,7 @@ export default class LoginPage extends LitElement {
             align-items: center;
             gap: 10px;
         }
+
         .form {
             display: flex;
             flex-direction: column;
@@ -26,9 +28,11 @@ export default class LoginPage extends LitElement {
             text-align: center;
             font-size: 20px;
         }
+
         .form .title {
             font-weight: bold;
         }
+
         .form input, .form .submit {
             padding: 10px;
             border-radius: 5px;
@@ -39,32 +43,38 @@ export default class LoginPage extends LitElement {
             font-family: "Times New Roman", Times, serif;
             font-size: 16px;
         }
+
         .form input:hover {
             box-shadow: 0 0 0 1px #ddd;
         }
+
         .form input:focus {
             outline: none;
             border: 1px solid #aaa;
             box-shadow: 0 0 0 1px #aaa;
         }
+
         .form .submit {
             background: #eee;
             box-shadow: 0 2px 0 0 #d0d0d0;
             border: 1px solid #e8e8e8;
             transition: all .1s ease;
         }
+
         .form .submit:hover {
             background: #e6e6e6;
             box-shadow: 0 2px 0 0 #bbb;
         }
+
         .form .submit:active {
             transform: translate(0, 3px);
             box-shadow: none;
         }
+
         .form input::placeholder {
             color: #888;
         }
-    `;
+    `];
 
     render() {
         return html`

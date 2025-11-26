@@ -1,10 +1,11 @@
-import {LitElement, html} from 'lit';
+import XElement from '@/ui/XElement';
+import {html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import PostData from '@/types/post.d';
 import {getRecommendedPosts} from '@/api/recommended-post';
 
 @customElement('x-index-page')
-export default class IndexPage extends LitElement {
+export default class XIndexPage extends XElement {
     @state()
     private _posts: PostData[];
 

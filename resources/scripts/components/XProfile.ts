@@ -1,10 +1,11 @@
-import {CSSResultGroup, LitElement, css, html} from 'lit';
+import XElement from '@/ui/XElement';
+import {CSSResultGroup, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import User from '@/types/user';
 
 @customElement('x-profile')
-export default class Profile extends LitElement {
-    static styles?: CSSResultGroup = css`
+export default class XProfile extends XElement {
+    static styles?: CSSResultGroup = [XElement.styles, css`
         .profile-header {
             background: #fff;
             border: 1px solid #ddd;
@@ -29,7 +30,7 @@ export default class Profile extends LitElement {
             color: #444;
             margin-right: 5px;
         }
-    `;
+    `];
 
     @property({type: Object})
     user: User;

@@ -1,12 +1,12 @@
-import {CSSResultGroup, LitElement, css, html} from 'lit';
+import XElement from '@/ui/XElement';
+import {CSSResultGroup, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import PostCommentData from '@/types/post-comment.d';
 import {deletePostComment} from '@/api/post-comment';
-import IPostComment from '@/types/post-comment';
 
 @customElement('x-post-comment')
-export default class PostComment extends LitElement {
-    static styles?: CSSResultGroup = css`
+export default class XPostComment extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
         .author {
             display: flex;
             align-items: center;
@@ -22,7 +22,7 @@ export default class PostComment extends LitElement {
             display: flex;
             justify-content: space-between;
         }
-    `;
+    `];
 
     @property({attribute: false})
     public data: PostCommentData;

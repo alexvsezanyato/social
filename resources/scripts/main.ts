@@ -1,26 +1,27 @@
 import '@awesome.me/webawesome/dist/components/icon/icon.js';
 import * as webawesome from '@awesome.me/webawesome/dist/webawesome.js';
 
-import '@/ui/Icon';
-import '@/ui/Action';
-import '@/ui/ActionDropdown';
-import '@/ui/Actions';
-import '@/ui/Dropdown';
-import '@/ui/DropdownItem';
+import '@/ui/XIcon';
+import '@/ui/XAction';
+import '@/ui/XActionDropdown';
+import '@/ui/XActions';
+import '@/ui/XDropdown';
+import '@/ui/XDropdownItem';
+import '@/ui/XSections';
 
-import '@/components/Modal';
-import '@/components/PostForm';
-import '@/components/Post';
-import '@/components/PostComment';
-import '@/components/PostCommentForm';
-import '@/components/Posts';
-import '@/components/Profile';
+import '@/components/XModal';
+import '@/components/XPostForm';
+import '@/components/XPost';
+import '@/components/XPostComment';
+import '@/components/XPostCommentForm';
+import '@/components/XPosts';
+import '@/components/XProfile';
 
-import '@/pages/IndexPage';
-import '@/pages/ProfilePage';
-import '@/pages/ProfileSettingsPage';
-import '@/pages/LoginPage';
-import '@/pages/RegisterPage';
+import '@/pages/XIndexPage';
+import '@/pages/XProfilePage';
+import '@/pages/XProfileSettingsPage';
+import '@/pages/XLoginPage';
+import '@/pages/XRegisterPage';
 
 webawesome.registerIconLibrary('default', {
     resolver: (name) => {

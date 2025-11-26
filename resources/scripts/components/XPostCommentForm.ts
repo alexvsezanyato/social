@@ -1,10 +1,11 @@
-import {CSSResultGroup, LitElement, css, html} from 'lit';
+import XElement from '@/ui/XElement';
+import {CSSResultGroup, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {createPostComment, deletePostComment, getPostComment} from '@/api/post-comment';
+import {createPostComment, getPostComment} from '@/api/post-comment';
 
 @customElement('x-post-comment-form')
-export default class PostCommentForm extends LitElement {
-    static styles?: CSSResultGroup = css`
+export default class XPostCommentForm extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
         .new-comment {
             display: flex;
             align-items: stretch;
@@ -17,7 +18,7 @@ export default class PostCommentForm extends LitElement {
             outline: none;
             padding: 0;
         }
-    `;
+    `];
 
     @property({attribute: false})
     public postId: number;

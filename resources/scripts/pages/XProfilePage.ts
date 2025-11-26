@@ -1,15 +1,16 @@
-import {CSSResultGroup, LitElement, css, html} from 'lit';
+import XElement from '@/ui/XElement';
+import {CSSResultGroup, css, html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import PostData from '@/types/post';
-import Modal from '@/components/Modal';
+import Modal from '@/components/XModal';
 import {getUser} from '@/api/user';
 import User from '@/types/user';
 import {getPosts} from '@/api/post';
-import PostForm from '@/components/PostForm';
+import PostForm from '@/components/XPostForm';
 
 @customElement('x-profile-page')
-export default class ProfilePage extends LitElement {
-    static styles?: CSSResultGroup = css`
+export default class XProfilePage extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
         .posts-header {
             display: flex;
             justify-content: space-between;
@@ -40,48 +41,7 @@ export default class ProfilePage extends LitElement {
             transform: translate(0, 3px);
             box-shadow: none;
         }
-
-        .more-posts {
-            text-align: center;
-        }
-
-        .more-posts .wrapper {
-            display: inline-block;
-            font-family: Roboto, Arial, Tahoma;
-            font-weight: bold;
-            text-align: center;
-            padding: 8px 10px;
-            border-radius: 1.8em;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            background: #fff;
-            color: #000;
-            border: 1px solid #ddd;
-
-            box-shadow: 
-                0 6px 15px 0 #ccc,
-                0 1px 0 0 #aaa;
-
-            transition: all .1s ease;
-            user-select: none;
-        }
-
-        .more-posts .wrapper:active {
-            transform: translate(0, 2px);
-            box-shadow: 
-                0 3px 4px 0 #ddd,
-                0 1px 0 0 #aaa;
-        }
-
-        .posts-end {
-            padding: 10px;
-            padding-bottom: 3px;
-            font-family: Roboto, Arial, Tahoma;
-            font-size: 13px;
-            font-weight: bold;
-        }
-    `;
+    `];
 
     @state()
     private _posts: PostData[];
@@ -122,8 +82,8 @@ export default class ProfilePage extends LitElement {
 
             ${this._posts !== undefined ? html`<x-posts .posts="${this._posts}"></x-posts>` : ''}
 
-            <x-modal class="post-form-modal" x-title="New post">
-                <x-post-form class="post-form" slot="content"></x-post-form>
+            <x-modal class="post-form-modal" x-title="New post" hidden>
+                <x-post-form slot="content"></x-post-form>
             </x-modal>
         `;
     }
