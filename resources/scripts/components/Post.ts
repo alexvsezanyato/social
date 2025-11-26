@@ -10,9 +10,10 @@ import {repeat} from 'lit/directives/repeat.js';
 @customElement('x-post')
 export default class Post extends LitElement {
     static styles?: CSSResultGroup = css`
-    * {
-        box-sizing: border-box;
-    }
+        * {
+            box-sizing: border-box;
+        }
+
         [hidden] {
             display: none!important;
         }
