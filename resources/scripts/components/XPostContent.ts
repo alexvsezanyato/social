@@ -31,30 +31,6 @@ export default class XPostContent extends XElement {
             text-align: justify;
             white-space: pre-wrap;
         }
-
-        .pictures {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 5px;
-            padding: 10px;
-        }
-
-        .picture {
-            cursor: pointer;
-            flex-grow: 1;
-            max-height: 100px;
-            min-height: 30px;
-            min-width: 20%;
-            background-size: contain;
-            border-radius: 5px;
-            min-height: 70px;
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-end;
-            align-items: flex-start;
-            padding: 5px;
-            border: 1px solid #ddd;
-        }
     `];
 
     @property({attribute: false})
@@ -67,15 +43,11 @@ export default class XPostContent extends XElement {
             </div>
 
             ${this.data.pictures.length !== 0 ? html`<div>
-                <div class="pictures">
-                    ${map(this.data.pictures, picture => html`<a href="/pictures/${picture.id}/download">
-                        <div class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></div>
-                    </a>`)}
-                </div>
+                <x-pictures .data="${this.data.pictures}"></x-pictures>
             </div>` : ''}
 
             ${this.data.documents.length !== 0 ? html`<div>
-                <x-documents class="documents" .data="${this.data.documents}"></x-documents>
+                <x-documents .data="${this.data.documents}"></x-documents>
             </div>` : ''}
         `;
     }

@@ -19,6 +19,7 @@ import '@/components/XPostComments';
 import '@/components/XPostCommentForm';
 import '@/components/XProfile';
 import '@/components/XDocuments';
+import '@/components/XPictures';
 
 import '@/pages/XIndexPage';
 import '@/pages/XProfilePage';
