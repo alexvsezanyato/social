@@ -12,10 +12,14 @@ import '@/ui/XSections';
 import '@/components/XModal';
 import '@/components/XPostForm';
 import '@/components/XPost';
-import '@/components/XPostComment';
-import '@/components/XPostCommentForm';
 import '@/components/XPosts';
+import '@/components/XPostContent';
+import '@/components/XPostHeader';
+import '@/components/XPostComment';
+import '@/components/XPostComments';
+import '@/components/XPostCommentForm';
 import '@/components/XProfile';
+import '@/components/XDocuments';
 
 import '@/pages/XIndexPage';
 import '@/pages/XProfilePage';

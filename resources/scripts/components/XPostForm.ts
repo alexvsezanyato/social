@@ -13,7 +13,6 @@ export default class XPostForm extends XSections {
             resize: none;
             border: none;
             font-family: Roboto, Arial, Tahoma;
-            font-size: 14px;
             word-wrap: break-word;
             line-height: 21px;
             outline: none;

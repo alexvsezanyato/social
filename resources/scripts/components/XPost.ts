@@ -1,130 +1,26 @@
-import XSections from '@/ui/XSections';
 import {CSSResultGroup, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {map} from 'lit/directives/map.js';
-import {repeat} from 'lit/directives/repeat.js';
 import PostData from '@/types/post.d';
 import PostCommentData from '@/types/post-comment.d';
-import {deletePost} from '@/api/post';
+import XElement from '@/ui/XElement';
 
 @customElement('x-post')
-export default class XPost extends XSections {
-    static styles: CSSResultGroup = [XSections.styles, css`
+export default class XPost extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
         :host {
-            gap: 10px;
+            display: flex;
+            flex-direction: column;
             border: 1px solid #ddd;
             border-radius: 8px;
-            margin-bottom: 15px;
             background: #fff;
-            font-family: Roboto, Arial, Tahoma;
-            font-size: 14px;
         }
 
-        .title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        :host > * {
+            border-bottom: 1px solid #ddd;
         }
 
-        .title > * {
-            display: flex;
-            align-items: center;
-        }
-
-        .title .user {
-            margin-left: 10px;
-        }
-
-        .title .user > a {
-            color: blue;
-        }
-
-        .title .datetime {
-            font-size: 13px;
-            color: #444;
-            margin-right: 10px;
-        }
-
-        .title .datetime > * {
-            display: inline;
-        } 
-
-        .title .delimiter {
-            color: #444;
-        }
-
-        .data {
-            padding: 10px;
-            line-height: 21px;
-            word-spacing: 1.5px;
-            text-align: justify;
-            font-family: Roboto, Arial, Tahoma;
-            white-space: pre-wrap;
-        }
-
-        .documents {
-            margin: 0;
-            padding: 0;
-            font-size: 13px;
-            font-family: Roboto, Arial, Tahoma;
-        }
-
-        .documents-header {
-            padding: 10px;
-        }
-
-        .document {
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-            flex-shrink: 1;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        .document .link {
-            color: #000;
-            text-decoration: none;
-        }
-
-        .document .link:hover {
-            text-decoration: underline;
-        }
-
-        .pictures {
-            padding: 5px;
-            margin: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
-        .picture {
-            margin: 5px;
-            flex-grow: 1;
-            max-height: 100px;
-            min-height: 30px;
-            min-width: 20%;
-            background-size: contain;
-            border-radius: 5px;
-            min-height: 70px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-end;
-            align-items: flex-start;
-            padding: 5px;
-            border: 1px solid #ddd;
-        }
-
-        .comments {
-            margin: 0;
-            padding: 0;
-            font-size: 13px;
-            font-family: Roboto, Arial, Tahoma;
-        }
-
-        .comments > * {
-            display: block;
+        :host > *:last-child {
+            border-bottom: none;
         }
     `];
 
@@ -147,67 +43,10 @@ export default class XPost extends XSections {
 
     render() {
         return html`
-            <div>
-                <div class="title">
-                    <div class="user">
-                        <a href="/profile/index?id=${this.data.author.id}">${this.data.author.public}</a>
-                    </div>
-
-                    <div>
-                        <div class="datetime"> 
-                            <div class="date">${this.data.createdAt.date} at</div>
-                            <div class="time">${this.data.createdAt.time}</div>
-                        </div>
-
-                        <x-action-dropdown>
-                            <x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>
-                        </x-action-dropdown>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <div class="data">${this.data.text}</div>
-            </div>
-
-            ${this.data.pictures.length !== 0 ? html`<div>
-                <div class="pictures">
-                    ${map(this.data.pictures, picture => html`<a href="/pictures/${picture.id}/download">
-                        <div class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></div>
-                    </a>`)}
-                </div>
-            </div>` : ''}
-            
-            ${this.data.documents.length !== 0 ? html`<div>
-                <div class="documents">
-                    <div class="documents-header">${this.data.documents.length} document(s)</div>
-
-                    ${map(this.data.documents, document => html`<div class="document">
-                        <div class="icon"><x-icon x-name="file"></x-icon></div>
-                        <div class="name"><a class="link" href="/documents/${document.id}/download" download>${document.name}</a></div>
-                    </div>`)}
-                </div>
-            </div>` : ''}
-
-            <div class="test">
-                <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
-            </div>
-
-            ${this.data.comments.length !== 0 ? html`<div>
-                <div class="comments">
-                    ${repeat(this.data.comments, comment => comment.id, comment => html`<x-post-comment .data="${comment}"></x-post-comment>`)}
-                </div>
-            </div>` : ''}
+            <x-post-header .data="${this.data}"></x-post-header>
+            <x-post-content .data="${this.data}"></x-post-content>
+            <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
+            ${this.data.comments.length !== 0 ? html`<x-post-comments .data="${this.data.comments}"></x-post-comments>` : ''}
         `;
-    }
-
-    public async delete() {
-        await deletePost(this.data.id);
-
-        this.dispatchEvent(new CustomEvent('post:deleted', {
-            bubbles: true,
-            composed: true,
-            detail: this.data,
-        }));
     }
 }

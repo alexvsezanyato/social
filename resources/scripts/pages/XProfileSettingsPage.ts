@@ -69,7 +69,6 @@ export default class XProfileSettingsPage extends XElement {
         }
 
         .sets .input input {
-            font-size: 16px;
             font-family: 'Times New Roman', Arial, 'Courier New';
             background: rgba(0, 0, 0, .0);
             border: none;
@@ -98,7 +97,6 @@ export default class XProfileSettingsPage extends XElement {
         .sets .apply {
             padding: 8px 10px;
             border-radius: 5px;
-            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             background: #009432;

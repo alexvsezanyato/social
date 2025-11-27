@@ -7,7 +7,6 @@ export default class XDropdown extends XElement {
     static styles: CSSResultGroup = [XElement.styles, css`
         :host {
             min-width: 120px;
-            font-size: 13px;
             display: flex;
             flex-direction: column;
             border-radius: 5px;

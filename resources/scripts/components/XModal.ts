@@ -46,7 +46,6 @@ export default class XModal extends XElement {
             align-items: center;
             padding-left: 11px;
             font-family: Arial;
-            font-size: 13px;
             font-weight: bold;
         }
     `];

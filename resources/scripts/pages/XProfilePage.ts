@@ -20,7 +20,6 @@ export default class XProfilePage extends XElement {
         .new-post {
             padding: 8px 10px;
             border-radius: 5px;
-            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             background: #009432;
@@ -63,8 +62,8 @@ export default class XProfilePage extends XElement {
         });
 
         this.addEventListener('post:created', (e: CustomEvent<PostData>) => {
-            this.getPostFormModal().hide();
-            this.getPostForm().clean();
+            this.postFormModal.hide();
+            this.postForm.clean();
             this._posts = [e.detail, ...this._posts];
         });
     }
@@ -77,22 +76,22 @@ export default class XProfilePage extends XElement {
 
             <div class="posts-header">
                 <h3>Posts</h3>
-                <button @click="${() => this.getPostFormModal().show()}" class="new-post">New</button>
+                <button @click="${() => this.postFormModal.show()}" class="new-post">New</button>
             </div>
 
             ${this._posts !== undefined ? html`<x-posts .posts="${this._posts}"></x-posts>` : ''}
 
             <x-modal class="post-form-modal" x-title="New post" hidden>
-                <x-post-form slot="content"></x-post-form>
+                <x-post-form class="post-form" slot="content"></x-post-form>
             </x-modal>
         `;
     }
 
-    public getPostFormModal(): Modal {
+    get postFormModal(): Modal {
         return this.shadowRoot.querySelector('.post-form-modal');
     }
 
-    public getPostForm(): PostForm {
+    get postForm(): PostForm {
         return this.shadowRoot.querySelector('.post-form');
     }
 }
