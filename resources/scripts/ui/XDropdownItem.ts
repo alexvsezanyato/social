@@ -15,17 +15,13 @@ export default class XDropdownItem extends XElement {
             background-color: #eee;
         }
 
-        :host(:hover) .icon {
-            background-color: #ddd;
-        }
-
         .icon {
-            border-radius: 5px;
-            background: #eee;
+            border-right: 1px solid #ddd;
+            margin: 0;
         }
 
         .text:not(:empty) {
-            padding-left: 4px;
+            padding-left: 10px;
         }
     `];
 
