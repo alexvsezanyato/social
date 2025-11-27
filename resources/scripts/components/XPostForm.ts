@@ -8,6 +8,14 @@ import {createPost, getPost} from '@/api/post';
 @customElement('x-post-form')
 export default class XPostForm extends XElement {
     static styles: CSSResultGroup = [XElement.styles, css`
+        :host > * {
+            border-bottom: 1px solid #ddd;
+        }
+
+        :host > *:last-child {
+            border-bottom: none;
+        }
+
         textarea {
             line-height: 20px;
             resize: none;
@@ -105,33 +113,31 @@ export default class XPostForm extends XElement {
 
             <div>
                 <textarea name="text"></textarea>
-            </div>
 
-            ${this.pictures.length !== 0 ? html`<div>
-                <div class="pictures">
-                    ${map(this.pictures, picture => html`<div class="picture" style="background: url('${URL.createObjectURL(picture)}') center / cover no-repeat">
-                        <x-action @click="${() => this.pictures = this.pictures.filter(e => e !== picture)}" x-icon="xmark" class="action"></x-action>
-                    </div>`)}
-                </div>
-            </div>` : ''}
-
-            ${this.documents.length !== 0 ? html`<div>
-                <div class="documents">
-                    <div class="document">
-                        <div class="info" style="padding-left: 10px">${this.documents.length} document(s) to upload</div>
-                        <x-action @click="${() => this.documents = []}" x-icon="trash"></x-action>
+                ${this.pictures.length !== 0 ? html`<div>
+                    <div class="pictures">
+                        ${map(this.pictures, picture => html`<div class="picture" style="background: url('${URL.createObjectURL(picture)}') center / cover no-repeat">
+                            <x-action @click="${() => this.pictures = this.pictures.filter(e => e !== picture)}" x-icon="xmark" class="action"></x-action>
+                        </div>`)}
                     </div>
+                </div>` : ''}
 
-                    ${map(this.documents, document => html`<div class="document">
-                        <div class="info"><x-icon x-name="file"></x-icon>${document.name}</div>
-                        <x-action @click="${() => this.documents = this.documents.filter(e => e !== document)}" x-icon="xmark"></x-action>
-                    </div>`)}
-                </div>
-            </div>` : ''}
+                ${this.documents.length !== 0 ? html`<div>
+                    <div class="documents">
+                        <div class="document">
+                            <div class="info" style="padding-left: 10px">${this.documents.length} document(s) to upload</div>
+                            <x-action @click="${() => this.documents = []}" x-icon="trash"></x-action>
+                        </div>
 
-            <div>
-                <x-action @click="${this.send}" x-text="Post" x-align="center" class="submit"></x-action>
+                        ${map(this.documents, document => html`<div class="document">
+                            <div class="info"><x-icon x-name="file"></x-icon>${document.name}</div>
+                            <x-action @click="${() => this.documents = this.documents.filter(e => e !== document)}" x-icon="xmark"></x-action>
+                        </div>`)}
+                    </div>
+                </div>` : ''}
             </div>
+
+            <x-action @click="${this.send}" x-text="Post" x-align="center" class="submit"></x-action>
         `;
     }
 
