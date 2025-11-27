@@ -20,10 +20,6 @@ body > .wrapper {
     padding-top: 45px;
 }
 
-*[data-hidden] {
-    visibility: hidden;
-}
-
 header {
     top: 0;
     left: 0;
@@ -71,19 +67,4 @@ main {
 
 main > * {
     width: 500px;
-}
-
-.posts {
-    margin-bottom: 15px;
-}
-
-.posts .notice {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.posts .hr {
-    border-top: 1px dashed #ddd;
-    padding: 0;
-    margin: 0;
 }
