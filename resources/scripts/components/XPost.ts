@@ -170,15 +170,15 @@ export default class XPost extends XSections {
                 <div class="data">${this.data.text}</div>
             </div>
 
-            <div ?hidden="${this.data.pictures.length === 0}">
+            ${this.data.pictures.length !== 0 ? html`<div>
                 <div class="pictures">
                     ${map(this.data.pictures, picture => html`<a href="/pictures/${picture.id}/download">
                         <div class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></div>
                     </a>`)}
                 </div>
-            </div>
+            </div>` : ''}
             
-            <div ?hidden="${this.data.documents.length === 0}">
+            ${this.data.documents.length !== 0 ? html`<div>
                 <div class="documents">
                     <div class="documents-header">${this.data.documents.length} document(s)</div>
 
@@ -187,17 +187,17 @@ export default class XPost extends XSections {
                         <div class="name"><a class="link" href="/documents/${document.id}/download" download>${document.name}</a></div>
                     </div>`)}
                 </div>
-            </div>
+            </div>` : ''}
 
-            <div>
+            <div class="test">
                 <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
             </div>
 
-            <div ?hidden="${this.data.comments.length === 0}">
+            ${this.data.comments.length !== 0 ? html`<div>
                 <div class="comments">
                     ${repeat(this.data.comments, comment => comment.id, comment => html`<x-post-comment .data="${comment}"></x-post-comment>`)}
                 </div>
-            </div>
+            </div>` : ''}
         `;
     }
 

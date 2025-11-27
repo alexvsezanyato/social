@@ -107,15 +107,15 @@ export default class XPostForm extends XSections {
                 <textarea name="text"></textarea>
             </div>
 
-            <div ?hidden="${this.pictures.length === 0}">
+            ${this.pictures.length !== 0 ? html`<div>
                 <div class="pictures">
                     ${map(this.pictures, picture => html`<div class="picture" style="background: url('${URL.createObjectURL(picture)}') center / cover no-repeat">
                         <x-action @click="${() => this.pictures = this.pictures.filter(e => e !== picture)}" x-icon="xmark" class="action"></x-action>
                     </div>`)}
                 </div>
-            </div>
+            </div>` : ''}
 
-            <div ?hidden="${this.documents.length === 0}">
+            ${this.documents.length !== 0 ? html`<div>
                 <div class="documents">
                     <div class="document">
                         <div class="info" style="padding-left: 10px">${this.documents.length} document(s) to upload</div>
@@ -127,7 +127,7 @@ export default class XPostForm extends XSections {
                         <x-action @click="${() => this.documents = this.documents.filter(e => e !== document)}" x-icon="xmark"></x-action>
                     </div>`)}
                 </div>
-            </div>
+            </div>` : ''}
 
             <div>
                 <x-action @click="${this.send}" x-text="Post" x-align="center" class="submit"></x-action>
