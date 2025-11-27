@@ -1,4 +1,4 @@
-import XSections from '@/ui/XSections';
+import XElement from '@/ui/XElement';
 import {html, css, CSSResultGroup} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
@@ -6,8 +6,8 @@ import PostData from '@/types/post';
 import {createPost, getPost} from '@/api/post';
 
 @customElement('x-post-form')
-export default class XPostForm extends XSections {
-    static styles: CSSResultGroup = [XSections.styles, css`
+export default class XPostForm extends XElement {
+    static styles: CSSResultGroup = [XElement.styles, css`
         textarea {
             line-height: 20px;
             resize: none;
