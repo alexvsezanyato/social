@@ -6,15 +6,22 @@ use Doctrine\ORM\EntityRepository;
 
 class PostRepository extends EntityRepository
 {
-    public function findWithPagination(int $offset, int $limit, ?int $authorId = null): array
-    {
+    public function findWithPagination(
+        ?int $authorId = null,
+        ?int $limit = null,
+        ?int $before = null,
+    ): array {
         $queryBuilder = $this->createQueryBuilder('p')
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
+            ->setMaxResults($limit ?? 1)
             ->orderBy('p.id', 'DESC');
 
+        if ($before !== null) {
+            $queryBuilder->andWhere('p.id < :before');
+            $queryBuilder->setParameter('before', $before);
+        }
+
         if ($authorId !== null) {
-            $queryBuilder->where('p.authorId = :authorId');
+            $queryBuilder->andWhere('p.authorId = :authorId');
             $queryBuilder->setParameter('authorId', $authorId);
         }
 

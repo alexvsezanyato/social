@@ -7,6 +7,7 @@ import '@/ui/XActionDropdown';
 import '@/ui/XActions';
 import '@/ui/XDropdown';
 import '@/ui/XDropdownItem';
+import '@/ui/XBlock';
 
 import '@/components/XModal';
 import '@/components/XPostForm';

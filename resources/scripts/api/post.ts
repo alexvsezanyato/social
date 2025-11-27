@@ -6,7 +6,7 @@ const prefix = '/posts';
 export async function getPosts(params: {
     authorId?: number,
     limit?: number,
-    from?: number
+    before?: number,
 } = {}): Promise<IPost[]> {
     return api<IPost[]>(http.get(prefix, {
         params: params,

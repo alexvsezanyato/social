@@ -167,7 +167,7 @@ class PostController
 
     public function index(Request $request) {
         $authorId = (int)$request->query->get('authorId', 0);
-        $from = (int)$request->query->get('from', 0);
+        $before = (int)$request->query->get('before', -1);
         $limit = (int)$request->query->get('limit', 1);
 
         if ($authorId === 0) {
@@ -178,7 +178,7 @@ class PostController
 
         try {
             $posts = $this->postRepository->findWithPagination(
-                offset: $from,
+                before: $before === -1 ? null : $before,
                 limit: $limit,
                 authorId: $authorId,
             );
