@@ -6,7 +6,7 @@ import User from '@/types/user';
 @customElement('x-profile')
 export default class XProfile extends XElement {
     static styles?: CSSResultGroup = [XElement.styles, css`
-        .profile-header {
+        :host {
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -15,18 +15,18 @@ export default class XProfile extends XElement {
             margin-bottom: 15px;
         }
 
-        .profile-header > * {
+        :host > * {
             display: flex;
             padding: 10px;
             list-style-type: none;
             border-bottom: 1px solid #ddd;
         }
 
-        .profile-header > *:last-of-type {
+        :host > *:last-of-type {
             border-bottom: none;
         }
 
-        .profile-header .title {
+        .title {
             color: #444;
             margin-right: 5px;
         }
@@ -36,19 +36,21 @@ export default class XProfile extends XElement {
     user: User;
 
     render() {
-        return html`${this.user !== undefined ? html`<div class="profile-header">
-            <div>
-                <div class="title">Name: </div>
-                <div class="value">${this.user.public}</div>
-            </div>
-            <div>
-                <div class="title">Login: </div>
-                <div class="value">${this.user.login}</div>
-            </div>
-            <div>
-                <div class="title">Age: </div>
-                <div class="value">${this.user.age}</div>
-            </div>
-        </div>` : ''}`;
+        if (this.user !== undefined) {
+            return html`
+                <div>
+                    <div class="title">Name: </div>
+                    <div class="value">${this.user.public}</div>
+                </div>
+                <div>
+                    <div class="title">Login: </div>
+                    <div class="value">${this.user.login}</div>
+                </div>
+                <div>
+                    <div class="title">Age: </div>
+                    <div class="value">${this.user.age}</div>
+                </div>
+            `;
+        }
     }
 }
