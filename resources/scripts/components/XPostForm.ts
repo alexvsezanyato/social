@@ -24,6 +24,7 @@ export default class XPostForm extends XElement {
             padding: 10px;
             min-height: 150px;
             max-height: 500px;
+            width: 100%;
         }
 
         input[type=file] {
