@@ -1,4 +1,4 @@
-import XElement from '@/ui/XElement';
+import XSections from '@/ui/XSections';
 import {CSSResultGroup, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
@@ -8,9 +8,10 @@ import PostCommentData from '@/types/post-comment.d';
 import {deletePost} from '@/api/post';
 
 @customElement('x-post')
-export default class XPost extends XElement {
-    static styles: CSSResultGroup = [XElement.styles, css`
+export default class XPost extends XSections {
+    static styles: CSSResultGroup = [XSections.styles, css`
         :host {
+            gap: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -20,7 +21,6 @@ export default class XPost extends XElement {
         }
 
         .title {
-            border-bottom: 1px solid #ddd;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -74,7 +74,6 @@ export default class XPost extends XElement {
         }
 
         .document {
-            border-top: 1px solid #ddd;
             display: flex;
             align-items: center;
             white-space: nowrap;
@@ -95,7 +94,6 @@ export default class XPost extends XElement {
         .pictures {
             padding: 5px;
             margin: 0;
-            border-top: 1px solid #ddd;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
         }
@@ -123,16 +121,10 @@ export default class XPost extends XElement {
             padding: 0;
             font-size: 13px;
             font-family: Roboto, Arial, Tahoma;
-            border-top: 1px solid #ddd;
         }
 
         .comments > * {
             display: block;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .comments > *:last-child {
-            border-bottom: none;
         }
     `];
 
@@ -155,44 +147,56 @@ export default class XPost extends XElement {
 
     render() {
         return html`
-            <div class="title">
-                <div class="user">
-                    <a href="/profile/index?id=${this.data.author.id}">${this.data.author.public}</a>
-                </div>
-
-                <div>
-                    <div class="datetime"> 
-                        <div class="date">${this.data.createdAt.date} at</div>
-                        <div class="time">${this.data.createdAt.time}</div>
+            <div>
+                <div class="title">
+                    <div class="user">
+                        <a href="/profile/index?id=${this.data.author.id}">${this.data.author.public}</a>
                     </div>
 
-                    <x-action-dropdown>
-                        <x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>
-                    </x-action-dropdown>
+                    <div>
+                        <div class="datetime"> 
+                            <div class="date">${this.data.createdAt.date} at</div>
+                            <div class="time">${this.data.createdAt.time}</div>
+                        </div>
+
+                        <x-action-dropdown>
+                            <x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>
+                        </x-action-dropdown>
+                    </div>
                 </div>
             </div>
 
-            <div class="data">${this.data.text}</div>
+            <div>
+                <div class="data">${this.data.text}</div>
+            </div>
 
-            <div class="pictures" ?hidden="${this.data.pictures.length === 0}">
-                ${map(this.data.pictures, picture => html`<a href="/pictures/${picture.id}/download">
-                    <div class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></div>
-                </a>`)}
+            <div ?hidden="${this.data.pictures.length === 0}">
+                <div class="pictures">
+                    ${map(this.data.pictures, picture => html`<a href="/pictures/${picture.id}/download">
+                        <div class="picture" style="background: url('/pictures/${picture.id}/download') center / cover no-repeat"></div>
+                    </a>`)}
+                </div>
             </div>
             
-            <div class="documents" ?hidden="${this.data.documents.length === 0}">
-                <div class="documents-header">${this.data.documents.length} document(s)</div>
+            <div ?hidden="${this.data.documents.length === 0}">
+                <div class="documents">
+                    <div class="documents-header">${this.data.documents.length} document(s)</div>
 
-                ${map(this.data.documents, document => html`<div class="document">
-                    <div class="icon"><x-icon x-name="file"></x-icon></div>
-                    <div class="name"><a class="link" href="/documents/${document.id}/download" download>${document.name}</a></div>
-                </div>`)}
+                    ${map(this.data.documents, document => html`<div class="document">
+                        <div class="icon"><x-icon x-name="file"></x-icon></div>
+                        <div class="name"><a class="link" href="/documents/${document.id}/download" download>${document.name}</a></div>
+                    </div>`)}
+                </div>
             </div>
 
-            <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
+            <div>
+                <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
+            </div>
 
-            <div class="comments" ?hidden="${this.data.comments.length === 0}">
-                ${repeat(this.data.comments, comment => comment.id, comment => html`<x-post-comment .data="${comment}"></x-post-comment>`)}
+            <div ?hidden="${this.data.comments.length === 0}">
+                <div class="comments">
+                    ${repeat(this.data.comments, comment => comment.id, comment => html`<x-post-comment .data="${comment}"></x-post-comment>`)}
+                </div>
             </div>
         `;
     }

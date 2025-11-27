@@ -6,10 +6,9 @@ import {createPostComment, getPostComment} from '@/api/post-comment';
 @customElement('x-post-comment-form')
 export default class XPostCommentForm extends XElement {
     static styles: CSSResultGroup = [XElement.styles, css`
-        .new-comment {
+        :host {
             display: flex;
             align-items: stretch;
-            border-top: 1px solid #ddd;
         }
 
         .input {
@@ -24,14 +23,14 @@ export default class XPostCommentForm extends XElement {
     public postId: number;
 
     render() {
-        return html`<div class="new-comment">
+        return html`
             <div class="author">
                 <x-icon class="icon" x-name="user"></x-icon>
             </div>
 
             <input name="comment" class="input" type="text" placeholder="Comment">
             <x-action @click="${this.save}" x-icon="paper-plane"></x-action>
-        </div>`;
+        `;
     }
 
     async save() {
