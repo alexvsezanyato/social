@@ -27,6 +27,9 @@ export default class XPostComment extends XElement {
     @property({attribute: false})
     public data: PostCommentData;
 
+    @property({attribute: 'x-readonly', type: Boolean})
+    public readonly: boolean = false;
+
     render() {
         return html`<div class="comment">
             <div class="header">
@@ -35,7 +38,7 @@ export default class XPostComment extends XElement {
                     <a class="name" href="/profile/index?id=${this.data.author.id}">${this.data.author.public}</a>
                 </div>
                 <x-action-dropdown>
-                    <x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>
+                    ${!this.readonly ? html`<x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>` : ''}
                 </x-action-dropdown>
             </div>
 

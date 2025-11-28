@@ -13,7 +13,9 @@ use App\Http\Controllers\Api\UserController as ApiUserController;
 use App\Http\Controllers\Api\PostController as ApiPostController;
 use App\Http\Controllers\Api\PostCommentController as ApiPostCommentController;
 use App\Http\Controllers\Api\RecommendedPostController as ApiRecommendedPostController;
+use App\Http\Controllers\Api\FriendController as ApiFriendController;
 use App\Http\Controllers\PictureController;
+use App\Http\Controllers\FriendController;
 
 /**
  * @var RouteCollection $routes
@@ -73,6 +75,16 @@ $routes->add('auth.logout', new Route(
     ],
 ));
 
+$routes->add('api.user.index', new Route(
+    path: '/api/users',
+    defaults: [
+        '_controller' => [ApiUserController::class, 'index'],
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
 $routes->add('api.user.patch', new Route(
     path: '/api/users/{id}',
     defaults: [
@@ -93,6 +105,60 @@ $routes->add('api.user.show', new Route(
     ],
     requirements: [
         'id' => '\d+',
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
+$routes->add('api.friend.index', new Route(
+    path: '/api/users/{userId}/friends',
+    defaults: [
+        '_controller' => [ApiFriendController::class, 'index'],
+    ],
+    requirements: [
+        'userId' => '\d+',
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
+$routes->add('api.friend.create', new Route(
+    path: '/api/users/{userId}/friends/{friendId}',
+    defaults: [
+        '_controller' => [ApiFriendController::class, 'create'],
+    ],
+    requirements: [
+        'userId' => '\d+',
+        'friendId' => '\d+',
+    ],
+    methods: [
+        'PUT',
+    ],
+));
+
+$routes->add('api.friend.delete', new Route(
+    path: '/api/users/{userId}/friends/{friendId}',
+    defaults: [
+        '_controller' => [ApiFriendController::class, 'delete'],
+    ],
+    requirements: [
+        'userId' => '\d+',
+        'friendId' => '\d+',
+    ],
+    methods: [
+        'DELETE',
+    ],
+));
+
+$routes->add('api.friend.suggestions', new Route(
+    path: '/api/users/{userId}/friends/suggestions',
+    defaults: [
+        '_controller' => [ApiFriendController::class, 'suggestions'],
+    ],
+    requirements: [
+        'userId' => '\d+',
     ],
     methods: [
         'GET',
@@ -245,6 +311,16 @@ $routes->add('picture.download', new Route(
     path: '/pictures/{id}/download',
     defaults: [
         '_controller' => [PictureController::class, 'download'],
+    ],
+    methods: [
+        'GET',
+    ],
+));
+
+$routes->add('friend.index', new Route(
+    path: '/friends',
+    defaults: [
+        '_controller' => [FriendController::class, 'index'],
     ],
     methods: [
         'GET',

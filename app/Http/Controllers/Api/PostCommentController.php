@@ -42,9 +42,18 @@ class PostCommentController
     public function delete(int $id)
     {
         $comment = $this->postCommentRepository->find($id);
+
+        if (!$comment) {
+            return new Response(status: Response::HTTP_NOT_FOUND);
+        }
+
+        if ($comment->author->id !== $this->userService->getId()) {
+            return new Response(status: Response::HTTP_FORBIDDEN);
+        }
+
         $this->entityManager->remove($comment);
         $this->entityManager->flush();
-        return new Response();
+        return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
     public function show(int $id)

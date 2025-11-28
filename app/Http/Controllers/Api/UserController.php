@@ -19,6 +19,22 @@ class UserController
     ) {
     }
 
+    public function index()
+    {
+        $result = [];
+
+        foreach ($this->userRepository->findAll() as $user) {
+            $result[] = [
+                'id' => $user->id,
+                'login' => $user->login,
+                'age' => $user->age,
+                'public' => $user->public,
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
     public function show(int $id = 0)
     {
         if ($id === 0) {

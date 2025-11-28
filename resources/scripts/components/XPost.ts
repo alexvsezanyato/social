@@ -24,6 +24,9 @@ export default class XPost extends XElement {
         }
     `];
 
+    @property({attribute: 'x-readonly', type: Boolean})
+    public readonly: boolean;
+
     constructor() {
         super();
 
@@ -43,7 +46,7 @@ export default class XPost extends XElement {
 
     render() {
         return html`
-            <x-post-header .data="${this.data}"></x-post-header>
+            <x-post-header .data="${this.data}" ?x-readonly="${this.readonly}"></x-post-header>
             <x-post-content .data="${this.data}"></x-post-content>
             <x-post-comment-form .postId="${this.data.id}"></x-post-comment-form>
             ${this.data.comments.length !== 0 ? html`<x-post-comments .data="${this.data.comments}"></x-post-comments>` : ''}

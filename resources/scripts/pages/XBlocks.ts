@@ -1,14 +1,14 @@
 import XElement from '@/ui/XElement';
 import {css, CSSResultGroup, html} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
+import {customElement} from 'lit/decorators.js';
 
-@customElement('x-block')
-export default class XBlock extends XElement {
+@customElement('x-blocks')
+export default class XBlocks extends XElement {
     static styles?: CSSResultGroup = [XElement.styles, css`
         :host {
-            background: #fff;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
     `];
 

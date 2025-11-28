@@ -13,6 +13,11 @@ export default class XElement extends LitElement {
         :host {
             display: block;
         }
+
+        a {
+            text-decoration: none;
+            color: #000;
+        }
     `;
     
     public toggle() {

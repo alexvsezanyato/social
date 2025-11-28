@@ -5,8 +5,9 @@ import PostData from '@/types/post';
 import Modal from '@/components/XModal';
 import {getUser} from '@/api/user';
 import User from '@/types/user';
-import {getPosts} from '@/api/post';
+import {getPost, getPosts} from '@/api/post';
 import PostForm from '@/components/XPostForm';
+import states from '@/states';
 
 @customElement('x-profile-page')
 export default class XProfilePage extends XElement {
@@ -50,12 +51,16 @@ export default class XProfilePage extends XElement {
 
     constructor() {
         super();
+
+        const uri = new URL(window.location.href);
+        const userId = Number(uri.searchParams.get('id'));
         
-        getUser().then(user => {
+        getUser(userId).then(user => {
             this._user = user;
         });
 
         getPosts({
+            authorId: userId,
             limit: 10,
         }).then(posts => {
             this._posts = posts;
@@ -76,7 +81,7 @@ export default class XProfilePage extends XElement {
 
             <div class="posts-header">
                 <h3>Posts</h3>
-                <button @click="${() => this.postFormModal.show()}" class="new-post">New</button>
+                ${states.user.id === this._user.id ? html`<button @click="${() => this.postFormModal.show()}" class="new-post">New</button>` : ''}
             </div>
 
             ${this._posts !== undefined ? html`<x-posts .posts="${this._posts}"></x-posts>` : ''}

@@ -8,6 +8,7 @@ import '@/ui/XActions';
 import '@/ui/XDropdown';
 import '@/ui/XDropdownItem';
 import '@/ui/XBlock';
+import '@/ui/XBlocks';
 
 import '@/components/XModal';
 import '@/components/XPostForm';
@@ -21,12 +22,14 @@ import '@/components/XPostCommentForm';
 import '@/components/XProfile';
 import '@/components/XDocuments';
 import '@/components/XPictures';
+import '@/components/XFriend';
 
 import '@/pages/XIndexPage';
 import '@/pages/XProfilePage';
 import '@/pages/XProfileSettingsPage';
 import '@/pages/XLoginPage';
 import '@/pages/XRegisterPage';
+import '@/pages/XFriendsPage';
 
 webawesome.registerIconLibrary('default', {
     resolver: (name) => {

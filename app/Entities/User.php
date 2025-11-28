@@ -46,4 +46,10 @@ class User
         mappedBy: 'author',
     )]
     public Collection $posts;
+
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'friend')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'friend_id', referencedColumnName: 'id')]
+    public Collection $friends;
 }

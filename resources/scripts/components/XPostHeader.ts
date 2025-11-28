@@ -35,6 +35,9 @@ export default class XPostHeader extends XElement {
     @property({attribute: false})
     public data: PostData;
 
+    @property({attribute: 'x-readonly', type: Boolean})
+    public readonly: boolean = false;
+
     render() {
         return html`
             <div class="user">
@@ -48,7 +51,7 @@ export default class XPostHeader extends XElement {
                 </div>
 
                 <x-action-dropdown>
-                    <x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>
+                    ${!this.readonly ? html`<x-dropdown-item @click="${this.delete}" x-icon="trash" x-text="Delete"></x-dropdown-item>` : ''}
                 </x-action-dropdown>
             </div>
         `;

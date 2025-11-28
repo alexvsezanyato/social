@@ -3,6 +3,7 @@ import {CSSResultGroup, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {repeat} from 'lit/directives/repeat.js';
 import IPostComment from '@/types/post-comment';
+import states from '@/states';
 
 @customElement('x-post-comments')
 export default class XPostComments extends XElement {
@@ -26,7 +27,7 @@ export default class XPostComments extends XElement {
 
     render() {
         return repeat(this.data, comment => comment.id, comment => html`<div>
-            <x-post-comment .data="${comment}"></x-post-comment>
+            <x-post-comment .data="${comment}" ?x-readonly="${states.user.id !== comment.author.id}"></x-post-comment>
         </div>`);
     }
 }

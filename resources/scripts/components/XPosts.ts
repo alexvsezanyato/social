@@ -4,6 +4,7 @@ import {customElement, property} from 'lit/decorators.js';
 import {repeat} from 'lit/directives/repeat.js';
 import PostData from '@/types/post.d';
 import { getPosts } from '@/api/post';
+import states from '@/states';
 
 @customElement('x-posts')
 export default class XPosts extends XElement {
@@ -28,7 +29,7 @@ export default class XPosts extends XElement {
 
     render() {
         return html`
-            ${repeat(this.posts, post => post.id, post => html`<x-post .data=${post}></x-post>`)}
+            ${repeat(this.posts, post => post.id, post => html`<x-post .data=${post} ?x-readonly="${states.user.id !== post.author.id}"></x-post>`)}
             <x-block><x-action @click="${this.more}" x-text="More"></x-action></x-block>
         `;
     }
